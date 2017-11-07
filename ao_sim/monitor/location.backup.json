@@ -1,0 +1,9 @@
+{
+    "locations" : [
+        {"antennaPort":"1", "location" : "registration"}, 
+        {"antennaPort":"2", "location" : "olli_stop_entry"},
+        {"antennaPort":"3", "location" : "olli_stop_side_exit"},
+        {"antennaPort":"4", "location" : "olli_stop_end_exit"},
+        {"antennaPort":"5", "location" : "olli_roller"}
+        ]
+}

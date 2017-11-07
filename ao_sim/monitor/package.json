@@ -1,0 +1,20 @@
+{
+  "name": "monitor",
+  "version": "0.0.1",
+  "description": "Real-time smartpass (rfid) monitor for RFID imginj reader.",
+  "main": "monitor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pdykes@us.ibm.com",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.5.0",
+    "command-line-args": "^4.0.7",
+    "debug": "^3.1.0",
+    "follow": "^1.0.0",
+    "load-json-file": "^3.0.0",
+    "nano": "^6.4.2",
+    "write-json-file": "^2.3.0"
+  }
+}

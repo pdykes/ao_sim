@@ -1,0 +1,145 @@
+[
+	{
+		"_id": "Grace:07",
+		"persona": "Grace",
+		"persona_id": "07",
+		"transition": "registration",
+		"time": 1509897965647,
+		"delta_time": 43250,
+		"location": "registration",
+		"old_location": "exhibit",
+		"smartpass_id": "E280116060000209597B5202"
+	},
+	{
+		"_id": "Brent:04",
+		"persona": "Brent",
+		"persona_id": "04",
+		"transition": "registration",
+		"time": 1509897971185,
+		"delta_time": 48788,
+		"location": "registration",
+		"old_location": "exhibit",
+		"smartpass_id": "000221550000000000000464"
+	},
+	{
+		"_id": "Kathryn:40",
+		"persona": "Kathryn",
+		"persona_id": "40",
+		"transition": "registration",
+		"time": 1509897977217,
+		"delta_time": 54820,
+		"location": "registration",
+		"old_location": "exhibit",
+		"smartpass_id": "E280116060000209597B5241"
+	},
+	{
+		"_id": "Grace:07",
+		"persona": "Grace",
+		"persona_id": "07",
+		"transition": "olli_stop_entry",
+		"time": 1509897996375,
+		"delta_time": 73978,
+		"location": "olli_stop",
+		"old_location": "registration",
+		"smartpass_id": "E280116060000209597B5202"
+	},
+	{
+		"_id": "Brent:20",
+		"persona": "Brent",
+		"persona_id": "20",
+		"transition": "olli_stop_entry",
+		"time": 1509897997876,
+		"delta_time": 75479,
+		"location": "olli_stop",
+		"old_location": "exhibit",
+		"smartpass_id": "000221550000000000000465"
+	},
+	{
+		"_id": "Kathryn:02",
+		"persona": "Kathryn",
+		"persona_id": "02",
+		"transition": "olli_stop_entry",
+		"time": 1509897999367,
+		"delta_time": 76970,
+		"location": "olli_stop",
+		"old_location": "exhibit",
+		"smartpass_id": "000221550000000000000461"
+	},
+	{
+		"_id": "Erich:27",
+		"persona": "Erich",
+		"persona_id": "27",
+		"transition": "olli_roller",
+		"time": 1509898022171,
+		"delta_time": 99774,
+		"location": "olli_roller",
+		"old_location": "exhibit",
+		"smartpass_id": "000221252000000000000254"
+	},
+	{
+		"_id": "Kathryn:40",
+		"persona": "Kathryn",
+		"persona_id": "40",
+		"transition": "olli_roller",
+		"time": 1509898023912,
+		"delta_time": 101515,
+		"location": "olli_roller",
+		"old_location": "registration",
+		"smartpass_id": "E280116060000209597B5241"
+	},
+	{
+		"_id": "Erich:41",
+		"persona": "Erich",
+		"persona_id": "41",
+		"transition": "olli_stop_end_exit",
+		"time": 1509898037863,
+		"delta_time": 115466,
+		"location": "olli_stop",
+		"old_location": "exhibit",
+		"smartpass_id": "000000000000000052313155"
+	},
+	{
+		"_id": "Grace:07",
+		"persona": "Grace",
+		"persona_id": "07",
+		"transition": "olli_stop_end_exit",
+		"time": 1509898039476,
+		"delta_time": 117079,
+		"location": "exhibit",
+		"old_location": "olli_stop",
+		"smartpass_id": "E280116060000209597B5202"
+	},
+	{
+		"_id": "Kathryn:02",
+		"persona": "Kathryn",
+		"persona_id": "02",
+		"transition": "olli_stop_end_exit",
+		"time": 1509898041863,
+		"delta_time": 119466,
+		"location": "exhibit",
+		"old_location": "olli_stop",
+		"smartpass_id": "000221550000000000000461"
+	},
+	{
+		"_id": "Brent:20",
+		"persona": "Brent",
+		"persona_id": "20",
+		"transition": "olli_stop_end_exit",
+		"time": 1509898043880,
+		"delta_time": 121483,
+		"location": "exhibit",
+		"old_location": "olli_stop",
+		"smartpass_id": "000221550000000000000465"
+	},
+	{
+		"_id": "Grace:30",
+		"persona": "Grace",
+		"persona_id": "30",
+		"transition": "olli_roller",
+		"time": 1509898063131,
+		"delta_time": 140734,
+		"location": "olli_roller",
+		"old_location": "exhibit",
+		"smartpass_id": "E280116060000209597B4862"
+	}
+]

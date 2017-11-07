@@ -1,0 +1,15 @@
+{
+  "name": "registration",
+  "version": "0.0.1",
+  "description": "Read Impinj RFID reader and create a json file representing various Personas",
+  "main": "registration.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pdykes@us.ibm.com",
+  "license": "ISC",
+  "dependencies": {
+    "load-json-file": "^3.0.0",
+    "write-json-file": "^2.3.0"
+  }
+}
