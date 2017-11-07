@@ -44,7 +44,15 @@ as the solution begins to grow.
 
 ## Utilzing local shells and cloudant (docker image of cloudant (below ok as well))
 
-1. Install couchdb from couch.apache.org, tested with 2.1+ version
+1. a) For local install, install Nodejs... visit nodejs.org, and install the current LTS for your system.
+
+   - After installing, open a shell window, and issue:
+   ```
+   node -v
+   ```
+   You should should see a version number, otherwise, reinstall and start a new window again after that. 
+
+   b) Install couchdb from couch.apache.org, tested with 2.1+ version
    (You could use the couchdb docker image below... vs. install the application, see details to make it visible)
    - Start the application
    - Access the web console, default usually http://127.0.0.1:5984
@@ -52,6 +60,19 @@ as the solution begins to grow.
 
 2. Open two shells
    - cd (target_directory)/monitor
+   - In one of the windows:
+   ```
+   ls -al
+   ```
+
+   - You should see files such as "monitor.js", etc... if not, repeat the git clone steps above.
+   - If so, you need to install the node dependences:
+
+   ```
+   npm install
+   ```
+
+   - This should run for 1-3 minutes.
 
 3. Enable the kiosk
    - In one of the shell windows, issue: "node kiosk_stub.js"
