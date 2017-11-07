@@ -1,0 +1,198 @@
+#AccessibleOlli Help Text
+
+Options
+
+Example
+
+monitor -help
+
+Show this file. Basic ideas:
+
+The application will read data frm the persona-registration and the location-registration, and then 
+use that information to generate streaming data for listeners. By default, the tool will read from a 
+prescripted set of events that were recorded previously. 
+
+
+For those with the RFID/SmartPass technology, this
+tool will listen to the Reader and a set of events
+can be processed live, and those events will be recorded
+for post playback.  We will create a set of these 
+playback to drive testing scenarios and enhance the code
+without requiring a large effort of manual RFID/live
+efforts.
+
+The streaming data can be listened to using the kiosk-sub.js exampe, and the console will show the interacations the tool is recording. If the tool
+
+The location-registration is a manully configured json file that enumerates the mappings of the RFID antennas
+to the physical transition points.
+
+monitor -interval 300
+
+Adjust the simulation from the default 250ms interval to a different value in ms. In this case 300.
+
+Options:
+  -v (--verbose)
+  
+  Prints more information. As a side note, to turn on
+  full debugging and data output. Issue this command
+  before starting monitor.js
+  
+  export DEBUG=monitor
+  
+  -h (--help)
+  
+  
+  Show this content.
+  
+  
+  -i (--rfid_ip)
+  
+  Establish the RFID Reader address this tool will
+  poll to generate events during the show and during
+  all testing.
+  
+  Default: 192.168.1.25
+  
+  -p (--rfid_port)
+  
+  Establish the RFID Reader tcp port this tool will
+  pool to genreate events during the show and during
+  all testing.
+  
+  Default: 14150
+  
+  -r (--persona_registration)
+  
+  This file is created by the registration.js file, and
+  allows a team member to take all rfid tags and assign
+  them to a Persona:id to RFID id used in other parts
+  of the solution.
+  
+  -f (--rfid_mode)
+  
+  The default in non-show environments is simulation mode.
+  If the value is not specified or set to false, this enables the simulation mode. Since most use is in
+  programming testing environments, the default is to 
+  start in simulation mode reading formally recorded
+  scenarios.
+  
+  Default:  false (set to true to override)
+  
+  -n (--interval)
+  
+  This enables the simulation interval. This value is
+  representing milliseconds.
+  
+  Default:  250
+  
+  -l (--location_registration)
+  
+  This file is managed manully (editor) and correlates
+  the specific RFID antenna mappings to our logical
+  show mappings. We can adjust this based on the
+  specific demosntration show footprint (to an extent).
+  
+  Default: location.json
+  
+  -t (--tracking_output)
+  
+  This file is the stored outcome of a RFID enabled
+  monitor execution.  The data is stored such that it
+  can be replayed in simulation mode. The data should
+  not be that difficult to modify manually to create
+  a test scenario as well. The project team has agreed
+  to several, more progressivly complicated visitor
+  test cases.  Each test case will be manifested in
+  a file of its own.
+  
+  Default: tracking.json
+  
+  -s (--persona_transitions_db)
+  
+  The events that show each persona transition through
+  the demonstration environment are stored in a couchdb
+  database.  This is the default name of this database.
+  
+  Via couchdb replication protocol (in a shell window,
+  you can issue "node kiosk_stub.js" and you will see
+  a real-time feed of the various changes.
+  
+  This attribute is not fully supported
+  currently, and maybe deprecated.
+  
+  Default: persona_transitions
+  
+  -c (--olli_roller_db)
+  
+  The events that show who is currently in the olli
+  roller and any given time as personas transition
+  through the demonstration environment are stored 
+  in a couchdb database.  This is the default name of this database.
+  
+  Via couchdb replication protocol (in a shell window,
+  you can issue "node kiosk_stub.js" and you will see
+  a real-time feed of the various changes. 
+  
+  This attribute is not fully supported
+  currently, and maybe deprecated.
+  
+  Default: personas_olli_roller
+  
+  -z (--olli_stop_db)
+  
+  The events that show who is currently in the olli
+  stop and any given time as personas transition
+  through the demonstration environment are stored 
+  in a couchdb database.  This is the default name of this database.
+  
+  Via couchdb replication protocol (in a shell window,
+  you can issue "node kiosk_stub.js" and you will see
+  a real-time feed of the various changes. 
+  
+  This attribute is not fully supported
+  currently, and maybe deprecated.
+  
+  Default: personas_olli_stop
+  
+
+  -e (--registration_db) 
+  
+  The events that show who is currently at the olli
+  registration and any given time as personas transition
+  through the demonstration environment are stored 
+  in a couchdb database.  This is the default name of this database. This attribute is not fully supported
+  currently, and maybe deprecated.
+  
+  Via couchdb replication protocol (in a shell window,
+  you can issue "node kiosk_stub.js" and you will see
+  a real-time feed of the various changes. 
+  
+  Default: personas_olli_registration
+
+  -d (--database_url)
+  
+  This is the loation of the couchdb runtime used by the
+  tool to update and modify the database during simulation
+  and regular show flow operations.
+  
+  Default:  http://127.0.0.1:5984/
+  
+  Examples:
+  
+  Run the environment in demonstration mode.  The default files from github will drive the function.
+  
+  node monitor
+  
+  Run in simulation mode, specifying checking for state changes every 300ms, however use different history file:
+  
+  node monitor --interval 300  --tracking_output scenario2.json
+  
+  (Note: tracking.backup.json is provided to use as a sample history file)
+  
+  Enable RFID Monitoring
+  
+  node monitor --rfid_mode --tracking_output=this_runs_history.json
+  
+  (Note: to write out the this_runs_history.json file, you will type ^c to end, and the file will be created at that time).
+  
+  
