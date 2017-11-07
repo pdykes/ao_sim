@@ -52,7 +52,7 @@ as the solution begins to grow.
    ```
    You should should see a version number, otherwise, reinstall and start a new window again after that. 
 
-   b) Install couchdb from couch.apache.org, tested with 2.1+ version
+   b) Install couchdb from couchdb.apache.org, tested with 2.1+ version
    (You could use the couchdb docker image below... vs. install the application, see details to make it visible)
    - Start the application
    - Access the web console, default usually http://127.0.0.1:5984
