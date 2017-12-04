@@ -1,0 +1,92 @@
+{
+    "global": {
+        "nosql_url": "http://127.0.0.1:5984",
+        "nosql_user": "",
+        "nosql_password": ""
+    },
+    "agent_proxy": {
+        "module_name": "proxy_agent",
+        "module_Name": "Proxy Agent",
+        "endpoint_url": "http://127.0.0.1:3002",
+        "simulation_interval": "1000",
+        "proxy_list": [
+            {
+                "name": "ultrahaptics_01",
+                "instance": "01",
+                "database": "ultrahaptics_01",
+                "to_device_url": "http://127.0.0.1:3003",
+                "to_device": "to_device",
+                "from_device": "from_device"
+         },
+            {
+                "name": "kintrans_01",
+                "instance": "01",
+                "database": "kintrans_01",
+                "to_device_url": "http://127.0.0.1:3004",
+                "to_device": "to_device",
+                "from_device": "from_device"
+         },
+            {
+                "name": "kintrans_02",
+                "instance": "02",
+                "database": "kintrans_02",
+                "to_device_url": "http://127.0.0.1:3005",
+                "to_device": "to_device",
+                "from_device": "from_device"
+         }
+        ]
+    },
+    "agents": {
+        "telemetry": {
+            "module_name": "telemetry",
+            "module_Name": "Telemetry Agent",
+            "database": "telemetry_transitions",
+            "control": "telemetry_control",
+            "transition": "telemetry_transition",
+            "configuration": "telemetry.json",
+            "simulation_interval": 500
+        },
+        "monitor" :  {
+            "module_name"   : "monitor",
+            "rfid_ip"       : "192.168.1.25",
+            "rfid_port"     : "14150",
+            "interval"      : "250",
+            "time_gap"      : "1000",
+            "database"      : "persona_transitions"
+        },
+        "patron_manager" : {
+            "module_name"      : "patron_manager",
+            "database"         : "persona_transitions",
+            "output_database"  : "patron_locations",
+            "roller_record_key"         : "patrons_olli_roller",
+            "stop_record_key"           : "patrons_olli_stop",
+            "registration_record_key"   : "patrons_registration",
+            "exhibit_record_key"        : "patrons_exhibit" 
+        },
+        "voice_agent" : {
+            "database" : "voice_requests"
+        },
+        "event_agent" : {
+            "database" : "ao_events"
+        }
+    },
+    "ao_cli": {
+        "nosql_url": "http://127.0.0.1:5984",
+        "nosql_user": "",
+        "nosql_password": "",
+        "module_name": "ao_cli",
+        "module_Name": "#AO_cli",
+        "telemetry": "telemetry_transitions",
+        "telemetry_control": "telemetry_control",
+        "telemetry_transition": "telemetry_transition",
+        "kintrans_01": "kintrans_01",
+        "kintrans_01_to_device": "to_device",
+        "kintrans_01_from_device": "from_device",  
+        "kintrans_02": "kintrans_02",
+        "kintrans_02_to_device": "to_device",
+        "kintrans_02_from_device": "from_device", 
+        "ultrahaptics_01": "ultrahaptics_01",
+        "ultrahaptics_01_to_device": "to_device",
+        "ultrahaptics_01_from_device": "from_device"         
+    }
+}

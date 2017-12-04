@@ -1,0 +1,21 @@
+{
+  "name": "uh_stub",
+  "version": "0.0.1",
+  "description": "Node version to demonstration ultrahaptics integration",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pdykes@us.ibm.com",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "async-waterfall": "^0.1.5",
+    "body-parser": "^1.18.2",
+    "command-line-args": "^4.0.7",
+    "config": "^1.28.1",
+    "express": "^4.16.2",
+    "follow": "^1.0.0",
+    "request": "^2.83.0"
+  }
+}

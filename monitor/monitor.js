@@ -12,8 +12,9 @@
 var net = require('net');
 var fs = require('fs');
 var async = require('async');
+var config = require('config');
 
-var module_name = "monitor";
+var module_name = config.get("agents.monitor.module_name");
 
 var debug = require("debug")(module_name);
 debug("Debug enabled in module: %s", module_name);
@@ -23,6 +24,7 @@ var loadJsonFile = require('load-json-file');
 // process command line args
 const commandLineArgs = require('command-line-args');
 
+var registrations_filename = "registration.json";
 var registrations_filename = "registration.json";
 var tracking_filename = "tracking.json";
 var location_filename = "location.json";
@@ -61,7 +63,7 @@ var show_verbose_data = true;
 
 var dbperf_tracking = true;
 
-var sim_interval = 250;
+var sim_interval = config.get("agents.monitor.interval");
 
 
 //  todo
@@ -70,12 +72,12 @@ var sim_interval = 250;
 //    create agent that can process this and put a clean version
 //     of data
 
-var time_gap = 1000;
+var time_gap = config.get("agents.monitor.time_gap");
 
 var client = new net.Socket();
 
-var host_ip = '192.168.1.25';
-var host_port = '14150';
+var host_ip = config.get("agents.monitor.rfid_ip");
+var host_port = config.get("agents.monitor.rfid_port");
 
 var current_epc = null;
 
@@ -94,13 +96,11 @@ var in_memory_database = [];
 var location_records = null;
 
 var couch = null;
-var database = "persona_transitions";
-var roller_database = "personas_olli_roller";
-var roller_database = "personas_olli_stop";
-var roller_database = "personas_registration";
-var database_url = "http://127.0.0.1:5984/"; // 'http://localhost:5984'
-var database_user = "perry";
-var database_password = "perry";
+var database = config.get("agents.monitor.database");
+
+var database_url = config.get("global.nosql_url"); // 'http://localhost:5984'
+var database_user = config.get("global.nosql_user");
+var database_password = config.get("global.nosql_password");
 var db = null;
 
 

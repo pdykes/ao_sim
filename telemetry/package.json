@@ -1,0 +1,22 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.0",
+    "async-waterfall": "^0.1.5",
+    "command-line-args": "^4.0.7",
+    "config": "^1.28.1",
+    "debug": "^3.1.0",
+    "follow": "^1.0.0",
+    "load-json-file": "^4.0.0",
+    "nano": "^6.4.2",
+    "request": "^2.83.0"
+  }
+}

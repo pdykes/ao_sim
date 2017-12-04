@@ -1,0 +1,19 @@
+{
+  "name": "ao_cli",
+  "version": "0.0.1",
+  "description": "#AccessibleOlli command line",
+  "main": "ao.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pdykes@us.ibm.com",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "async-waterfall": "^0.1.5",
+    "command-line-args": "^4.0.7",
+    "config": "^1.28.1",
+    "follow": "^1.0.0",
+    "nano": "^6.4.2"
+  }
+}
