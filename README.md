@@ -152,23 +152,37 @@ While some of the components can be started without regards to order, this secti
 
 2. Agents, cd into the generic_agent directory, example start sequence (note, init portion will not display until step 3.)
 
+```
 > node app.js kintrans_01
+```
+
+```
 [kintrans_01] Agent listening on http port: 3004
 post message arrival: { event: 'init',
   agent_id: 'kintrans_01',
   agent_instance: '01',
   endpoint_url: 'http://127.0.0.1:3002' }
 [kintrans_01] Incoming Event: Init
+```
 
+```
 > node app.js ultrahaptics_01
+```
+
+```
 [ultrahaptics_01] Agent listening on http port: 3003
 post message arrival: { event: 'init',
   agent_id: 'ultrahaptics_01',
   agent_instance: '01',
   endpoint_url: 'http://127.0.0.1:3002' }
 [ultrahaptics_01] Incoming Event: Init
+```
 
+```
 > node app.js kintrans_02
+```
+
+```
 [kintrans_02] Agent listening on http port: 3005
 post message arrival: { event: 'init',
   agent_id: 'kintrans_02',
@@ -181,6 +195,9 @@ post message arrival: { event: 'init',
 
 ```
 > node app.js
+```
+
+```
 [Proxy Agent] Initializing: ultrahaptics_01
 [Proxy Agent] Listener Target: http://127.0.0.1:5984/ultrahaptics_01
 [Proxy Agent] Initializing: kintrans_01
@@ -194,26 +211,55 @@ post message arrival: { event: 'init',
 
 ```
 > node ao.js --follow kintrans_02
+
+```
+
+```
 [#AO_cli] Action: kintrans_02 Target: http://127.0.0.1:5984/kintrans_02
 [#AO_cli] Ctrl-C to exit in follow mode
+```
 
+```
 > node ao.js --follow kintrans_01
+```
+
+```
 [#AO_cli] Action: kintrans_01 Target: http://127.0.0.1:5984/kintrans_01
 [#AO_cli] Ctrl-C to exit in follow mode
+```
 
+```
 > node ao.js --follow ultrahaptics_01
+```
+
+```
 [#AO_cli] Action: ultrahaptics_01 Target: http://127.0.0.1:5984/ultrahaptics_01
 [#AO_cli] Ctrl-C to exit in follow mode
+```
 
+```
 > node ao.js --follow patrons
+```
+
+```
 [#AO_cli] Action: patrons Target: http://127.0.0.1:5984/persona_transitions
 [#AO_cli] Ctrl-C to exit in follow mode
+```
 
+```
 > node ao.js --follow telemetry
+```
+
+```
 [#AO_cli] Action: telemetry Target: http://127.0.0.1:5984/telemetry_transitions
 [#AO_cli] Ctrl-C to exit in follow mode
+```
 
+```
 > node ao.js --follow patron_locations
+```
+
+```
 [#AO_cli] Action: patron_locations Target: http://127.0.0.1:5984/patron_locations
 [#AO_cli] Ctrl-C to exit in follow mode
 
@@ -225,6 +271,9 @@ Note to get a feel for the JSON messages, you can look at the various change rec
 
 ```
 > node app.js
+```
+
+```
 Listener target: http://127.0.0.1:5984/persona_transitions
 ```
 
@@ -232,6 +281,9 @@ Listener target: http://127.0.0.1:5984/persona_transitions
 
 ```
 > node telemetry.js
+```
+
+```
 [Telemetry Agent] Initialization...
 [Telemetry Agent] Route Description: red_route
 [Telemetry Agent] Monitoring specific events can be enable via ao_cli or by enabling debug
@@ -239,8 +291,11 @@ Listener target: http://127.0.0.1:5984/persona_transitions
 
 7. Persona Monitor Service
 
-'''
+```
 > node monitor.js
+```
+
+```
 SmartPass: Registation records:[1] { Kathryn:40 SmartPass Id[E280116060000209597B5241] }
 SmartPass: Registation records:[2] { Kathryn:02 SmartPass Id[000221550000000000000461] }
 SmartPass: Registation records:[3] { Erich:41 SmartPass Id[000000000000000052313155] }
@@ -266,13 +321,19 @@ Start the Telemetry
 
 ```
 > node ao.js --control telemetry --operation enable
+```
+
+```
 [#AO_cli] Successful operation set telemetry_control in database telemetry_transitions now set to enable state
 ```
 
 The telemetry monitorng will wake up:
 
 ```
-Perrys-MacBook-Pro:telemetry pdykes@us.ibm.com$ node telemetry.js
+> node telemetry.js
+```
+
+```
 [Telemetry Agent] Initialization...
 [Telemetry Agent] Route Description: red_route
 [Telemetry Agent] Monitoring specific events can be enable via ao_cli or by enabling debug
@@ -297,6 +358,9 @@ Perrys-MacBook-Pro:telemetry pdykes@us.ibm.com$ node telemetry.js
 
 ```
 > node ao.js --control telemetry --operation disable
+```
+
+```
 [#AO_cli] Successful operation set telemetry_control in database telemetry_transitions now set to disable state
 ```
 
