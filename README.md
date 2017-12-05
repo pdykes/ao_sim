@@ -37,7 +37,7 @@ Current Instructions
 
 Set the centralized configuration attributes
 
-- MacOS, open a shell, command (reference should be relative to the mvp2/config root directory):
+- MacOS example (use your OS's approach to setting environment variables), open a shell, command (reference should be relative to the mvp2/config root directory):
 
 ```
 export NODE_CONFIG_DIR=../config
@@ -59,6 +59,18 @@ Command line tooling walk through
  $ pwd
  /Users/pdykes@us.ibm.com/temp/ao_work/ao_sim
 ```
+
+Configuration the database
+
+Install couchdb, and setup the following databases (will be automated in next update):
+
+ - telemetry_transitions
+ - persona_transitions
+ - patron_locations
+ - ultrahaptics_01
+ - kintrans_01
+ - kintrans_02
+
  
 pwd output value => show you where the code has been placed, denote that location as used several times below.
 
@@ -68,7 +80,9 @@ Call this directory the target_directory
 At this points there is two paths, one is simpler than other, but the container path will be what we get into
 as the solution begins to grow.
 
-## Utilzing local shells and cloudant (docker image of cloudant (below ok as well))
+## Simple test
+
+Utilzing local shells and cloudant (docker image of cloudant (below ok as well))
 
 1. a) For local install, install Nodejs... visit nodejs.org, and install the current LTS for your system.
 
@@ -113,6 +127,22 @@ as the solution begins to grow.
 Other information
 1. node monitor.js -h : prints out help text (the monitor actually reads RFID tags and reports)
 2. The detailed output for the commands, enabling debugging and other items are in the detail below.
+
+## Setting up telemetry, agent_proxy, agents, persona_locataions, etc...
+
+Configuration
+
+ - Please ensure you set the NODE_CONFIG_DIR value, e.g. 
+ 
+```
+export NODE_CONFIG_DIR=../config
+```
+
+Intro video
+
+ - This file is a quick time video, about 22 minutes (The file is pretty large, will try to fix that for the next drop)
+ - Link: https://ibm.box.com/s/u0dsmno6cir5fzvors0qalj937sl6ekt
+ - Note, the pathing was simplified after the first video was cut
 
 ## Docker container approach
  
