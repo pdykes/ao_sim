@@ -143,6 +143,176 @@ Intro video
  - This file is a quick time video, about 22 minutes (The file is pretty large, will try to fix that for the next drop)
  - Link: https://ibm.box.com/s/u0dsmno6cir5fzvors0qalj937sl6ekt
  - Note, the pathing was simplified after the first video was cut
+ 
+Startup Sequence
+
+While some of the components can be started without regards to order, this section spells out which to start.  Once started, many of the elements can be started over and over again without issue.
+
+1. Start the database (For local host usually located at http://127.0.0.1:5894).
+
+2. Agents, cd into the generic_agent directory, example start sequence (note, init portion will not display until step 3.)
+
+> node app.js kintrans_01
+[kintrans_01] Agent listening on http port: 3004
+post message arrival: { event: 'init',
+  agent_id: 'kintrans_01',
+  agent_instance: '01',
+  endpoint_url: 'http://127.0.0.1:3002' }
+[kintrans_01] Incoming Event: Init
+
+> node app.js ultrahaptics_01
+[ultrahaptics_01] Agent listening on http port: 3003
+post message arrival: { event: 'init',
+  agent_id: 'ultrahaptics_01',
+  agent_instance: '01',
+  endpoint_url: 'http://127.0.0.1:3002' }
+[ultrahaptics_01] Incoming Event: Init
+
+> node app.js kintrans_02
+[kintrans_02] Agent listening on http port: 3005
+post message arrival: { event: 'init',
+  agent_id: 'kintrans_02',
+  agent_instance: '02',
+  endpoint_url: 'http://127.0.0.1:3002' }
+[kintrans_02] Incoming Event: Init
+```
+
+3. Start the agent proxy, cd agent_proxy
+
+```
+> node app.js
+[Proxy Agent] Initializing: ultrahaptics_01
+[Proxy Agent] Listener Target: http://127.0.0.1:5984/ultrahaptics_01
+[Proxy Agent] Initializing: kintrans_01
+[Proxy Agent] Listener Target: http://127.0.0.1:5984/kintrans_01
+[Proxy Agent] Initializing: kintrans_02
+[Proxy Agent] Listener Target: http://127.0.0.1:5984/kintrans_02
+[Proxy Agent] Agent listening on http port: 3002
+```
+
+4. Setup the command line to follow each of the databases.  The database instances must be created prior to using the command line tool.
+
+```
+> node ao.js --follow kintrans_02
+[#AO_cli] Action: kintrans_02 Target: http://127.0.0.1:5984/kintrans_02
+[#AO_cli] Ctrl-C to exit in follow mode
+
+> node ao.js --follow kintrans_01
+[#AO_cli] Action: kintrans_01 Target: http://127.0.0.1:5984/kintrans_01
+[#AO_cli] Ctrl-C to exit in follow mode
+
+> node ao.js --follow ultrahaptics_01
+[#AO_cli] Action: ultrahaptics_01 Target: http://127.0.0.1:5984/ultrahaptics_01
+[#AO_cli] Ctrl-C to exit in follow mode
+
+> node ao.js --follow patrons
+[#AO_cli] Action: patrons Target: http://127.0.0.1:5984/persona_transitions
+[#AO_cli] Ctrl-C to exit in follow mode
+
+> node ao.js --follow telemetry
+[#AO_cli] Action: telemetry Target: http://127.0.0.1:5984/telemetry_transitions
+[#AO_cli] Ctrl-C to exit in follow mode
+
+> node ao.js --follow patron_locations
+[#AO_cli] Action: patron_locations Target: http://127.0.0.1:5984/patron_locations
+[#AO_cli] Ctrl-C to exit in follow mode
+
+```
+
+Note to get a feel for the JSON messages, you can look at the various change records emitted by these tools, use the change.doc avlue.
+
+5. Patron Manager Service
+
+```
+> node app.js
+Listener target: http://127.0.0.1:5984/persona_transitions
+```
+
+6. Telemtry Service
+
+```
+> node telemetry.js
+[Telemetry Agent] Initialization...
+[Telemetry Agent] Route Description: red_route
+[Telemetry Agent] Monitoring specific events can be enable via ao_cli or by enabling debug
+```
+
+7. Persona Monitor Service
+
+'''
+> node monitor.js
+SmartPass: Registation records:[1] { Kathryn:40 SmartPass Id[E280116060000209597B5241] }
+SmartPass: Registation records:[2] { Kathryn:02 SmartPass Id[000221550000000000000461] }
+SmartPass: Registation records:[3] { Erich:41 SmartPass Id[000000000000000052313155] }
+SmartPass: Registation records:[4] { Brent:04 SmartPass Id[000221550000000000000464] }
+SmartPass: Registation records:[5] { Brent:20 SmartPass Id[000221550000000000000465] }
+SmartPass: Registation records:[6] { Erich:27 SmartPass Id[000221252000000000000254] }
+SmartPass: Registation records:[7] { Brent:34 SmartPass Id[300833B2DDD9014000000000] }
+SmartPass: Registation records:[8] { Grace:07 SmartPass Id[E280116060000209597B5202] }
+SmartPass: Registation records:[9] { Grace:30 SmartPass Id[E280116060000209597B4862] }
+SmartPass: Registration File Loaded: registration.json
+SmartPass: Location records:[0] { 1:registration] }
+SmartPass: Location records:[1] { 2:olli_stop_entry] }
+SmartPass: Location records:[2] { 3:olli_stop_side_exit] }
+SmartPass: Location records:[3] { 4:olli_stop_end_exit] }
+SmartPass: Location records:[4] { 5:olli_roller] }
+SmartPass: Simulation start time established
+SmartPass: Persona: Erich:41 Location: olli_stop Transistion: olli_stop_end_exit Simulation Time: 1512361886487
+```
+
+8. Control commands, use the command line tool to not only follow, but use enable, disable, start, suspend, etc...
+
+Start the Telemetry 
+
+```
+> node ao.js --control telemetry --operation enable
+[#AO_cli] Successful operation set telemetry_control in database telemetry_transitions now set to enable state
+```
+
+The telemetry monitorng will wake up:
+
+```
+Perrys-MacBook-Pro:telemetry pdykes@us.ibm.com$ node telemetry.js
+[Telemetry Agent] Initialization...
+[Telemetry Agent] Route Description: red_route
+[Telemetry Agent] Monitoring specific events can be enable via ao_cli or by enabling debug
+[Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
+[Telemetry Agent] Control mode change request arrived: enabled
+[Telemetry Agent] Control Mode enabled
+[Telemetry Agent] Simulation start time established
+[Telemetry Agent] Simulation start request
+[Telemetry Agent] Simulation start request initiated
+[Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
+[Telemetry Agent] Transport transition Delta Time: 0
+[Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
+[Telemetry Agent] Transport transition Delta Time: 1000
+[Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
+[Telemetry Agent] Transport transition Delta Time: 1500
+[Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
+[Telemetry Agent] Transport transition Delta Time: 2000
+
+```
+
+9. Disable Telemetry Service Example
+
+```
+> node ao.js --control telemetry --operation disable
+[#AO_cli] Successful operation set telemetry_control in database telemetry_transitions now set to disable state
+```
+
+Telementry Service Monitor will look something like this
+
+```
+[Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
+[Telemetry Agent] Transport transition Delta Time: 31500
+[Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
+[Telemetry Agent] Control mode change request arrived: disabled
+[Telemetry Agent] Control Mode disabled
+[Telemetry Agent] Suspending in progress simulation, renable to start
+[Telemetry Agent] Simulation Suspended
+```
+
+10. You can start the other agents similarly.
 
 ## Docker container approach
  
