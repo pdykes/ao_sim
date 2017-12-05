@@ -84,7 +84,7 @@ as the solution begins to grow.
 
 Utilzing local shells and cloudant (docker image of cloudant (below ok as well))
 
-1. a) For local install, install Nodejs... visit nodejs.org, and install the current LTS for your system.
+1. For local install, install Nodejs... visit nodejs.org, and install the current LTS for your system.
 
    - After installing, open a shell window, and issue:
    ```
