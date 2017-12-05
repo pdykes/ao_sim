@@ -1,9 +1,27 @@
-(mvp2 in progress of being updated... there are key resources not released to this open source to make this fully functional - see the box for the team)
+# mvp2
+
+The updated release offers:
+
+- telemetry feeds
+- agent_proxy support and generic client examples
+- patron locations in the stop, roller, registration and the exhibit
+- centralized configuration system
+
+Currently inflight functions targeted for mpv3:
+
+- rule engine that processes data from the various streams, and emits events for other compnoents to process
+- rules will be stored separate of the software in an extensible format
+- integrate the graphical components and incorporat rules based events
+- please drop requirements for critical needed functions
 
 # Lets get the simulation and replication code downloaded, and run in a few docker containers optionally  ;-)
 
+   - configuration setup
+      The new configuration solution relies on environment variables, and offers many advantages, see the articles at this link for more information https://www.npmjs.com/package/config
+      
+
    - preqs
-      download and install git and docker community edition (ce), takes a few minutes and reboots
+      download and install node (version 6-8 is fine), git and docker community edition (ce)
       
    - docker config      
       ensure you have a shared directory on the host which Docker can read 
@@ -16,9 +34,17 @@
 
 
 Current Instructions
+
+Set the centralized configuration attributes
+
+- MacOS, open a shell, command (reference should be relative to the mvp2/config root directory):
+
+```
+export NODE_CONFIG_DIR=../config
+```
       
 
-   Command line tooling walk through
+Command line tooling walk through
    
 ```
  $ = host/mac shell command  # = docker image shell command
