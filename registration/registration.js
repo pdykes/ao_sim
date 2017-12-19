@@ -3,6 +3,7 @@ var fs = require('fs');
 var prompt = require('prompt');
 var writeJsonFile = require('write-json-file');
 var loadJsonFile = require('load-json-file');
+var config = require('config');
 
 var filename = "registration.json";
 
@@ -16,8 +17,8 @@ var filename = "registration.json";
 
 var client = new net.Socket();
 
-var host_ip = '192.168.1.25';
-var host_port = '14150';
+var host_ip = config.get("agents.monitor.rfid_ip");
+var host_port = config.get("agents.monitor.rfid_port");
 
 var current_epc = null;
 

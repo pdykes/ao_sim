@@ -1,8 +1,8 @@
 {
     "global": {
         "nosql_url": "http://127.0.0.1:5984",
-        "nosql_user": "",
-        "nosql_password": ""
+        "nosql_user": "admin",
+        "nosql_password": "admin"
     },
     "agent_proxy": {
         "module_name": "proxy_agent",
@@ -13,7 +13,7 @@
             {
                 "name": "ultrahaptics_01",
                 "instance": "01",
-                "database": "ultrahaptics_01",
+                "database": "ultrahaptics_01_transitions",
                 "to_device_url": "http://127.0.0.1:3003",
                 "to_device": "to_device",
                 "from_device": "from_device"
@@ -21,7 +21,7 @@
             {
                 "name": "kintrans_01",
                 "instance": "01",
-                "database": "kintrans_01",
+                "database": "kintrans_01_transitions",
                 "to_device_url": "http://127.0.0.1:3004",
                 "to_device": "to_device",
                 "from_device": "from_device"
@@ -29,7 +29,7 @@
             {
                 "name": "kintrans_02",
                 "instance": "02",
-                "database": "kintrans_02",
+                "database": "kintrans_02_transitions",
                 "to_device_url": "http://127.0.0.1:3005",
                 "to_device": "to_device",
                 "from_device": "from_device"
@@ -44,7 +44,8 @@
             "control": "telemetry_control",
             "transition": "telemetry_transition",
             "configuration": "telemetry.json",
-            "simulation_interval": 500
+            "simulation_interval": 500,
+            "alert_interval" : 500
         },
         "monitor" :  {
             "module_name"   : "monitor",
@@ -57,7 +58,7 @@
         "patron_manager" : {
             "module_name"      : "patron_manager",
             "database"         : "persona_transitions",
-            "output_database"  : "patron_locations",
+            "output_database"  : "patron_location_transitions",
             "roller_record_key"         : "patrons_olli_roller",
             "stop_record_key"           : "patrons_olli_stop",
             "registration_record_key"   : "patrons_registration",
@@ -66,8 +67,13 @@
         "voice_agent" : {
             "database" : "voice_requests"
         },
-        "event_agent" : {
-            "database" : "ao_events"
+        "event_manager" : {
+            "module_name": "event_manager",
+            "module_Name": "Event Manager",
+            "port"  :  "3006",
+            "simulation_event_rules" : "simulation_time_events.json",
+            "telemetry_event_rules" : "telemetry_offset_events.json",
+            "events_database" : "rule_events"
         }
     },
     "ao_cli": {
@@ -79,13 +85,13 @@
         "telemetry": "telemetry_transitions",
         "telemetry_control": "telemetry_control",
         "telemetry_transition": "telemetry_transition",
-        "kintrans_01": "kintrans_01",
+        "kintrans_01": "kintrans_01_transitions",
         "kintrans_01_to_device": "to_device",
         "kintrans_01_from_device": "from_device",  
-        "kintrans_02": "kintrans_02",
+        "kintrans_02": "kintrans_02_transitions",
         "kintrans_02_to_device": "to_device",
         "kintrans_02_from_device": "from_device", 
-        "ultrahaptics_01": "ultrahaptics_01",
+        "ultrahaptics_01": "ultrahaptics_01_transitions",
         "ultrahaptics_01_to_device": "to_device",
         "ultrahaptics_01_from_device": "from_device"         
     }

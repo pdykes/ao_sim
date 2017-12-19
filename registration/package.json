@@ -9,6 +9,7 @@
   "author": "pdykes@us.ibm.com",
   "license": "ISC",
   "dependencies": {
+    "config": "^1.28.1",
     "load-json-file": "^3.0.0",
     "write-json-file": "^2.3.0"
   }

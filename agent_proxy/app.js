@@ -397,12 +397,12 @@ process.on('SIGINT', function () {
 
 // replication control function
 
-function submit_message_to_agent_proxy(json_message, database) {
+function submit_message_to_agent_proxy(json_message, device_instance) {
 
     debug("message to send:", json_message);
 
     var options = {
-        uri: proxy_list[database].to_device_url,
+        uri: proxy_list[device_instance].to_device_url,
         method: 'POST',
         json: json_message
     };
@@ -411,7 +411,7 @@ function submit_message_to_agent_proxy(json_message, database) {
         if (!error && response.statusCode == 200) {
             console.log("Message submitted successfully:", JSON.stringify(json_message, null, 4));
         } else {
-            console.log("Agent Initialization Error for " + database + ":", error);
+            console.log("Agent Initialization Error for " + device_instance + ":", error);
 
         }
     });
@@ -430,13 +430,18 @@ function follow_on_change(change, database) {
     var dbname = parts[parts.length - 1];
     console.log(prefix_text, "Full database url: ", database);
     console.log(prefix_text, "Database name: ", dbname);
+    
+    var device_name_parts = dbname.split("_");
+    var device_id = device_name_parts[0] + "_" + device_name_parts[1];
+    
+    debug("device instance id:", device_id);
 
-    debug("proxy http value:", proxy_list[dbname].to_device_url);
+    debug("proxy http value:", proxy_list[device_id].to_device_url);
 
     delete change.doc._rev; // cause database update conflicts
-    if (change.doc._id == proxy_list[dbname].database_key_to_device) {
-        console.log(prefix_text, "Submitting to_device event to:", proxy_list[dbname].to_device_url);
-        submit_message_to_agent_proxy(change.doc, dbname);
+    if (change.doc._id == proxy_list[device_id].database_key_to_device) {
+        console.log(prefix_text, "Submitting to_device event to:", proxy_list[device_id].to_device_url);
+        submit_message_to_agent_proxy(change.doc, device_id);
     }
 
 

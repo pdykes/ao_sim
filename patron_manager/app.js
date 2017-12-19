@@ -15,8 +15,8 @@ var debug = require("debug")(module_name);
 debug("Debug enabled in module: %s", module_name);
 
 var listener_target = config.get("global.nosql_url") +
-                      "/" +
-                      config.get("agents.patron_manager.database");
+    "/" +
+    config.get("agents.patron_manager.database");
 
 if ((process.argv[2] == "url") && (process.argv[3] !== 'undefined')) {
     listener_target = process.argv[3] + "/persona_transitions";
@@ -54,7 +54,7 @@ var stop_record_key = config.get("agents.patron_manager.stop_record_key");
 var registration_record_key = config.get("agents.patron_manager.registration_record_key");
 var exhibit_record_key = config.get("agents.patron_manager.exhibit_record_key");
 
-var database_url = config.get("global.nosql_url") + "/"; 
+var database_url = config.get("global.nosql_url") + "/";
 var database_user = config.get("global.nosql_user");
 var database_password = config.get("global.nosql_password");
 
@@ -84,15 +84,18 @@ function db_update(dbase, database_record, operation, cb) {
     var etime = null;
     var add_entry = false;
     var remove_entry = false;
+    var id_key = null;
 
     if (operation == "add") {
         add_entry = true;
         database_record['_id'] = "patrons_" + database_record.location;
+        id_key = database_record['_id'];
         debug("Adding patron to " + database_record._id);
     }
     if (operation == "remove") {
         remove_entry = true;
         database_record['_id'] = "patrons_" + database_record.old_location;
+        id_key = database_record['_id'];
         debug("Removing patron from " + database_record._id);
     }
     var db_record_found = false;
@@ -109,38 +112,56 @@ function db_update(dbase, database_record, operation, cb) {
             revs_info: false
         }, function (err, dbbody) {
             debug("****Working on this asset in db get:", database_record._id, "*****");
+            var update_record = dbbody;
+            var input_array = [];
+            
+            if (update_record == null) {
+                update_record = {};
+            }
+            if (!update_record.hasOwnProperty('persona_list')) {
+              update_record['persona_list'] = [];  
+            }
+            if (!update_record.hasOwnProperty('_id')) {
+              update_record['_id'] = id_key;  
+            }           
+            
             var db_record_found = false;
             if (!err) {
                 db_record_found = true;
                 debug("Database record found:", JSON.stringify(dbbody, null, 4));
                 debug("Database record found, key:", "patrons_" + database_record.location);
+                update_record['_rev'] = dbbody._rev;
+               // input_array = dbbody.persona_list; // found the object
             } else {
                 debug("Database record not found for:", "patrons_" + database_record.location);
                 debug("error provided by db", err);
+               // var persona_list = [];
+               // update_record = {
+               //     "_id": id_key,
+               //    "persona_list": persona_list
+               // }; // empty, time to create
+               // input_array = update_record.persona_list;
             }
-
-            var update_record = dbbody;
-
-            if (db_record_found) {
-                update_record['_rev'] = dbbody._rev;
-            }
+            
+            input_array = update_record.persona_list;
 
             // body update (if add, put entry in, if remove, strip out and save)
             var output_array = [];
-            var input_array = dbbody.persona_list;
             var found = false;
-            input_array.forEach(function (entry) {
-                if ((entry.persona == database_record.persona) &&
-                    (entry.persona_id == database_record.persona_id)) {
-                    entry.time = stime;
-                    if (add_entry) {
+            if (input_array.length > 0) {
+                input_array.forEach(function (entry) {
+                    if ((entry.persona == database_record.persona) &&
+                        (entry.persona_id == database_record.persona_id)) {
+                        entry.time = stime;
+                        if (add_entry) {
+                            output_array.push(entry);
+                        }
+                        found = true;
+                    } else {
                         output_array.push(entry);
                     }
-                    found = true;
-                } else {
-                    output_array.push(entry);
-                }
-            });
+                });
+            }
             if ((found == false) && (add_entry)) {
                 var new_entry = {
                     persona: database_record.persona,
@@ -170,7 +191,7 @@ function db_update(dbase, database_record, operation, cb) {
                     debug(text_prefix, "db perf [" + update_record._id + "]:", etime - stime, "ms");
                 }
             }); // insert
-            cb(null,"Successful " + operation);
+            cb(null, "Successful " + operation);
         }); // get
     } catch (err) {
         debug("load database exception:", err);
@@ -204,7 +225,7 @@ function update_record(persona, id, location, old_location) {
        db_update.bind(null, patron_locations_db, db_record, "add"),
        db_update.bind(null, patron_locations_db, db_record, "remove")
         ], function (err, results) {
-        console.log(err, "Results:",JSON.stringify(results, null, 4));
+        console.log(err, "Results:", JSON.stringify(results, null, 4));
     });
 
 }

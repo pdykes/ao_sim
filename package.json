@@ -1,0 +1,19 @@
+{
+  "name": "accessibleolli",
+  "version": "0.0.1",
+  "description": "#AccessibleOlli demonstration infrastructure",
+  "main": "index.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/<todo>.git"
+  },
+  "author": "pdykes@us.ibm.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pdykes/ao_sim/issues"
+  },
+  "homepage": "https://github.com/<todo>#readme"
+}

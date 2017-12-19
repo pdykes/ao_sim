@@ -58,6 +58,7 @@ var simulation_interval_object = null;
 var simulation_start_time = 0;
 var simulation_location = [];
 var sim_interval = config.get("agents.telemetry.simulation_interval");
+var alert_interval = config.get("agents.telemetry.alert_interval");
 
 var database_url = config.get("global.nosql_url");
 var database_user = config.get("global.nosql_user");
@@ -425,7 +426,8 @@ function simulate_telemetry( /* callback */ ) {
     debug("Entering simulate telemetry...");
     if (simulation_interval_object == null) {
         console.log(text_prefix, "Simulation start request");
-        simulation_interval_object = setInterval(simulation_next_events, sim_interval);
+        simulation_interval_object = setInterval(simulation_next_events, alert_interval);
+        debug("alert interval", alert_interval);
     } else {
         console.log(text_prefix, "Simulation request ignored, already active");
     }

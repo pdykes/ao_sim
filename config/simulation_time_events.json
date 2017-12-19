@@ -1,0 +1,67 @@
+{
+    "simulation_record_0": {
+        "simulation_time": 1000,
+        "events": [
+            {
+                "name": "issue_event_name_at_simtime_0",
+                "event": "at_simtime_0",
+                "payload": {
+                    "element1": "this_data_element",
+                    "element2": "4"
+                }
+		    },
+            {
+                "name": "audio_welcome_to_olli_1",
+                "event": "audio_welcome_to_olli_1",
+                "payload": {
+                    "action": "play",
+                    "type": "audio",
+                    "tag" : "Audio_Welcome_to_Olli",
+                    "uri" :  "ibm.bluemix.com:///->watson",
+                    "parameters": "e1;e2;e3..."
+                }
+		    },          
+            {
+                "name": "another_event_name_at_simtime_0",
+                "event": "another_event_at_simtime_0",
+                "payload": {
+                    "element1": "this_data_element",
+                    "element2": "5"
+                }
+		    }
+	     ]
+    },
+    "simulation_record_1": {
+        "simulation_time": 2000,
+        "events": [
+            {
+                "name": "issue_event_name_at_simtime_1",
+                "event": "at_simtime_1",
+                "payload": {
+                    "element1": "this_data_element",
+                    "element2": "4"
+                }
+	       },
+           {
+                "name": "welcome_to_olli_video_1",
+                "event": "welcome_to_olli_video_1",
+                "payload": {
+                    "action": "show",
+                    "uri" : "display_some_url",
+                    "device" :  "monitor_5b",
+                    "type": "display",
+                    "parameters": "v1;v2;v3..."
+                }
+		    },            
+            {
+                "name": "another_event_name_at_simtime_1",
+                "event": "another_event_at_simtime_1",
+                "payload": {
+                    "element1": "this_data_element",
+                    "element2": "5"
+                }
+	       }
+        ]
+    }
+}
+

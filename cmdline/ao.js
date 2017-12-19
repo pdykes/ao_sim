@@ -152,7 +152,8 @@ function obtain_asset_record(database, database_key, control, operation, callbac
 
     // attempt to get record from database
     debug("Phase 2: DB Query, asset:", control + ":" + operation);
-
+    debug("Phase 2: DB Query, db key:" + database_key);
+    
     var control_command = null;
     
     // clean this up in mvp3
@@ -173,7 +174,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
     
 
 
-    if ((control == "kintrans_01") && (operation == "init")) {
+    if ((control == "kintrans_01_transitions") && (operation == "init")) {
         control_command = "init";
         control_event = {
             _id: database_key,
@@ -184,7 +185,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
 
-    if ((control == "kintrans_01") && (operation == "start")) {
+    if ((control == "kintrans_01_transitions") && (operation == "start")) {
         control_command = "start";
         control_event = {
             _id: database_key,
@@ -195,7 +196,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
     
-    if ((control == "kintrans_01") && (operation == "suspend")) {
+    if ((control == "kintrans_01_transitions") && (operation == "suspend")) {
         control_command = "suspend";
         control_event = {
             _id: database_key,
@@ -206,7 +207,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     } 
     
-    if ((control == "kintrans_01") && (operation == "exit")) {
+    if ((control == "kintrans_01_transitions") && (operation == "exit")) {
         control_command = "exit";
         control_event = {
             _id: database_key,
@@ -217,7 +218,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
     
-    if ((control == "kintrans_02") && (operation == "init")) {
+    if ((control == "kintrans_02_transitions") && (operation == "init")) {
         control_command = "init";
         control_event = {
             _id: database_key,
@@ -228,7 +229,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
 
-    if ((control == "kintrans_02") && (operation == "start")) {
+    if ((control == "kintrans_02_transitions") && (operation == "start")) {
         control_command = "start";
         control_event = {
             _id: database_key,
@@ -239,7 +240,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
     
-    if ((control == "kintrans_02") && (operation == "suspend")) {
+    if ((control == "kintrans_02_transitions") && (operation == "suspend")) {
         control_command = "suspend";
         control_event = {
             _id: database_key,
@@ -250,7 +251,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     } 
     
-    if ((control == "kintrans_02") && (operation == "exit")) {
+    if ((control == "kintrans_02_transitions") && (operation == "exit")) {
         control_command = "exit";
         control_event = {
             _id: database_key,
@@ -261,7 +262,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
     
-        if ((control == "ultrahaptics_01") && (operation == "init")) {
+    if ((control == "ultrahaptics_01_transitions") && (operation == "init")) {
         control_command = "init";
         control_event = {
             _id: database_key,
@@ -272,7 +273,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
 
-    if ((control == "ultrahaptics_01") && (operation == "start")) {
+    if ((control == "ultrahaptics_01_transitions") && (operation == "start")) {
         control_command = "start";
         control_event = {
             _id: database_key,
@@ -283,7 +284,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
     
-    if ((control == "ultrahaptics_01") && (operation == "suspend")) {
+    if ((control == "ultrahaptics_01_transitions") && (operation == "suspend")) {
         control_command = "suspend";
         control_event = {
             _id: database_key,
@@ -294,7 +295,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     } 
     
-    if ((control == "ultrahaptics_01") && (operation == "exit")) {
+    if ((control == "ultrahaptics_01_transitions") && (operation == "exit")) {
         control_command = "exit";
         control_event = {
             _id: database_key,
@@ -305,6 +306,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
 
+    debug("control_event message:", JSON.stringify(control_event,null,4));
 
     try {
         database.get(control_event._id, {
@@ -478,7 +480,7 @@ switch (command_type) {
                     database_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
-                        "ultrahaptics_01";
+                        "ultrahaptics_01_transitions";
 
                     debug(text_prefix, "Follow listener:", database_url);
 
@@ -501,7 +503,7 @@ switch (command_type) {
                     database_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
-                        "kintrans_01";
+                        "kintrans_01_transitions";
 
                     debug(text_prefix, "Follow listener:", database_url);
 
@@ -524,7 +526,7 @@ switch (command_type) {
                     database_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
-                        "kintrans_02";
+                        "kintrans_02_transitions";
 
                     debug(text_prefix, "Follow listener:", database_url);
 

@@ -1,4 +1,48 @@
-# mvp2
+# mvp2b
+
+Integration of mvp2b has started
+  - Event Manager added
+      - cd event_manager
+      - npm install
+      - node app.js
+  - setup directory added
+      - install couchdb (couchdb.apache.org)
+      - cd setup
+      - npm install -g couchshell
+      - cat database.lst
+      - execute the commands to ensure you have all the databases created correctly
+         - e.g. export
+           couchshell 
+             >> enter each of the commands
+             
+Pending (several good teams have prepared thier work, will be including once test tomorrow)
+   - Kintrans integration
+   - Bestmile integration
+     
+Key things to notice:
+ - config/ now has rule files
+ - these rules files upon the telemetry agent running fire automatically to other agents
+ - these agents will show and hide UE components eventually, play audio, etc...
+ - more details pending
+ - The format of the new events look like this:
+    - _id is the rule that fired (telemetry or simulation), uuid and time event occurs in ms since epoch
+    - event is the rule that fired
+    - payload is the body of the event
+    - for example:
+    
+```
+ {
+  "_id": "another_event_name_at_simtime_0:c4ee6581-3a29-4814-ac46-813ff94d7bb7:1513659469435",
+  "_rev": "1-871fd763a835ddf3209551324ae5e3ab",
+  "event": "another_event_at_simtime_0",
+  "payload": {
+    "element1": "this_data_element",
+    "element2": "5"
+  }
+}
+```
+             
+#mvp2     
 
 The updated release offers:
 

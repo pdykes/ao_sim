@@ -1,0 +1,112 @@
+{
+    "offset_record_0": {
+        "offset": 5,
+        "events": [
+            {
+                "name": "olli_at_stop_0",
+                "filter" : "all",   
+                "event": "olli_at_stop_0",
+                "payload": {
+                    "type": "data", 
+                    "result": "Olli has arrived at Stop 0",
+                    "element2": "10"
+                }
+		    },            
+            {
+                "name": "olli_at_stop_show_ui_element_1",
+                "filter" : "all", 
+                "event": "olli_at_stop_show_ui_element_1",
+                "payload": {
+                    "action": "show",
+                    "uri" : "display_some_url",
+                    "device" :  "monitor_5b",
+                    "type": "display",
+                    "parameters": "x1;x2;x3..."
+                }
+		    },
+            {
+                "name": "audio_olli_at_stop_play_audio_1",
+                "filter" : "all",   
+                "event": "olli_at_stop_play_audio_1",
+                "payload": {
+                    "action": "play",
+                    "type": "audio",
+                    "tag" : "Audio_Play_Stop_1_Arrival",
+                    "uri" :  "ibm.bluemix.com:///->watson",
+                    "parameters": "x1;x2;x3..."
+                }
+		    },            
+            {
+                "name": "event_name1_at_offset_0_for_olli_1_only",
+                "filter" :  "olli_1",
+                "event": "event_name1_at_offset_0_for_olli_1_only",
+                "payload": {
+                    "element1": "this_data_element_for_olli_1",
+                    "type": "data",
+                    "element2": "78"
+                }
+		    },
+            {
+                "name": "event_video_you_tube",
+                "filter" :  "olli_1",
+                "event": "event_video_you_tube_olli_intro_video",
+                "payload": {
+                    "action": "show",
+                    "uri" : "http://youtube.tv/....",
+                    "device" :  "monitor_5c",                    
+                    "type": "display",                     
+                    "parameters": "y1;y2;y3..."
+                }
+		    }
+	     ]
+    },
+     "offset_record_1": {
+        "offset": 10,
+        "events": [
+            {
+                "name": "olli_at_stop_1",
+                "filter" : "all",   
+                "event": "olli_at_stop_1",
+                "payload": {
+                    "result": "Olli has arrived at Stop 1",
+                    "type": "data",                     
+                    "element2": "10"
+                }
+		    },            
+            {
+                "name": "olli_at_stop_show_ui_element_2",
+                "filter" : "all",   
+                "event": "olli_at_stop_show_ui_element_2",
+                "payload": {
+                    "action": "show",
+                    "uri" : "display_some_url_y",
+                    "device" :  "monitor_5c",                    
+                    "type": "display",                     
+                    "parameters": "y1;y2;y3..."
+                }
+		    },
+            {
+                "name": "olli_at_stop_play_audio_2",
+                "filter" : "all",   
+                "event": "audio_olli_at_stop_play_audio_2",
+                "payload": {
+                    "action": "play",
+                    "type": "audio",  
+                    "tag" : "Audio_Play_Stop_2_Arrival",
+                    "uri" :  "ibm.bluemix.com:///->watson",
+                    "parameters": "y1;y2;y3..."
+                }
+		    },            
+            {
+                "name": "event_name2_at_offset_20_for_oll2_2_only",
+                "filter" :  "olli_2",
+                "event": "event_name1_at_offset_20_for_olli_2_only",
+                "payload": {
+                    "element1": "this_data_element_for_olli_2",
+                    "type": "data",                      
+                    "element2": "345"
+                }
+		    }
+	     ]
+    }
+}
