@@ -28,7 +28,7 @@ Hermes Adapter:  Vehicles: [ 'olli_1', 'olli_2', 'olli_3' ]
 Hermes Adapter:  Core Engine Hermes address: { host: 'accessibleolli.env.partners.bestmile.io',
   port: '32363' }
 Hermes Adapter:  Keepalive ECHO requests frequency (ms): 3000
-Hermes Adapter:  Registering vehicles.
+Hermes Adaprm ter:  Registering vehicles.
 Hermes Adapter:  Connecting and announcing vehicle olli_1
 Hermes Adapter:  Connecting and announcing vehicle olli_2
 Hermes Adapter:  Connecting and announcing vehicle olli_3

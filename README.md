@@ -1,32 +1,99 @@
-# mvp2b
+# mvp3 - Welcome!
 
-Integration of mvp2b has started
-  - Event Manager added
-      - cd event_manager
-      - npm install
-      - node app.js
+Changes
+
+  - Event Manager (rule agent) added:
+    - Simple model to script what should occur based on various input events
+    - mvp3 focus is driving events based on simulation time and olli movement
+    - Each start and stop now support via events (see slack for more info), an example:
+
+```
+{
+  "_id": "Trip Start:3bfa51e6-2234-4fb3-9b8d-4d8623d8fff9:1507493012500",
+  "_rev": "1-d44f5c8b701c5e907abcf9dd2aa744ba",
+  "event": "Leaving Mayo Gonda (Stop 1)",
+  "payload": {
+    "type": "event_data",
+    "state": "stop_4_departure",
+    "at_stop": "stop_1",
+    "previous_stop": "stop_5",
+    "next_stop": "stop_2",
+    "_vehicle": "olli_1",
+    "_offset": 212
+  }
+}
+```
+
+      - To use
+          - cd event_manager
+          - npm install
+          - node app.js
+
+        (telemetry agent ( ../telemetry needs to ran currently to enable events)
+        
+      - Developers can "follow" the rules_events database to receive
+        real-time changes the simulation entities drive related to rules
+    
+  
   - setup directory added
+
       - install couchdb (couchdb.apache.org)
       - cd setup
       - npm install -g couchshell
       - cat database.lst
       - execute the commands to ensure you have all the databases created correctly
-         - e.g. export
-           couchshell 
+         - couchshell 
              >> enter each of the commands
+      - on the web, use "npm couchshell" to link to docs, nice tool
+
+  - Bestmile integration
+     cd bestmile
+     node app.js
+     (see readme to setup, bit more complicated and has external dependencies)
+
+  - Basic Kintrans integration
+  
+     Before Kintrans native on windows 2000 runs, this little app
+      server must be ran (cd dir, node app.js)
+      
+     Configure tool to use that url (see ../kintrans/ for more detail)
              
-Pending (several good teams have prepared thier work, will be including once test tomorrow)
-   - Kintrans integration
-   - Bestmile integration
-     
+ 
 Key things to notice:
+
+ - telemetry.json (updated, still separate)
+
+    - due to usage limations, you must acquire from the protected box folder
+    - this file is pivotal to the simulation
+    - includes what3words integration
+
  - config/ now has rule files
- - these rules files upon the telemetry agent running fire automatically to other agents
- - these agents will show and hide UE components eventually, play audio, etc...
- - more details pending
+
+    - these rules alow the telemetry agent running fire automatically to other agents
+
+ - graphic agents now listen to the eventing, these agents will show and hide UE components
+
+   - these components will listen to the real-time eventing and then display
+      - urls, videos, images and text/factoids
+   - https://github.com/pwcremin/olli
+   - https://github.com/AccessibleOlli/olli-stop
+   - https://github.com/AccessibleOlli/ces-stop-arrivals
+      (web) https://accessibleolli.github.io/ces-stop-arrivals/
+      
+   - we will try to bring all this together when the rush is a bit behind us
+
+ - other related repositories
+    
+ - for best mile, to view the live telemetry  the url is:
+
+    https://accessibleolli.env.partners.bestmile.io/sites/rochester/control-center
+    (user id/pwd required see readme in bestmile/)
+
  - The format of the new events look like this:
+
     - _id is the rule that fired (telemetry or simulation), uuid and time event occurs in ms since epoch
-    - event is the rule that fired
+    - (required to be provided) event is the rule that fired, you can make as easy to parse as needed
+    - (required to be provided) name of the event (can be a bit more friendly)
     - payload is the body of the event
     - for example:
     
@@ -42,21 +109,25 @@ Key things to notice:
 }
 ```
              
-#mvp2     
+Currently inflight functions targeted for mpv4:
 
-The updated release offers:
+    - audio agent serving up Watson, and will fallback to recordings
+    - olli ramp deploy agent
+    - olli emergency stop agent
+    - integrate detailed, per simulation time and event offset graphics and visual experience
+    - control to initiate actual ramp deploy and retraction
+    - Kintrans avatar
+    - persona specific (e.g. kathyrn XX phone number, food choice, and whatever, let me know)
+    - please drop requirements for critical needed functions
 
-- telemetry feeds
-- agent_proxy support and generic client examples
-- patron locations in the stop, roller, registration and the exhibit
-- centralized configuration system
+Enabling debugging
 
-Currently inflight functions targeted for mpv3:
+    - need more data without reading the code?
+    - for all node apps, if you want more detail
+    - cd <directory>
+    - export DEBUG=<component name>
+    - The component name is usually in the top of the source file, or enumerated in ../config/default.json
 
-- rule engine that processes data from the various streams, and emits events for other compnoents to process
-- rules will be stored separate of the software in an extensible format
-- integrate the graphical components and incorporat rules based events
-- please drop requirements for critical needed functions
 
 # Lets get the simulation and replication code downloaded, and run in a few docker containers optionally  ;-)
 
@@ -64,17 +135,60 @@ Currently inflight functions targeted for mpv3:
       The new configuration solution relies on environment variables, and offers many advantages, see the articles at this link for more information https://www.npmjs.com/package/config
       
 
-   - preqs
-      download and install node (version 6-8 is fine), git and docker community edition (ce)
+   - prereqs
+      - download and install node (version 6-8 is fine), git and docker community edition (ce) (docker is NOT required)
       
-   - docker config      
+      
+      - for those new to the common configuration and node, nearly every node component/solution requires this to be done
+      - before running below:
+      
+          - move to the directory of choice
+            - cd <component>
+          - set the config env variable
+            - export NODE_CONFIG_DIR=../config   (macos)
+            - set NODE_CONFIG_DIR=..\config      (windows)
+          - install the node dependencies
+            - npm install                        (some folks use yarn, your call, NOT TESTED)
+      
+   - docker config (optional!)      
+     - Docker is not required, and sometimes makes the solution  more complicated... However if you love
+       Docker, have fun.
+
       ensure you have a shared directory on the host which Docker can read 
       
       (for mac open docker, shares /Users by default, other os vary)
       
-   - rest we will work through...
+# More general information
+
+   - there are many videos to get folks started on this, check in box under the mvp2/ path...
+     - architecture
+     - approach
+     - techniques
+     - agents, agent_proxy
+     
+     
+   - Common problems running the command line
+    
+     - Are you in the correct directory?
+     
+       cd ../cmdline
+     
+       (if you do an ls or dir, you should see ao.js in the directory)
+       
+     - Is the configuration environment variable value directory set?
+     
+       export NODE_CONFIG_DIR=../config          (linux, macos)
+       set NODE_CONFIG_DIR=..\config             (windows)
+       
+     - Two dashes... node and general command line tools like two dashes
+     
+        node ao.js --control telemetry --operation enable
+        
+     - Did you skip ahead and not create the database tables, tisk, tisk, tisk
+    
+        For this case, see the setup directory (../setup)
    
-# Download the code from github, and a container
+# Download the code from github, and (optionally) a container
 
 
 Current Instructions
@@ -84,9 +198,9 @@ Set the centralized configuration attributes
 - MacOS example (use your OS's approach to setting environment variables), open a shell, command (reference should be relative to the mvp2/config root directory):
 
 ```
-export NODE_CONFIG_DIR=../config
+export NODE_CONFIG_DIR=../config      (macos/linux)
+set NODE_CONFIG_DIR=..\config         (windows)
 ```
-      
 
 Command line tooling walk through
    
@@ -94,7 +208,7 @@ Command line tooling walk through
  $ = host/mac shell command  # = docker image shell command
 ```
 
- Create a docker/node directory somewhere, then:
+ Create a docker(optional)/node directory somewhere, then:
 
 ```
  $ cd temp/ao_work
@@ -106,14 +220,13 @@ Command line tooling walk through
 
 Configuration the database
 
-Install couchdb, and setup the following databases (will be automated in next update):
+Install couchdb, and setup *table names have changed and it matters*:
 
- - telemetry_transitions
- - persona_transitions
- - patron_locations
- - ultrahaptics_01
- - kintrans_01
- - kintrans_02
+ - To install via web, visit couchdb.apache.org, download appropriate version for you
+ - See the ../setup for the database list and a tool to make your
+   life easier to install (couchshell)
+ - Create an admin (use Web UI for Couchdb, lower left hand corner, admin/admin)
+    http://127.0.0.1:5984/_utils/#login   (common default unless you changed it ;-) )
 
  
 pwd output value => show you where the code has been placed, denote that location as used several times below.
@@ -420,9 +533,79 @@ Telementry Service Monitor will look something like this
 [Telemetry Agent] Simulation Suspended
 ```
 
-10. You can start the other agents similarly.
+10. You can start the other agents similarly. More advanced state change support if agent supports
 
-## Docker container approach
+For agents specifically:
+
+```
+> node ao.js --control kintrans_01 --operation start
+> node ao.js --control kintrans_01 --operation suspend
+> node ao.js --control kintrans_01 --operation exit
+```
+
+11. Starting the Event Manager
+
+```
+(cd event_manager)
+> node app.js
+```
+
+Then, (based on your rules) the following should appear
+
+```
+[Event Manager] Processing key simulation_record_1000
+[Event Manager] Processing key simulation_record_2000
+[Event Manager] Processing key offset_record_5
+[Event Manager] Processing key offset_record_10
+[Event Manager] Processing key offset_record_19
+[Event Manager] Processing key offset_record_20
+[Event Manager] Processing key offset_record_68
+[Event Manager] Processing key offset_record_69
+[Event Manager] Processing key offset_record_211
+[Event Manager] Processing key offset_record_212
+[Event Manager] Processing key offset_record_427
+[Event Manager] Processing key offset_record_428
+[Event Manager] Processing key offset_record_570
+[Event Manager] Processing key offset_record_571
+[Event Manager] Agent listening on http port: 3006
+
+```
+
+
+12. Starting Best Mile real-time reporting
+
+```
+(cd bestmile)
+> node app.js
+```
+
+Then, the following will appear:
+
+```
+Hermes Adapter:  Vehicles: [ 'olli_1', 'olli_2', 'olli_3' ]
+Hermes Adapter:  Core Engine Hermes address: { host: 'accessibleolli.env.partners.bestmile.io',
+  port: '32363' }
+Hermes Adapter:  Keepalive ECHO requests frequency (ms): 3000
+Hermes Adapter:  Registering vehicles.
+Hermes Adapter:  Connecting and announcing vehicle olli_1
+Hermes Adapter:  Connecting and announcing vehicle olli_2
+Hermes Adapter:  Connecting and announcing vehicle olli_3
+Hermes Adapter:  All vehicles registered.
+Hermes Adapter:  Start ECHO keep-alive routine.
+Hermes Adapter:  Sending ECHO request from vehicle  olli_1
+Hermes Adapter:  Sending ECHO request from vehicle  olli_2
+Hermes Adapter:  Sending ECHO request from vehicle  olli_3
+Hermes Adapter:  Sending ECHO request from vehicle  olli_1
+Hermes Adapter:  Sending ECHO request from vehicle  olli_2
+Hermes Adapter:  Sending ECHO request from vehicle  olli_3
+```
+
+This tool is like telemetry, event_manager, etc.. is will just continue until aborted
+
+Each the agent_proxy elements (see ../config/default.json for a list of agents working with agent proxy)
+can be unique, so please refer to the solution specfiic readme.
+
+## Docker container approach (Optional!)
  
 We can setup the containers to look at the cloned software from github, the paths need to correlate exactly to where
  you put the data.  I use a full path ONLY FOR EXAMPLE PURPOSES.
@@ -782,4 +965,4 @@ Lastly to clean up:
 - Issue a "docker stop <CONTAINER ID>" for each container
 - You can also issue a "docker rmi <IMAGE>" for each docker image
     
-till we talk...
+... have a great holiday, things of import are near ...
