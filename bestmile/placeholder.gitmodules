@@ -1,0 +1,3 @@
+[submodule "bestmile/av-js"]
+    path = bestmile/av-js
+    url = git@github.com:BestMile/av-js.git

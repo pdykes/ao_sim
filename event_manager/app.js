@@ -451,12 +451,34 @@ function follow_on_change(details, feed) {
 
                             if (release_event) {
                                 debug("Fire this event:", JSON.stringify(element, null, 4));
+                                
+                                if (!element.hasOwnProperty('payload')) {
+                                    element['payload'] = {
+                                    }
+                                }
+
+                                if (!element.payload.hasOwnProperty('_vehicle')) {
+                                    console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                                    element.payload._vehicle = olli_name;
+                                } else {
+                                    element.payload['_vehicle'] = olli_name;
+                                }
+                                
+                                if (!element.payload.hasOwnProperty('_offset')) {
+                                    console.log("Warning reserved attribute _offset attribute in payload, overriding in ", element.name);
+                                    element.payload._offset = olli_offset;
+                                } else {
+                                    element.payload['_offset'] = olli_offset;
+                                }                                
+
                                 var submit_record = {
                                     _id: element.name + ':' + uuid() + ':' + vehicle_list[key].timestamp,
                                     event: element.event,
                                     payload: element.payload
                                 };
+                                
                                 debug("Event/Database record to be posted:", submit_record);
+                                
                                 waterfall([
                                   async.apply(evaluate_data, submit_record),
                                   insert_asset_record,

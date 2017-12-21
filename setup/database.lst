@@ -3,7 +3,7 @@ export COUCH_URL=http://admin:admin@127.0.0.1:5984
 couchshell
 
 mkdir kintrans_01_transitions
-mkdir kintrans_01_transitions
+mkdir kintrans_02_transitions
 mkdir patron_location_transitions
 mkdir persona_transitions
 mkdir rule_events

@@ -1,0 +1,27 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "args": "none" }],
+    "indent": [
+      "warn", 4, { "SwitchCase": 1 }
+    ],
+    "linebreak-style": [
+      "error", "unix"
+    ],
+    "no-alert": "warn",
+    "no-debugger": "warn",
+    "prefer-const": ["error", {"destructuring": "all"}]
+  }
+}

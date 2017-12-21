@@ -74,6 +74,14 @@
             "simulation_event_rules" : "simulation_time_events.json",
             "telemetry_event_rules" : "telemetry_offset_events.json",
             "events_database" : "rule_events"
+        },
+        "bestmile" : {
+            "module_name" : "bestmile",
+            "name": "bestmile",
+            "vehicle_ids": ["olli_1",
+                            "olli_2",
+                            "olli_3"],
+            "hermes_config": { "host": "accessibleolli.env.partners.bestmile.io", "port": "32363" }
         }
     },
     "ao_cli": {

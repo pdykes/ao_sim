@@ -1,0 +1,14 @@
+{
+  "name": "setup",
+  "version": "0.0.1",
+  "description": "Tools to setup the install for users",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pdykes@us.ibm.com",
+  "license": "MIT",
+  "dependencies": {
+    "couchshell": "^1.0.0"
+  }
+}
