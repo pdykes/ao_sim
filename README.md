@@ -24,15 +24,15 @@ Changes
 }
 ```
 
-      - To use
-          - cd event_manager
-          - npm install
-          - node app.js
+  - To use
+      - cd event_manager
+      - npm install
+      - node app.js
 
-        (telemetry agent ( ../telemetry needs to ran currently to enable events)
-        
-      - Developers can "follow" the rules_events database to receive
-        real-time changes the simulation entities drive related to rules
+    (telemetry agent ( ../telemetry needs to ran currently to enable events)
+
+  - Developers can "follow" the rules_events database to receive
+    real-time changes the simulation entities drive related to rules
     
   
   - setup directory added
