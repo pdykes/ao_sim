@@ -29,22 +29,24 @@ Changes
       - npm install
       - node app.js
 
-    (telemetry agent ( ../telemetry needs to ran currently to enable events)
+    (telemetry agent ( ../telemetry needs to ran currently to enable events))
 
   - Developers can "follow" the rules_events database to receive
     real-time changes the simulation entities drive related to rules
     
   
-  - setup directory added
+  - setup directory added, easier to configure couchdb intially and for ongoing usage
 
       - install couchdb (couchdb.apache.org)
       - cd setup
       - npm install -g couchshell
       - cat database.lst
       - execute the commands to ensure you have all the databases created correctly
-         - couchshell 
-             >> enter each of the commands
-      - on the web, use "npm couchshell" to link to docs, nice tool
+        - couchshell 
+           - enter each of the commands
+           
+      - For docs, access iva the web, use "npm couchshell" to link to docs, nice tool,
+        once you start using, it will save a great deal of time
 
   - Bestmile integration
      cd bestmile
@@ -53,25 +55,27 @@ Changes
 
   - Basic Kintrans integration
   
-     Before Kintrans native on windows 2000 runs, this little app
-      server must be ran (cd dir, node app.js)
+     - Before Kintrans native on windows 2000 runs, this little app
+       server must be ran (cd dir, node app.js)
       
-     Configure tool to use that url (see ../kintrans/ for more detail)
+     - Configure tool to use that url (see ../kintrans/ for more detail)
              
  
 Key things to notice:
 
  - telemetry.json (updated, still separate)
 
-    - due to usage limations, you must acquire from the protected box folder
-    - this file is pivotal to the simulation
-    - includes what3words integration
+    - Due to usage limations, you must acquire from the protected box folder
+    - This file is pivotal to the simulation
+    - Now (as of mvp3) ncludes what3words integration
 
- - config/ now has rule files
+ - ../config/ now has rule files
 
-    - these rules alow the telemetry agent running fire automatically to other agents
+    - these rules alow the telemetry agent to issue events and fire to other agents
+      for processing
 
- - graphic agents now listen to the eventing, these agents will show and hide UE components
+ - graphic agents now listen to the eventing (some coming soon), these agents will 
+   show and hide UE components
 
    - these components will listen to the real-time eventing and then display
       - urls, videos, images and text/factoids
