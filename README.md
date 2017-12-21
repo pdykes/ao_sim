@@ -798,9 +798,12 @@ In the browser, create a database:
 {"couchdb":"Welcome","version":"2.1.0","features":["scheduler"],"vendor":{"name":"The Apache Software Foundation"}}
 
 ```
+
+For mvp3 and later, to create the correct databases, etc.. set the ..\setup directory
+
 Congrats!
 
-Now, lets link the simulation application to the database, leave the database instance running
+Now, lets link the simulation application to the database, leave the database instance running 
 
 # Connecting the two docker containers
 
