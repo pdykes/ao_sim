@@ -35,7 +35,7 @@ Changes
     real-time changes the simulation entities drive related to rules
     
   
-  - setup directory added, easier to configure couchdb intially and for ongoing usage
+  - Setup directory added, easier to configure couchdb intially and for ongoing usage
 
       - install couchdb (couchdb.apache.org)
       - cd setup
@@ -47,6 +47,8 @@ Changes
            
       - For docs, access iva the web, use "npm couchshell" to link to docs, nice tool,
         once you start using, it will save a great deal of time
+        
+      - mvp4 will autmoated the startup and operation of the demo suite, stay tuned
 
   - Bestmile integration
      cd bestmile
@@ -119,10 +121,11 @@ Currently inflight functions targeted for mpv4:
     - olli ramp deploy agent
     - olli emergency stop agent
     - integrate detailed, per simulation time and event offset graphics and visual experience
-    - control to initiate actual ramp deploy and retraction
+    - control to initiate actual ramp deploy and retraction, separate tool
     - Kintrans avatar
     - persona specific (e.g. kathyrn XX phone number, food choice, and whatever, let me know)
     - please drop requirements for critical needed functions
+    - automated startup and operation
 
 Enabling debugging
 
