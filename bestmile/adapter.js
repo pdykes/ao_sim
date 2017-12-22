@@ -1,4 +1,3 @@
-// const AV = require('av-js');
 const AV = require('av-js');
 var async = require('async');
 
@@ -25,7 +24,7 @@ function create_and_announce_vehicle(vehicle_id, callback) {
     av.setOnReceived(onSupervisorMessageReceived.bind(av))
     av.connect(hermes_config).then(function() {
         av.announce(vehicle_id)
-        callback()
+        if (typeof callback === "function") callback()
     })
     return av
 }
@@ -42,7 +41,7 @@ function register_vehicles(callback) {
         vehicles[vehicle_id].battery = randomInRange(0.5, 1.0)
     }, function() {
         console.log(text_prefix,"All vehicles registered.")
-        callback()
+        if (typeof callback === "function") callback()
     });
 }
 
@@ -68,14 +67,28 @@ exports.process_trip_end_event = function(trip_end_event) {
 }
 
 exports.process_telemetry_transition = function(telemetry_transition) {
-    // debug("process telemetry data:", JSON.stringify(telemetry_transition,null,4));
-    // telemetry_transition.transport_data.olli_vehicles.forEach(process_geo_position_event);
-    for (olli in telemetry_transition.transport_data.olli_vehicles) {
-        telemetry_transition.transport_data.olli_vehicles[olli]['asset'] = olli;
-        debug("process telemetry data:", JSON.stringify(telemetry_transition.transport_data.olli_vehicles[olli],null,4));
-        process_geo_position_event(telemetry_transition.transport_data.olli_vehicles[olli]);
+    if(!telemetry_transition.transport_data || !telemetry_transition.transport_data.olli_vehicles){
+        console.error(text_prefix, "Corrupted telemetry_transition received:", JSON.stringify(telemetry_transition, null, 2))
+        return
     }
-    
+    const vehicles_telemetry = telemetry_transition.transport_data.olli_vehicles
+    for (olli_name in vehicles_telemetry) {
+        geo_position_event = vehicles_telemetry[olli_name]
+        geo_position_event.asset = olli_name; // set the vehicle ID in the 'asset' field
+        process_geo_position_event(geo_position_event);
+    }
+}
+
+exports.process_emergency_active_event = function(emergency_active_event) {
+    debug(text_prefix, "Incoming:", JSON.stringify(emergency_active_event, null, 4));
+    console.log(text_prefix, "Emergency stop activated. Updating vehicle state.")
+    vehicles[vehicle_ids[0]].setEmergencyState("active")
+}
+
+exports.process_emergency_released_event = function(emergency_released_event) {
+    debug(text_prefix, "Incoming:", JSON.stringify(emergency_released_event, null, 4));
+    console.log(text_prefix, "Emergency stop released. Updating vehicle state.")
+    vehicles[vehicle_ids[0]].setEmergencyState("resume")
 }
 
 function computeSpeed(oldLatLng, newLatLng, oldTimestamp, newTimestamp) {
@@ -138,6 +151,14 @@ function init_keepalive() {
     setInterval(send_echo_request, keepalive_frequency);
 }
 
+function resume_emergency_states() {
+    async.each(vehicle_ids, vehicle_id => {
+        if(vehicles[vehicle_id].ready){
+            vehicles[vehicle_id].setEmergencyState("resume")
+        }
+    })
+}
+
 exports.start = function(vehicleIDs, hermesConfig, keepalive) {
     vehicle_ids = vehicleIDs || vehicle_ids;
     console.log(text_prefix, "Vehicles:", vehicle_ids);
@@ -146,7 +167,10 @@ exports.start = function(vehicleIDs, hermesConfig, keepalive) {
     keepalive_frequency = keepalive || keepalive_frequency;
     console.log(text_prefix, "Keepalive ECHO requests frequency (ms):", keepalive_frequency);
 
-    register_vehicles(init_keepalive)
+    register_vehicles(function() {
+        init_keepalive()
+        resume_emergency_states()
+    })
 }
 
 exports.stop = function() {
