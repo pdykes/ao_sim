@@ -66,7 +66,7 @@ exports.process_trip_end_event = function(trip_end_event) {
     vehicles[vehicle_ids[0]].missionComplete(vehicle_ids[0])
 }
 
-exports.process_telemetry_transition = function(telemetry_transition) {
+exports.process_telemetry_transition = function(telemetry_transition, olliToHermesMap) {
     if(!telemetry_transition.transport_data || !telemetry_transition.transport_data.olli_vehicles){
         console.error(text_prefix, "Corrupted telemetry_transition received:", JSON.stringify(telemetry_transition, null, 2))
         return
@@ -74,7 +74,7 @@ exports.process_telemetry_transition = function(telemetry_transition) {
     const vehicles_telemetry = telemetry_transition.transport_data.olli_vehicles
     for (olli_name in vehicles_telemetry) {
         geo_position_event = vehicles_telemetry[olli_name]
-        geo_position_event.asset = olli_name; // set the vehicle ID in the 'asset' field
+        geo_position_event.asset = olliToHermesMap[olli_name] || olli_name; // set the vehicle ID in the 'asset' field
         process_geo_position_event(geo_position_event);
     }
 }

@@ -15,7 +15,7 @@ const adapter = require('./adapter.js');
 
 const agent_name = config.get("agents.bestmile.name") || "bestmile"
 const module_name = config.get("agents.bestmile.module_name") || "bestmile";
-const vehicles = config.get("agents.bestmile.vehicle_ids") || [];
+const olliToHermesVehicleIDs = config.get("agents.bestmile.vehicle_ids") || [];
 const hermes = config.get("agents.bestmile.hermes_config") || null;
 // const hermes = { "host": "localhost", "port": "40000" }
 
@@ -26,7 +26,7 @@ debug("Agent name:", agent_name);
 
 // Start Adapter ----------------------------------------------
 
-adapter.start(vehicles, hermes)
+adapter.start(Object.values(olliToHermesVehicleIDs), hermes)
 
 // Follow database changes ----------------------------------------------
 
@@ -40,7 +40,7 @@ const feed = new follow.Feed({
     filter: (doc, req) => doc._id == "telemetry_transition"
 });
 
-feed.on('change', change => adapter.process_telemetry_transition(change.doc))
+feed.on('change', change => adapter.process_telemetry_transition(change.doc, olliToHermesVehicleIDs))
 
 feed.on('error', function(er) {
     console.error('Since Follow always retries on errors, this must be serious', er);

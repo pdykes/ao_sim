@@ -78,9 +78,11 @@
         "bestmile" : {
             "module_name" : "bestmile",
             "name": "bestmile",
-            "vehicle_ids": ["olli_1",
-                            "olli_2",
-                            "olli_3"],
+            "vehicle_ids": {
+              "olli_1": "olli_1",
+              "olli_2": "olli_2",
+              "olli_3": "olli_3"
+            },
             "hermes_config": { "host": "accessibleolli.env.partners.bestmile.io", "port": "32363" }
         }
     },
