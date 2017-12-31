@@ -1,0 +1,28 @@
+{
+  "name": "patron_manager",
+  "version": "0.0.1",
+  "description": "Watches patron flow and manages who is in which asset at any given time",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pdykes@us.ibm.com",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "async-parallel": "^1.2.3",
+    "async-waterfall": "^0.1.5",
+    "better-queue": "^3.8.6",
+    "cloudant": "^1.10.0",
+    "config": "^1.28.1",
+    "debug": "^3.1.0",
+    "follow": "^1.0.0",
+    "json-rules-engine": "^2.0.2",
+    "nano": "^6.4.2",
+    "play-sound": "^1.1.2",
+    "player": "^0.6.1",
+    "request": "^2.83.0",
+    "var": "^0.3.2",
+    "watson-developer-cloud": "^3.0.3"
+  }
+}

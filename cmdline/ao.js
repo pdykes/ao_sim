@@ -45,6 +45,11 @@ var action_value = null;
 var control_value = null;
 var operation_value = null;
 
+var svc_control = process.env.AOCLI_SERVICE;
+var so_service = false;
+if (svc_control == "true") so_service = true;
+
+
 var cli_optionDefinitions = [
     {
         name: 'verbose',
@@ -153,9 +158,9 @@ function obtain_asset_record(database, database_key, control, operation, callbac
     // attempt to get record from database
     debug("Phase 2: DB Query, asset:", control + ":" + operation);
     debug("Phase 2: DB Query, db key:" + database_key);
-    
+
     var control_command = null;
-    
+
     // clean this up in mvp3
 
     if ((control == "telemetry_transitions") && (operation == "enable")) {
@@ -164,14 +169,14 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             _id: database_key
         };
     }
-    
+
     if ((control == "telemetry_transitions") && (operation == "disable")) {
         control_command = "disabled";
         control_event = {
             _id: database_key
         };
     }
-    
+
 
 
     if ((control == "kintrans_01_transitions") && (operation == "init")) {
@@ -195,7 +200,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "payload": {}
         };
     }
-    
+
     if ((control == "kintrans_01_transitions") && (operation == "suspend")) {
         control_command = "suspend";
         control_event = {
@@ -205,8 +210,8 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "event": "suspend",
             "payload": {}
         };
-    } 
-    
+    }
+
     if ((control == "kintrans_01_transitions") && (operation == "exit")) {
         control_command = "exit";
         control_event = {
@@ -217,7 +222,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "payload": {}
         };
     }
-    
+
     if ((control == "kintrans_02_transitions") && (operation == "init")) {
         control_command = "init";
         control_event = {
@@ -239,7 +244,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "payload": {}
         };
     }
-    
+
     if ((control == "kintrans_02_transitions") && (operation == "suspend")) {
         control_command = "suspend";
         control_event = {
@@ -249,8 +254,8 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "event": "suspend",
             "payload": {}
         };
-    } 
-    
+    }
+
     if ((control == "kintrans_02_transitions") && (operation == "exit")) {
         control_command = "exit";
         control_event = {
@@ -261,7 +266,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "payload": {}
         };
     }
-    
+
     if ((control == "ultrahaptics_01_transitions") && (operation == "init")) {
         control_command = "init";
         control_event = {
@@ -283,7 +288,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "payload": {}
         };
     }
-    
+
     if ((control == "ultrahaptics_01_transitions") && (operation == "suspend")) {
         control_command = "suspend";
         control_event = {
@@ -293,8 +298,8 @@ function obtain_asset_record(database, database_key, control, operation, callbac
             "event": "suspend",
             "payload": {}
         };
-    } 
-    
+    }
+
     if ((control == "ultrahaptics_01_transitions") && (operation == "exit")) {
         control_command = "exit";
         control_event = {
@@ -306,7 +311,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
 
-    debug("control_event message:", JSON.stringify(control_event,null,4));
+    debug("control_event message:", JSON.stringify(control_event, null, 4));
 
     try {
         database.get(control_event._id, {
@@ -644,7 +649,7 @@ switch (command_type) {
                 }
 
                 break;
-                
+
             case "kintrans_02":
                 debug("database=>kintrans_02");
                 try {
@@ -667,8 +672,8 @@ switch (command_type) {
                     console.log(text_prefix, "Error establishing follow:", error.message);
                 }
 
-                break;   
-                
+                break;
+
             case "ultrahaptics_01":
                 debug("database=>ultrahaptics_01");
                 try {
@@ -691,7 +696,7 @@ switch (command_type) {
                     console.log(text_prefix, "Error establishing follow:", error.message);
                 }
 
-                break;                 
+                break;
 
             default:
                 console.log(text_prefix, "Unknown control target, see configuration");
@@ -700,7 +705,11 @@ switch (command_type) {
         break;
 
     default:
-        console.log(text_prefix, "Unknown action");
+        if (so_service) {
+            console.log(text_prefix, "Initialing web control vs. cli");
+        } else {
+            console.log(text_prefix, "Unknown action, refer to docs");
+        }
 }
 
 debug("Process the action");
@@ -790,3 +799,145 @@ process.on('SIGINT', function () {
     process.exit();
 
 });
+
+
+//-------------------------------------------------------------------------------
+
+
+/*
+
+mvp4 - Web Processing Element - Handle web requests...
+
+
+Control Function
+
+- Simulation start/restart
+   - Drive an event to "start" sim
+- Simulation loop
+   - Add new Simulation event at 640 offset
+   - Listen for the event at 640 offset and drive an event to "start" sim
+- Simulation suspend
+   - Simulation submit event
+
+- Persona
+   - Attach new data to persona record (phone, food and calendar)
+   - Move a persona/instance to olli stop, exhibit, olli roller 1, roller 2
+
+- Test
+   - Ramp use case
+   - Emergency stop use case
+   
+
+
+*/
+
+var svc_control = process.env.AOCLI_SERVICE;
+var so_service = false;
+if (svc_control == "true") so_service = true;
+
+var app_port = config.get("ao_cli.app_port");
+
+var express = null;
+var app = null;
+var bodyParser = null;
+var path = null;
+
+if (so_service) {
+    debug("ao_cli web listener enabled");
+
+    //require the express nodejs module
+    express = require('express'),
+        //set an instance of exress
+        app = express(),
+        //require the body-parser nodejs module
+        bodyParser = require('body-parser'),
+        //require the path nodejs module
+        path = require("path");
+
+    //support parsing of application/json type post data
+    app.use(bodyParser.json());
+
+    //support parsing of application/x-www-form-urlencoded post data
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
+
+    //tell express that www is the root of our public web folder
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    //tell express what to do when the /form route is requested
+    app.post('/action', function (req, res) {
+        debug("Post entry");
+        res.setHeader('Content-Type', 'application/json');
+
+        //mimic a slow network connection
+        setTimeout(function () {
+
+            res.send(JSON.stringify({
+                simmode: req.body.request_type || null,
+                simcontrol: req.body.option || null,
+                firstname: req.body.firstname || null,
+                id: req.body.id || null,
+                location: req.body.location || null,
+                lastname: req.body.lastname || null
+            }));
+
+        }, 1000)
+
+        console.log("Request type:", req.body.request_type);
+
+        switch (req.body.request_type) {
+            case "simulation":
+                {
+                    console.log('Simulation use case, you posted: option :' + req.body.option);
+                }
+                break;
+            case "persona":
+                {
+                    //debugging output for the terminal
+                    console.log('Persona use case, you posted: First Name: ' + req.body.firstname + ' Id: ' + req.body.id + ' Location: ' + req.body.location);
+                }
+                break;
+
+            case "agent":
+                {
+                    console.log('Agent use case, you posted: option :' + req.body.option);
+                }
+                break;
+            case "exit":
+                {
+                    console.log('Exit use case, you posted: option :' + req.body.option);
+                }
+                break;
+            case "emergency_stop":
+                {
+                    console.log('Emergency stop use case, you posted: option :' + req.body.option);
+                }
+                break;
+            case "wheelchair_ingress":
+                {
+                    console.log('Wheel chair ingress use case, you posted: option :' + req.body.option);
+                }
+                break;
+            case "wheelchair_egress":
+                {
+                    console.log('Wheel chair egress use case, you posted: option :' + req.body.option);
+                }
+                break;
+            default:
+                {
+                    res.send(JSON.stringify({
+                        request: "unknown" || null,
+                        action: "resubmit" || null
+                    }));
+                }
+        }
+
+    });
+
+    //wait for a connection
+    app.listen(app_port, function () {
+        console.log('Server is running. Point your browser to: http://localhost:' + app_port);
+    });
+
+}

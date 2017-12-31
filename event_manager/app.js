@@ -246,7 +246,7 @@ function insert_asset_record(event_body, callback) {
                 callback(null, event_body);
             } else {
                 console.log("Phase 2: Database asset " + event_body._id + " throwing: ", err);
-                callback(err, event_body, req, resp);
+                callback(err, event_body);
             }
         }); // insert
     } catch (err) {
@@ -396,6 +396,31 @@ function follow_on_change(details, feed) {
                     debug("Simulation event exist for this instance [" + simulation_delta_time + "]");
                     simulation_by_offset_rules[simulation_delta_time].events.forEach(function (element) {
                         debug("   Events:", JSON.stringify(element, null, 4));
+
+                        // reminder, couchdb does not allow _* variables at root level,
+                        // thus put in payload area, application specific anyway
+                        
+                        if (!element.payload.hasOwnProperty('_event_type')) {
+                            console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                            element.payload._event_type = "simulation_rule_event";
+                        } else {
+                            element.payload['_event_type'] = "simulation_rule_event";
+                        }
+                        
+                        if (!element.payload.hasOwnProperty('_simulation_real_time')) {
+                            console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                            element.payload._simulation_real_time = simulation_real_time;
+                        } else {
+                            element.payload['_simulation_real_time'] = simulation_real_time;
+                        }
+                        
+                        if (!element.payload.hasOwnProperty('_simulation_delta_time')) {
+                            console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                            element.payload._simulation_delta_time = simulation_delta_time;
+                        } else {
+                            element.payload['_simulation_delta_time'] = simulation_delta_time;
+                        }
+
                         var submit_record = {
                             _id: element.name + ':' + uuid() + ':' + simulation_real_time,
                             event: element.event,
@@ -451,10 +476,9 @@ function follow_on_change(details, feed) {
 
                             if (release_event) {
                                 debug("Fire this event:", JSON.stringify(element, null, 4));
-                                
+
                                 if (!element.hasOwnProperty('payload')) {
-                                    element['payload'] = {
-                                    }
+                                    element['payload'] = {}
                                 }
 
                                 if (!element.payload.hasOwnProperty('_vehicle')) {
@@ -463,22 +487,49 @@ function follow_on_change(details, feed) {
                                 } else {
                                     element.payload['_vehicle'] = olli_name;
                                 }
-                                
+
                                 if (!element.payload.hasOwnProperty('_offset')) {
                                     console.log("Warning reserved attribute _offset attribute in payload, overriding in ", element.name);
                                     element.payload._offset = olli_offset;
                                 } else {
                                     element.payload['_offset'] = olli_offset;
-                                }                                
+                                }
+
+                                // simulation_delta_time
+
+                                if (!element.payload.hasOwnProperty('_simulation_delta_time')) {
+                                    console.log("Warning reserved attribute _simulation_delta_time attribute in payload, overriding in ", element.name);
+                                    element.payload._simulation_delta_time = simulation_delta_time;
+                                } else {
+                                    element.payload['_simulation_delta_time'] = simulation_delta_time;
+                                }
+
+                                // real-time
+
+                                if (!element.payload.hasOwnProperty('_simulation_real_time')) {
+                                    console.log("Warning reserved attribute _simulation_real_time attribute in payload, overriding in ", element.name);
+                                    element.payload._simulation_real_time = simulation_real_time;
+                                } else {
+                                    element.payload['_simulation_real_time'] = simulation_real_time;
+                                }
+
+                                // real-time
+
+                                if (!element.payload.hasOwnProperty('_event_type')) {
+                                    console.log("Warning reserved attribute _event_type attribute in payload, overriding in ", element.name);
+                                    element.payload._event_type = "telemetry_rule_event";
+                                } else {
+                                    element.payload['_event_type'] = "telemetry_rule_event";
+                                }
 
                                 var submit_record = {
                                     _id: element.name + ':' + uuid() + ':' + vehicle_list[key].timestamp,
                                     event: element.event,
                                     payload: element.payload
                                 };
-                                
+
                                 debug("Event/Database record to be posted:", submit_record);
-                                
+
                                 waterfall([
                                   async.apply(evaluate_data, submit_record),
                                   insert_asset_record,

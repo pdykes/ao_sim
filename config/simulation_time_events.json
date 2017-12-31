@@ -1,4 +1,16 @@
 {
+    "simulation_record_500": {
+        "simulation_time": 500,
+        "events": [
+            {
+                "name": "Simulation Pass Start",
+                "event": "simulation_start_event",
+                "payload": {
+                    "element1": "placeholder"
+                }
+	       }
+        ]
+    },
     "simulation_record_1000": {
         "simulation_time": 1000,
         "events": [
@@ -16,9 +28,11 @@
                 "payload": {
                     "action": "play",
                     "type": "audio",
+                    "text": "Welcome to the 2018 Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners.",
+                    "accept": "audio/mp3",
                     "audio_target" : "olli_1 or stop_1",
                     "tag" : "Audio_Welcome_to_Olli",
-                    "uri" :  "ibm.bluemix.com:///->watson",
+                    "local" : "welcome_olli.m4a",
                     "parameters": "e1;e2;e3..."
                 }
 		    },          
@@ -62,6 +76,32 @@
                     "element2": "5"
                 }
 	       }
+        ]
+    },
+    "simulation_record_323500": {
+        "simulation_time": 323500,
+        "events": [
+            {
+                "name": "Simulation Pass Complete",
+                "event": "simulation_complete_event",
+                "payload": {
+                    "element1": "placeholder"
+                }
+	       },
+           {
+                "name": "audio_exit_from_olli_1",
+                "event": "audio_exit_from_olli_1",
+                "payload": {
+                    "action": "play",
+                    "type": "audio",
+                    "text": "Thank you for attending the Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners. You are welcome to experience the exhibit as a different persona.",
+                    "accept": "audio/mp3",
+                    "audio_target" : "olli_1 or stop_1",
+                    "tag" : "Audio_Welcome_to_Olli",
+                    "local" : "welcome_olli.m4a",
+                    "parameters": "e1;e2;e3..."
+                }
+		    }
         ]
     }
 }
