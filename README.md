@@ -27,7 +27,7 @@ Mvp4 Changes
 		    }
 
 ```
-    - telemetry Watson text to speech example
+    - telemetry Watson text to speech example (note event same as above)
 ```
             {
                 "name": "audio_awareness_appraoching_stop_4",
@@ -46,7 +46,7 @@ Mvp4 Changes
 ```
     
   - persona data improvements
-    - phone and cusine added, e.g.:
+    - phone and cuisine added, e.g.:
     
 ```
             body: {
