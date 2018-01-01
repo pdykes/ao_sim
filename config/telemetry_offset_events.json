@@ -92,7 +92,7 @@
                 "payload": {
                     "action": "play",
                     "type": "audio",
-                    "text": "Olli is approaching Discovry Square, Stop 4.",
+                    "text": "Olli is approaching Discovery Square, Stop 4.",
                     "accept": "audio/mp3",
                     "tag": "audio_approaching_stop_4",
                     "local": "welcome_olli.m4a",
