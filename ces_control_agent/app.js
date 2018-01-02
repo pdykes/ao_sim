@@ -18,7 +18,7 @@ var prefix_text = "[" + config.get("agents.ces_control_agent.module_Name") + "]"
 
 var listener_target = config.get("global.nosql_url") +
     "/" +
-    config.get("agents.ces_control_agent.rules_database");
+    config.get("agents.event_manager.events_database");
 
 console.log("Listener target:", listener_target, "^c to exit");
 

@@ -2,6 +2,10 @@
 
 Mvp4 Changes
 
+  - Key change, the rule_events database has been renamed to
+    rule_event_transitions due to required wildcarding for
+    event manager.  If you use the config (config/default.config)
+    should not be much of an issue.
   - olli_audio_agent added
     - Watson text to speach is now integrated
     - configugration in box, normal spot in mvp4/

@@ -90,6 +90,9 @@ var database_user = config.get("global.nosql_user");
 var database_password = config.get("global.nosql_password");
 var database = config.get("agents.event_manager.events_database");
 
+var telemetry_database = config.get("agents.telemetry.database");
+var rule_events_database = config.get("agents.event_manager.events_database");
+
 var couch = null;
 var events_db = null;
 try {
@@ -396,6 +399,20 @@ app.post('/', function (request, response) {
 
 */
 
+/*
+
+        Key concept: event manager
+         a) produces rule events
+         b) listens and acts upon them once they are released
+
+        Processing the rule events is completed just like any other
+        consumer, this solution will listen for changes (in read-only
+        mode) and act upon them to control certain aspects of the simulation.
+        
+        This code listens to the async rules and acts accordingly.
+
+*/
+
 function follow_on_change(details, feed) {
 
 
@@ -404,7 +421,7 @@ function follow_on_change(details, feed) {
     console.log(prefix_text, "In database:", details.db_name, "Change record: ", details.change.id);
 
     switch (details.db_name) {
-        case "telemetry_transitions":
+        case telemetry_database:
             {
                 switch (details.change.id) {
                     case "telemetry_transition":
@@ -636,7 +653,7 @@ function follow_on_change(details, feed) {
             }
             break;
 
-        case "rule_events":
+        case rule_events_database:
             {
 
                 // track simulation and telemetry start and stop

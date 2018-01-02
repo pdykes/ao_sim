@@ -110,7 +110,11 @@ function convert_text_to_speech(event_body, callback) {
                 callback(err, null);
             } else {
                 try {  // some bugs in this, in sdk, eat error for now
-                    watson_tts.repairWavHeader(audio);
+                    if (audio_params.accept == "audio/wav")
+                    { 
+                        console.log(prefix_text, "Wav file requires an update, applying change.");
+                        watson_tts.repairWavHeader(audio);
+                    }
                 } catch (err) {
                     console.log(prefix_text, "Error adjusting headering, pursue later", err);
                 }

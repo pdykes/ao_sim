@@ -69,8 +69,8 @@
             "module_Name": "Olli Audio Agent",
             "database": "audio_events",
             "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
-            "watson_username": "see mvp4 directory for values",
-            "watson_password": "see mvp4 directory for values",               
+            "watson_username": "f0cfae5b-02bb-441e-abaf-589094976a76",
+            "watson_password": "iSVa8zeDL6uj",               
             "retain_audio_artifacts" : "true"
         },
         "event_manager": {
@@ -79,7 +79,7 @@
             "port": "3006",
             "simulation_event_rules": "simulation_time_events.json",
             "telemetry_event_rules": "telemetry_offset_events.json",
-            "events_database": "rule_events"
+            "events_database": "rule_event_transitions"
         },
         "bestmile" : {
             "module_name" : "bestmile",
@@ -96,8 +96,7 @@
         },
         "ces_control_agent": {
             "module_name": "ces_control_agent",
-            "module_Name": "CES Control Agent",
-            "rules_database": "rule_events"
+            "module_Name": "CES Control Agent"
         }
     },
     "ao_cli": {

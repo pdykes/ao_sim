@@ -87,7 +87,7 @@
                 "payload": {
                     "action": "play",
                     "type": "audio",
-                    "text": "Thank you for attending the Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners. You are welcome to experience the exhibit as a different persona.",
+                    "text": "Thank you for attending the Accessible Olli Exhibit, you have completed this persona's experience, and are welcome to experience the exhibit as another persona. CTA, IBM, Local Motors and our other partners appreciate your particpation now and in the future. Please remember, we are striving for Autonomous for All of Us!",
                     "accept": "audio/mp3",
                     "audio_target": "olli_1 or stop_1",
                     "tag": "Audio_Welcome_to_Olli",
