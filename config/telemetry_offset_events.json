@@ -1,4 +1,17 @@
 {
+    "offset_record_1": {
+        "offset": 1,
+        "events": [
+            {
+                "name": "Telemetry Pass Start",
+                "filter": "olli_1",
+                "event": "_telemetry_start_event",
+                "payload": {
+                    "comment": "THIS MUST BE THE FIRST EVENT-Reserved"
+                }
+            }
+        ]
+    },
     "offset_record_5": {
         "offset": 5,
         "events": [
@@ -123,7 +136,8 @@
                     "state": "stop_4_arrival",
                     "at_stop": "stop_4",
                     "previous_stop": "stop_3",
-                    "next_stop": "stop_5"
+                    "next_stop": "stop_5",
+                    "comment" : "This is a special, reserved event"
                 }
 		    },
             {
@@ -252,7 +266,7 @@
                 }
 		    }
         ]
-    },    
+    },
     "offset_record_194": {
         "offset": 10,
         "events": [
@@ -271,7 +285,7 @@
                 }
 		    }
 	     ]
-    },    
+    },
     "offset_record_202": {
         "offset": 212,
         "events": [
@@ -428,6 +442,19 @@
                     "next_stop": "stop_4"
                 }
 		    }
+        ]
+    },
+    "offset_record_640": {
+        "offset": 640,
+        "events": [
+            {
+                "name": "Telemetry Pass Complete",
+                "filter": "olli_1",
+                "event": "_telemetry_complete_event",
+                "payload": {
+                    "comment": "THIS MUST BE THE LAST EVENT-Reserved"
+                }
+            }
         ]
     }
 }

@@ -8,6 +8,9 @@
       - update database to enable some sort of action
 
     author: pdykes@us.ibm.com
+    
+    AUTHOR NOTE: Really want to redo this code, but time
+                 is short, living with it for now
 
 */
 
@@ -29,7 +32,7 @@ var module_Name = config.get("ao_cli.module_Name");
 var debug = require("debug")(module_name);
 debug("Debug enabled in module: %s", module_name);
 
-var text_prefix = "[" + module_Name + "]";
+var prefix_text = "[" + module_Name + "]";
 
 var default_follow = "telemetry";
 var default_control = "control";
@@ -121,7 +124,8 @@ if (cli_options.operation !== undefined) {
     debug("operation_value:", operation_value);
 }
 
-var database_url = null;
+var database_url = config.get("global.nosql_url");
+var listener_url = null;
 var feed = null;
 var database_name = null;
 var database_key = null;
@@ -172,6 +176,20 @@ function obtain_asset_record(database, database_key, control, operation, callbac
 
     if ((control == "telemetry_transitions") && (operation == "disable")) {
         control_command = "disabled";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "single")) {
+        control_command = "single";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "continuous")) {
+        control_command = "continuous";
         control_event = {
             _id: database_key
         };
@@ -326,7 +344,7 @@ function obtain_asset_record(database, database_key, control, operation, callbac
                     debug("Phase 2: Database record found for", control_event._id);
                 }
                 control_event.mode = control_command;
-                debug("Phase 2: Attempting to store:", JSON.stringify(control_event, 4, null));
+                debug("Phase 2: Attempting to store:", JSON.stringify(control_event, null, 4));
                 callback(null, database, database_key, control, operation, control_event);
             } else {
                 // this should not occur...
@@ -388,15 +406,15 @@ switch (command_type) {
             case "telemetry":
                 debug("database=>telemetry");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         config.get("agents.telemetry.database");
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -404,22 +422,22 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
             case "patron_locations":
                 debug("database=>patrons");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         config.get("agents.patron_manager.output_database");
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -427,22 +445,22 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
             case "events":
                 debug("database=>ao_events");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         config.get("agents.event_agent.database");
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -450,7 +468,7 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
@@ -458,15 +476,15 @@ switch (command_type) {
             case "patrons":
                 debug("database=>persona_transitions");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         config.get("agents.monitor.database");
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -474,7 +492,7 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
@@ -482,15 +500,15 @@ switch (command_type) {
             case "ultrahaptics_01":
                 debug("database=>ultrahaptics_01");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         "ultrahaptics_01_transitions";
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -498,22 +516,22 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
             case "kintrans_01":
                 debug("database=>kintrans_01");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         "kintrans_01_transitions";
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -521,22 +539,22 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
             case "kintrans_02":
                 debug("database=>kintrans_02");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         "kintrans_02_transitions";
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -544,21 +562,21 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
                 break;
             case "voice_requests":
                 debug("database=>voice_requests");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         config.get("voice_requests");
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -566,22 +584,22 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
                 break;
 
             case "lights_requests":
                 debug("database=>lights_requests");
                 try {
-                    database_url =
+                    listener_url =
                         config.get("ao_cli.nosql_url") +
                         "/" +
                         config.get("lights_requests");
 
-                    debug(text_prefix, "Follow listener:", database_url);
+                    debug(prefix_text, "Follow listener:", listener_url);
 
                     var opts = {
-                        db: database_url,
+                        db: listener_url,
                         since: 'now',
                         include_docs: 'true'
                     };
@@ -589,12 +607,12 @@ switch (command_type) {
                     feed = new follow.Feed(opts);
                     follow_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
                 break;
 
             default:
-                console.log(text_prefix, "Unkown follow target, see configuration");
+                console.log(prefix_text, "Unkown follow target, see configuration");
         }
 
         break;
@@ -605,23 +623,19 @@ switch (command_type) {
             case "telemetry":
                 debug("database=>telemetry");
                 try {
-                    database_url =
-                        config.get("ao_cli.nosql_url");
-
-                    debug(text_prefix, "Control Database:", database_url);
 
                     database_key =
                         config.get("ao_cli.telemetry_control");
 
-                    debug(text_prefix, "Control Database Key:", database_key);
+                    debug(prefix_text, "Control Database Key:", database_key);
 
                     database_name = config.get("ao_cli.telemetry");
 
-                    debug(text_prefix, "Database Name:", database_name)
+                    debug(prefix_text, "Database Name:", database_name)
 
                     control_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
@@ -629,23 +643,19 @@ switch (command_type) {
             case "kintrans_01":
                 debug("database=>kintrans_01");
                 try {
-                    database_url =
-                        config.get("ao_cli.nosql_url");
-
-                    debug(text_prefix, "Control Database:", database_url);
 
                     database_key =
                         config.get("ao_cli.kintrans_01_to_device");
 
-                    debug(text_prefix, "Control Database Key:", database_key);
+                    debug(prefix_text, "Control Database Key:", database_key);
 
                     database_name = config.get("ao_cli.kintrans_01");
 
-                    debug(text_prefix, "Database Name:", database_name)
+                    debug(prefix_text, "Database Name:", database_name)
 
                     control_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
@@ -653,23 +663,18 @@ switch (command_type) {
             case "kintrans_02":
                 debug("database=>kintrans_02");
                 try {
-                    database_url =
-                        config.get("ao_cli.nosql_url");
-
-                    debug(text_prefix, "Control Database:", database_url);
-
                     database_key =
                         config.get("ao_cli.kintrans_02_to_device");
 
-                    debug(text_prefix, "Control Database Key:", database_key);
+                    debug(prefix_text, "Control Database Key:", database_key);
 
                     database_name = config.get("ao_cli.kintrans_02");
 
-                    debug(text_prefix, "Database Name:", database_name)
+                    debug(prefix_text, "Database Name:", database_name)
 
                     control_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
@@ -677,38 +682,33 @@ switch (command_type) {
             case "ultrahaptics_01":
                 debug("database=>ultrahaptics_01");
                 try {
-                    database_url =
-                        config.get("ao_cli.nosql_url");
-
-                    debug(text_prefix, "Control Database:", database_url);
-
                     database_key =
                         config.get("ao_cli.ultrahaptics_01_to_device");
 
-                    debug(text_prefix, "Control Database Key:", database_key);
+                    debug(prefix_text, "Control Database Key:", database_key);
 
                     database_name = config.get("ao_cli.ultrahaptics_01");
 
-                    debug(text_prefix, "Database Name:", database_name)
+                    debug(prefix_text, "Database Name:", database_name)
 
                     control_function = true;
                 } catch (error) {
-                    console.log(text_prefix, "Error establishing follow:", error.message);
+                    console.log(prefix_text, "Error establishing follow:", error.message);
                 }
 
                 break;
 
             default:
-                console.log(text_prefix, "Unknown control target, see configuration");
+                console.log(prefix_text, "Unknown control target, see configuration");
         }
 
         break;
 
     default:
         if (so_service) {
-            console.log(text_prefix, "Initialing web control vs. cli");
+            console.log(prefix_text, "Initialing web control vs. cli");
         } else {
-            console.log(text_prefix, "Unknown action, refer to docs");
+            console.log(prefix_text, "Unknown action, refer to docs");
         }
 }
 
@@ -719,20 +719,20 @@ debug("Process the action");
 if (follow_function) {
     debug("follow handler");
 
-    console.log(text_prefix, "Action: " + action_value + " Target: " + database_url);
+    console.log(prefix_text, "Action: " + action_value + " Target: " + listener_url);
 
     feed.on('error', function (er) {
-        console.error(text_prefix, 'Since Follow always retries on errors, this must be serious', er);
+        console.error(prefix_text, 'Since Follow always retries on errors, this must be serious', er);
         // throw er;
     });
 
     feed.on('change', function (change) {
-        console.log(text_prefix, "Event change detected for " + feed.db + ": ", JSON.stringify(change, null, 4));
+        console.log(prefix_text, "Event change detected for " + feed.db + ": ", JSON.stringify(change, null, 4));
     });
 
     feed.follow();
 
-    console.log(text_prefix, "Ctrl-C to exit in follow mode");
+    console.log(prefix_text, "Ctrl-C to exit in follow mode");
 }
 
 
@@ -757,7 +757,7 @@ if (control_function) {
     }
 
     try {
-        debug(text_prefix, "Database operation starting");
+        debug(prefix_text, "Database operation starting");
 
         debug("waterfall attributes:", database_key, database_name, operation_value);
 
@@ -778,30 +778,94 @@ if (control_function) {
                         err);
                 }
             });
-        console.log(text_prefix, "Successful operation set " +
+        console.log(prefix_text, "Successful operation set " +
             database_key +
             " in database " +
             database_name +
             " now set to " +
             operation_value + " state");
     } catch (err) {
-        debug(text_prefix, "Error on database write:", err);
+        debug(prefix_text, "Error on database write:", err);
 
     }
 
 }
 
+// ------------------------------------------------------
+
+function update_control(dbname, key, state) {
+
+    // database, database_key, control, operation
+
+    // control   - telemetry_transitions
+    // operation - enable
+
+    debug("control handler");
+
+    var db = null;
+
+    try {
+        debug("Control Database  uri:" +
+            database_url +
+            " database name:" +
+            dbname);
+
+        couch = require('nano')({
+            url: database_url,
+            parseUrl: false
+        });
+        db = couch.use(dbname);
+    } catch (err) {
+        console.log("database init failure", err);
+    }
+
+    try {
+        debug(prefix_text, "Database operation starting");
+
+        debug("waterfall attributes:", key, dbname, state);
+
+        waterfall([
+            async.apply(evaluate_data,
+                    db,
+                    key,
+                    dbname,
+                    state),
+            obtain_asset_record,
+            update_asset_record,
+            asset_request_complete
+            ],
+            function (err, results) {
+                debug("Event result:", JSON.stringify(results, null, 4));
+                if (err !== null) {
+                    debug("Error Result:",
+                        err);
+                }
+            });
+        console.log(prefix_text, "Successful operation set " +
+            database_key +
+            " in database " +
+            database_name +
+            " now set to " +
+            operation_value + " state");
+    } catch (err) {
+        debug(prefix_text, "Error on database write:", err);
+
+    }
+
+}
+
+// ------------------------------------------------------
 
 
 process.on('SIGINT', function () {
-    console.log(text_prefix, "Caught interrupt signal");
+    console.log(prefix_text, "Caught interrupt signal");
 
     process.exit();
 
 });
 
 
-//-------------------------------------------------------------------------------
+//-------------------------------------------------------
 
 
 /*
@@ -867,29 +931,128 @@ if (so_service) {
 
     //tell express what to do when the /form route is requested
     app.post('/action', function (req, res) {
-        debug("Post entry");
-        res.setHeader('Content-Type', 'application/json');
+        debug("Post entry:", JSON.stringify(req.body, null, 4));
+        // res.setHeader('Content-Type', 'application/json');
 
         //mimic a slow network connection
-        setTimeout(function () {
-
-            res.send(JSON.stringify({
-                simmode: req.body.request_type || null,
-                simcontrol: req.body.option || null,
-                firstname: req.body.firstname || null,
-                id: req.body.id || null,
-                location: req.body.location || null,
-                lastname: req.body.lastname || null
-            }));
-
-        }, 1000)
 
         console.log("Request type:", req.body.request_type);
 
         switch (req.body.request_type) {
-            case "simulation":
+            case "simulation_control":
                 {
-                    console.log('Simulation use case, you posted: option :' + req.body.option);
+                    console.log('Simulation use case, you posted: option :' + JSON.stringify(req.body, null, 4));
+
+                    /* examples
+                    
+                    enable simulation telemetry
+                    
+                    var dbname = "telemetry_transitions";
+                    var key = "telemetry_control";
+                    var state = "enabled";                    
+                    
+                    disable simulation telemetry
+                    
+                    var dbname = "telemetry_transitions";
+                    var key = "telemetry_control";
+                    var state = "disabled";
+                    
+                    at start, one simulation telemetry once
+                    
+                    var dbname = "telemetry_transitions";
+                    var key = "telemetry_iteration";
+                    var state = "single";     
+                    
+                    at start, one simulation telemetry continuous
+                    
+                    var dbname = "telemetry_transitions";
+                    var key = "telemetry_iteration";
+                    var state = "continuous";    
+                    
+                    */
+
+                    switch (req.body.option) {
+                        case "not_active":
+                            {
+
+                            }
+                            break;
+                        case "iteration_continuous":
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_iteration";
+                                var state = "continuous";
+
+                                update_control(dbname, key, state);
+                            }
+                            break;
+                        case "iteration_single":
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_iteration";
+                                var state = "single";
+
+                                update_control(dbname, key, state);
+                            }
+                            break;
+                        case "start_simulation":
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "enable";
+
+                                update_control(dbname, key, state);
+                            }
+                            break;
+                        case "suspend_simulation":
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "disable";
+
+                                update_control(dbname, key, state);
+                            }
+                            break;
+                        case "enable_suspend_at_stops_simulation":
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_pause_stops";
+                                var state = "enable";
+
+                                update_control(dbname, key, state);
+                            }
+                            break;
+                        case "disable_suspend_at_stops_simulation":
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_pause_stops";
+                                var state = "disable";
+
+                                update_control(dbname, key, state);
+                            }
+                            break;
+
+                        default:
+                            {
+                                console.log(prefix_text, "Unknown simulation control option");
+                            }
+                    }
+
+                    setTimeout(function () {
+                        res.setHeader('Content-Type', 'application/json');
+                        debug("web data:", (JSON.stringify({
+                            simmode: req.body.request_type || null,
+                            simcontrol: req.body.option || null,
+                            firstname: req.body.firstname || null,
+                            id: req.body.id || null,
+                            location: req.body.location || null,
+                            lastname: req.body.lastname || null
+                        })));
+                        res.redirect("/")
+
+                    }, 1000)
+
+
                 }
                 break;
             case "persona":

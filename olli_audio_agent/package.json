@@ -1,7 +1,7 @@
 {
-  "name": "patron_manager",
+  "name": "olli_audio_agent",
   "version": "0.0.1",
-  "description": "Watches patron flow and manages who is in which asset at any given time",
+  "description": "Play Watson and local audio",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

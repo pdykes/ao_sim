@@ -69,8 +69,8 @@
             "module_Name": "Olli Audio Agent",
             "database": "audio_events",
             "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
-            "watson_username": "see box mvp4 directory",
-            "watson_password": "see box mvp4 directory",
+            "watson_username": "see mvp4 directory for values",
+            "watson_password": "see mvp4 directory for values",               
             "retain_audio_artifacts" : "true"
         },
         "event_manager": {

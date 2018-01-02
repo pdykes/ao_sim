@@ -4,9 +4,9 @@
         "events": [
             {
                 "name": "Simulation Pass Start",
-                "event": "simulation_start_event",
+                "event": "_simulation_start_event",
                 "payload": {
-                    "element1": "placeholder"
+                    "element1": "THIS MUST BE THE FIRST EVENT-Reserved"
                 }
 	       }
         ]
@@ -30,12 +30,12 @@
                     "type": "audio",
                     "text": "Welcome to the 2018 Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners.",
                     "accept": "audio/mp3",
-                    "audio_target" : "olli_1 or stop_1",
-                    "tag" : "Audio_Welcome_to_Olli",
-                    "local" : "welcome_olli.m4a",
+                    "audio_target": "olli_1 or stop_1",
+                    "tag": "Audio_Welcome_to_Olli",
+                    "local": "welcome_olli.m4a",
                     "parameters": "e1;e2;e3..."
                 }
-		    },          
+		    },
             {
                 "name": "another_event_name_at_simtime_0",
                 "event": "another_event_at_simtime_0",
@@ -57,17 +57,17 @@
                     "element2": "4"
                 }
 	       },
-           {
+            {
                 "name": "welcome_to_olli_video_1",
                 "event": "welcome_to_olli_video_1",
                 "payload": {
                     "action": "show",
-                    "uri" : "display_some_url",
-                    "device" :  "monitor_5b",
+                    "uri": "display_some_url",
+                    "device": "monitor_5b",
                     "type": "display",
                     "parameters": "v1;v2;v3..."
                 }
-		    },            
+		    },
             {
                 "name": "another_event_name_at_simtime_1",
                 "event": "another_event_at_simtime_1",
@@ -82,13 +82,6 @@
         "simulation_time": 323500,
         "events": [
             {
-                "name": "Simulation Pass Complete",
-                "event": "simulation_complete_event",
-                "payload": {
-                    "element1": "placeholder"
-                }
-	       },
-           {
                 "name": "audio_exit_from_olli_1",
                 "event": "audio_exit_from_olli_1",
                 "payload": {
@@ -96,13 +89,19 @@
                     "type": "audio",
                     "text": "Thank you for attending the Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners. You are welcome to experience the exhibit as a different persona.",
                     "accept": "audio/mp3",
-                    "audio_target" : "olli_1 or stop_1",
-                    "tag" : "Audio_Welcome_to_Olli",
-                    "local" : "welcome_olli.m4a",
+                    "audio_target": "olli_1 or stop_1",
+                    "tag": "Audio_Welcome_to_Olli",
+                    "local": "welcome_olli.m4a",
                     "parameters": "e1;e2;e3..."
                 }
-		    }
+		    },
+            {
+                "name": "Simulation Pass Complete",
+                "event": "_simulation_complete_event",
+                "payload": {
+                    "comment": "THIS MUST BE THE LAST EVENT-Reserved"
+                }
+            }
         ]
     }
 }
-

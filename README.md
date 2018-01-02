@@ -1,4 +1,4 @@
-# mvp4a - Welcome!
+# mvp4b - Welcome!
 
 Mvp4 Changes
 
@@ -36,7 +36,7 @@ Mvp4 Changes
                 "payload": {
                     "action": "play",
                     "type": "audio",
-                    "text": "Olli is approaching Discovry Square, Stop 4.",
+                    "text": "Olli is approaching Discovery Square, Stop 4.",
                     "accept": "audio/mp3",
                     "tag": "audio_approaching_stop_4",
                     "local": "welcome_olli.m4a",
@@ -121,6 +121,27 @@ Mvp4 Changes
      - new agent that implements items specifcially for
        CES (maybe others, but leverages ao_sim work)
      - this will be leveraged more in mvp4b
+     
+  - fixed a bug I introduced into bestmile ;-) after overwirting something (yea, it was late)
+  - event manager is close to supporting
+     - clearly state beginning and end of each iteration of simulation
+     - continuous running mode enabled (mvp4c to engage fully, especially for long running test)
+     - support for continuous but also stopping sim and stop 4 and stop 1 for show staff to re-engage
+     
+  - ces event manager start in place
+     - will be anchor for ramp and emergency stop
+     
+     
+  - ao_sim now offers a web interface if command line getting you down ;-)
+    - only simulation control support thus far
+    - to operate
+        - cd cmdline/
+        - export AOCLI_SERVICE=true
+        - node ao.js
+        - using browser, visit:  http://localhost:3007/
+        - Only the simulation control section (option 1 is operational)
+        - Focus on Initiate Simulation to kick off telemetry, otherwize
+          the command line, will flush out web function in future drops
 
 
 Mvp3 Changes
@@ -190,9 +211,7 @@ Key things to notice:
 
  - telemetry.json (updated, still separate)
 
-    - Due to usage limations, you must acquire from the protected box folder
-    - This file is pivotal to the simulation
-    - Now (as of mvp3) ncludes what3words integration
+    - in box mvp4 directory (same as mvp2 version)
 
  - ../config/ now has rule files
 
@@ -240,8 +259,8 @@ Key things to notice:
              
 Currently inflight functions targeted for mpv4:
 
-    - audio agent serving up Watson, and will fallback to recordings (close in mvp4, need to account for stop and 
-    olli physical deploy)
+    - audio agent serving up Watson, and will fallback to recordings, need to account for stop and 
+    olli physical deploy) (first version complete, device specific work next)
     - olli ramp deploy agent (ces_control_agent a start)
     - olli emergency stop agent (ces_control_agent a start)
     - integrate detailed, per simulation time and event offset graphics and visual experience
