@@ -94,6 +94,37 @@ function convert_text_to_speech(event_body, callback) {
         event_body.payload['accept'] = "audio/mp3";
     }
 
+    // debug("Replace work:", JSON.stringify(event_body,null,4));
+    if (event_body.payload.hasOwnProperty("parameters")) {
+        // console.log(prefix_text, "pjd test:", event_body.payload.text);
+        if (event_body.payload.parameters == "replace_vehicle_name") {
+            var spoken_name = null;
+            switch(event_body.payload._vehicle) {
+                case "olli_1":
+                    {
+                        spoken_name = "Olli One";
+                    }
+                break;
+                case "olli_2":
+                    {
+                        spoken_name = "Olli Two";
+                    }
+                break;
+                case "olli_3":
+                    {
+                        spoken_name = "Olli Three";
+                    }
+                break;
+                default:
+                    spoken_name = "Olli";
+            }
+            debug("Alternative spoken string:", spoken_name);
+            event_body.payload.text = event_body.payload.text.replace('replace', spoken_name);
+            console.log(prefix_text, "Adjusted to be spoken text:", event_body.payload.text);
+
+        }
+    }
+
     var audio_params = {
         text: event_body.payload.text,
         accept: event_body.payload.accept
@@ -109,16 +140,15 @@ function convert_text_to_speech(event_body, callback) {
                 console.log(prefix_text, "Audio content creation error:", err);
                 callback(err, null);
             } else {
-                try {  // some bugs in this, in sdk, eat error for now
-                    if (audio_params.accept == "audio/wav")
-                    { 
+                try { // some bugs in this, in sdk, eat error for now
+                    if (audio_params.accept == "audio/wav") {
                         console.log(prefix_text, "Wav file requires an update, applying change.");
                         watson_tts.repairWavHeader(audio);
                     }
                 } catch (err) {
                     console.log(prefix_text, "Error adjusting headering, pursue later", err);
                 }
-                
+
                 /*
                 if (event_body.payload._event_type == "telemetry_rule_event") {
                     event_body.payload['filename'] = "telemetry_event_" +
@@ -137,7 +167,7 @@ function convert_text_to_speech(event_body, callback) {
                 fs.writeFileSync(event_body.payload.filename, audio);
                 
                 */
-                
+
                 callback(null, event_body, audio);
                 // fs.writeFileSync('audio.wav', audio);
             }
@@ -193,7 +223,7 @@ function write_audio_to_file(event_body, audio, callback) {
             callback(null, event_body);
         }
     });
-    
+
 }
 
 function play_audio(event_body, callback) {

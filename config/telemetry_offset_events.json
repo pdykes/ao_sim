@@ -34,7 +34,6 @@
                 "filter": "all",
                 "event": "olli_at_stop_play_audio_1",
                 "payload": {
-                    "action": "play",
                     "type": "commented-out-audio",
                     "text": "Telemetry test voice for all ollies at offset 5.",
                     "accept": "audio/mp3",
@@ -68,6 +67,24 @@
 		    }
 	     ]
     },
+    "offset_record_7": {
+        "offset": 7,
+        "events": [
+            {
+                "name": "audio_awareness_appraoching_stop_4",
+                "filter": "all",
+                "event": "audio_awareness_appraoching_stop_4",
+                "payload": {
+                    "type": "audio",
+                    "text": "replace is approaching Discovery Square, Stop 4.",
+                    "accept": "audio/mp3",
+                    "tag": "audio_approaching_stop_4",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "replace_vehicle_name"
+                }
+		    }
+	     ]
+    },
     "offset_record_10": {
         "offset": 10,
         "events": [
@@ -91,25 +108,6 @@
                     "element1": "this_data_element_for_olli_2",
                     "type": "data",
                     "element2": "345"
-                }
-		    }
-	     ]
-    },
-    "offset_record_15": {
-        "offset": 15,
-        "events": [
-            {
-                "name": "audio_awareness_appraoching_stop_4",
-                "filter": "olli_1",
-                "event": "audio_awareness_appraoching_stop_4",
-                "payload": {
-                    "action": "play",
-                    "type": "audio",
-                    "text": "Olli is approaching Discovery Square, Stop 4.",
-                    "accept": "audio/mp3",
-                    "tag": "audio_approaching_stop_4",
-                    "local": "welcome_olli.m4a",
-                    "parameters": "y1;y2;y3..."
                 }
 		    }
 	     ]
@@ -145,7 +143,6 @@
                 "filter": "olli_1",
                 "event": "audio_olli_1_has_arrived_discovery_square_stop_4",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
                     "text": "Olli 1 has arrived at Discovery Square, Stop 4.",
                     "accept": "audio/mp3",
@@ -194,7 +191,6 @@
                 "filter": "olli_1",
                 "event": "audio_olli_1_has_arrived_mayo_guggenheim_stop_5",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
                     "text": "Olli 1 has arrived at Mayo Guggenheim, Stop 5.",
                     "accept": "audio/mp3",
@@ -222,7 +218,7 @@
 		    },
             {
                 "name": "Emergency Stop Window Start",
-                "filter": "all",
+                "filter": "olli_1",
                 "event": "emergency_stop_window_begin",
                 "payload": {
                     "type": "event_data",
@@ -237,7 +233,6 @@
                 "filter": "olli_1",
                 "event": "audio_olli_1_enable_emergency_stop_window_start",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
                     "text": "Olli 1 patrons can now initiate the emergency stop demonstration.",
                     "accept": "audio/mp3",
@@ -256,7 +251,6 @@
                 "filter": "olli_1",
                 "event": "audio_olli_1_approaching_2nd_st_sw",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
                     "text": "Olli 1 crossing 2nd Street Southwest, soon arriving at Mayo Gonda, Stop 1.",
                     "accept": "audio/mp3",
@@ -268,20 +262,19 @@
         ]
     },
     "offset_record_194": {
-        "offset": 10,
+        "offset": 25,
         "events": [
             {
-                "name": "audio_awareness_appraoching_stop_5",
-                "filter": "olli_1",
-                "event": "audio_awareness_appraoching_stop_5",
+                "name": "audio_awareness_approaching_stop_5",
+                "filter": "all",
+                "event": "audio_awareness_approaching_stop_5",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
-                    "text": "Olli is approaching Mayo Gonda Building, Stop 1.",
+                    "text": "replace is approaching the Mayo Guggenheim Building, Stop 5.",
                     "accept": "audio/mp3",
-                    "tag": "audio_approaching_stop_1",
-                    "local": "welcome_olli.m4a",
-                    "parameters": "y1;y2;y3..."
+                    "tag": "audio_approaching_stop_5",
+                    "parameters": "replace_vehicle_name",
+                    "local": "welcome_olli.m4a"
                 }
 		    }
 	     ]
@@ -306,7 +299,6 @@
                 "filter": "olli_1",
                 "event": "audio_olli_1_enable_emergency_stop_window_end",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
                     "text": "Olli 1 patrons can no longer initiate the emergency stop demonstration.",
                     "accept": "audio/mp3",
@@ -348,7 +340,6 @@
                 "filter": "olli_1",
                 "event": "audio_olli_1_has_arrived_mayo_gonda_stop_5",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
                     "text": "Olli 1 has arrived at Mayo Gonda, Stop 1.",
                     "accept": "audio/mp3",
@@ -372,6 +363,24 @@
                     "at_stop": "stop_1",
                     "previous_stop": "stop_5",
                     "next_stop": "stop_2"
+                }
+		    }
+        ]
+    },
+    "offset_record_419": {
+        "offset": 419,
+        "events": [
+            {
+                "name": "audio_awareness_approaching_stop_4",
+                "filter": "all",
+                "event": "audio_awareness_approaching_stop_4",
+                "payload": {
+                    "type": "audio",
+                    "text": "replace is approaching Peace Plaza, Stop 2.",
+                    "accept": "audio/mp3",
+                    "tag": "audio_approaching_stop_4",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "replace_vehicle_name"
                 }
 		    }
         ]

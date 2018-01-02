@@ -260,15 +260,213 @@ var event_template = {
     }
 };
 
+// READ AND UPDATE LOGIC
 
-function evaluate_data(submit_record, callback) {
+// Database operations code
+
+//---------------------------------------------------------------
+
+function evaluate_data(database, database_key, control, operation, callback) {
+
+    try {
+        debug("Phase 1: Prepare control operation");
+
+        debug("Operation:", operation);
+        debug("Control:", control);
+
+        // expecting more function here potentialy
+
+        callback(null, database, database_key, control, operation);
+    } catch (err) {
+        debug("Phase 1: Error, evaluate_data");
+        callback(err);
+    }
+
+}
+
+function obtain_asset_record(database, database_key, control, operation, callback) {
+
+    var db_record_found = false;
+    control_event = null;
+
+    // attempt to get record from database
+    debug("Phase 2: DB Query, asset:", control + ":" + operation);
+    debug("Phase 2: DB Query, db key:" + database_key);
+
+    var control_command = null;
+
+    // clean this up in mvp3
+
+    if ((control == "telemetry_transitions") && (operation == "enable")) {
+        control_command = "enabled";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "disable")) {
+        control_command = "disabled";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "single")) {
+        control_command = "single";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "continuous")) {
+        control_command = "continuous";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+
+
+    debug("control_event message:", JSON.stringify(control_event, null, 4));
+
+    try {
+        database.get(control_event._id, {
+            revs_info: false
+        }, function (err, event_body) {
+            if (!err) {
+                db_record_found = true;
+                if (db_record_found) {
+                    debug("Phase 2:Database record found:", JSON.stringify(control_event, 4, null));
+                    control_event['_rev'] = event_body._rev;
+                } else {
+                    debug("Phase 2: Database record found for", control_event._id);
+                }
+                control_event.mode = control_command;
+                debug("Phase 2: Attempting to store:", JSON.stringify(control_event, null, 4));
+                callback(null, database, database_key, control, operation, control_event);
+            } else {
+                // this should not occur...
+                control_event.mode = control_command;
+                debug("Phase 2: Database record not found for", control_event._id);
+                callback(null, database, database_key, control, operation, control_event);
+            }
+        });
+    } catch (err) {
+        debug("Phase 2: Database record not found for", control_event._id);
+        callback(err, "Phase 2: failure", err);
+    }
+}
+
+
+function update_asset_record(database, database_key, control, operation, control_event, callback) {
+
+    debug("Phase 3: Database update to " + control);
+
+    try {
+        database.insert(control_event, function (err, body) {
+            if (!err) {
+                if (body.hasOwnProperty('_rev')) {
+                    debug("Phase 3: Database asset updated:", control_event._id);
+                } else {
+                    debug("Phase 3: Database asset created:", control_event._id);
+                }
+                callback(null, database, database_key, control, operation, control_event);
+            } else {
+                debug("Phase 3: Database asset " + control_event._id + " throwing: ", err);
+                callback(err, database, database_key, control, operation, control_event);
+            }
+        }); // insert
+    } catch (err) {
+        debug("Phase 3: Database record not found for", control_event._id);
+        callback(err, "Phase 3: failure", err);
+    }
+}
+
+function asset_request_complete(database, database_key, control, operation, control_event, callback) {
+    try {
+        debug("Phase 4: Database update complete for", control_event._id);
+        callback(null, database, database_key, control, operation, control_event);
+    } catch (err) {
+        debug("Phase 4: Database record not found for", control_event._id);
+        callback(err, "Phase 4: failure", err);
+    }
+}
+
+// ------------------------------------------------------
+
+function update_control(dbname, key, state) {
+
+    // database, database_key, control, operation
+
+    // control   - telemetry_transitions
+    // operation - enable
+
+    debug("control handler");
+
+    var db = null;
+
+    try {
+        debug("Control Database  uri:" +
+            database_url +
+            " database name:" +
+            dbname);
+
+        couch = require('nano')({
+            url: database_url,
+            parseUrl: false
+        });
+        db = couch.use(dbname);
+    } catch (err) {
+        console.log("database init failure", err);
+    }
+
+    try {
+        debug(prefix_text, "Database operation starting");
+
+        debug("waterfall attributes:", key, dbname, state);
+
+        waterfall([
+            async.apply(evaluate_data,
+                    db,
+                    key,
+                    dbname,
+                    state),
+            obtain_asset_record,
+            update_asset_record,
+            asset_request_complete
+            ],
+            function (err, results) {
+                debug("Event result:", JSON.stringify(results, null, 4));
+                if (err !== null) {
+                    debug("Error Result:",
+                        err);
+                }
+            });
+        console.log(prefix_text, "Successful operation set " +
+            database_key +
+            " in database " +
+            database_name +
+            " now set to " +
+            operation_value + " state");
+    } catch (err) {
+        debug(prefix_text, "Error on database write:", err);
+
+    }
+
+}
+
+
+
+// INSERT ONLY LOGIC
+
+function insert_only_evaluate_data(submit_record, callback) {
 
     debug("Phase 1: Prepare proxy client");
     callback(null, submit_record);
 }
 
 
-function insert_asset_record(event_body, callback) {
+function insert_only_asset_record(event_body, callback) {
 
     debug("Phase 2: Database update to " + event_body._id);
 
@@ -293,7 +491,7 @@ function insert_asset_record(event_body, callback) {
     }
 }
 
-function asset_request_complete(event_body, callback) {
+function insert_only_asset_request_complete(event_body, callback) {
     try {
         debug("Phase 3: Database update complete for", event_body._id);
         callback(null, event_body);
@@ -486,9 +684,9 @@ function follow_on_change(details, feed) {
                                     };
                                     debug("Event/Database record to be posted:", submit_record);
                                     waterfall([
-                                        async.apply(evaluate_data, submit_record),
-                                        insert_asset_record,
-                                        asset_request_complete
+                                        async.apply(insert_only_evaluate_data, submit_record),
+                                        insert_only_asset_record,
+                                        insert_only_asset_request_complete
                                     ],
                                         function (err, results) {
                                             debug("Event result:", JSON.stringify(results, null, 4));
@@ -589,10 +787,10 @@ function follow_on_change(details, feed) {
                                             debug("Event/Database record to be posted:", submit_record);
 
                                             waterfall([
-                                  async.apply(evaluate_data, submit_record),
-                                  insert_asset_record,
-                                  asset_request_complete
-                                ],
+                                              async.apply(insert_only_evaluate_data, submit_record),
+                                              insert_only_asset_record,
+                                              insert_only_asset_request_complete
+                                            ],
                                                 function (err, results) {
                                                     debug("Event result:", JSON.stringify(results, null, 4));
                                                     if (err !== null) {
@@ -670,7 +868,13 @@ function follow_on_change(details, feed) {
                             // if continuous operation and both telemetry and simulation inactive, event_manager will
                             // re-initialize telemetry
                             if (operational_status.iteration == "continuous" &&
-                                operational_status.telemetry_status == "inactive") {
+                                operational_status.telemetry_status == "inactive") 
+                            
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "enable";
+                                update_control(dbname, key, state);                                  
                                 console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
                             }
                             console.log(prefix_text, "Rule Processing - Simulation Iteration Complete Event");
@@ -686,7 +890,12 @@ function follow_on_change(details, feed) {
                         {
                             operational_status.telemetry_status = "inactive";
                             if (operational_status.iteration == "continuous" &&
-                                operational_status.simulation_status == "inactive") {
+                                operational_status.simulation_status == "inactive") 
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "enable";
+                                update_control(dbname, key, state);                               
                                 console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
                             }
                             console.log(prefix_text, "Rule Processing - Telemetry Iteration Complete Event");
@@ -696,6 +905,12 @@ function follow_on_change(details, feed) {
                         {
                             console.log(prefix_text, "Rule Processing - Olli 1 at Stop 4, Patron Boarding");
                             if (operational_status.pause_at_stops) {
+                                
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "disable";
+                                update_control(dbname, key, state);
+                                
                                 console.log(prefix_text, "Rule Processing - Pause at Stops Enabled, Olli 1 at Stop 4, Patron Can Board");
                             }
 
@@ -705,6 +920,11 @@ function follow_on_change(details, feed) {
                         {
                             console.log(prefix_text, "Rule Processing - Rule Processing - Olli 1 at Stop 1, Patron Exit");
                             if (operational_status.pause_at_stops) {
+                                
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "disable";
+                                update_control(dbname, key, state);                                
                                 console.log(prefix_text, "Rule Processing - Pause at Stops Enabled, Olli 1 at Stop 1, Patron Can Exit");
                             }
 
