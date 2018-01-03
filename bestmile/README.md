@@ -4,14 +4,11 @@ Node.js adapter that connects to Core Engine and transforms events received thro
 
 ## Installation
 
-You need to fetch AV-JS and Hermes repositories defined as submodules of this project: Go to the root folder and run `git submodule update --init --recursive`. You will need access to these private repositories first. Ask the BestMile team if you don't have.
+The BestMile AccessibleOlli Adapter relies on two (private) remote GIT repositories, [AV-JS](https://github.com/BestMile/av-js) and [Hermes](https://github.com/BestMile/hermes), which you need to clone into `/av-js` and `/av-js/hermes` (respectively). Note that you need to be given access to those repositories in order to be able to clone them (send an e-mail to the BestMile team).
 
-**IMPORTANT REMARK BELOW:**
-
-After running the above-mentioned command you should have two non-empty folders: `/av-js` and `/av-js/hermes`. If not, you need to clone manually those repository at those locations (remember that they are private and you need to be given access to them). Quick alternative commands to clone everything in the proper folders:
 ```
-git clone git@github.com:BestMile/av-js.git
-git clone git@github.com:BestMile/hermes.git av-js/hermes
+git clone https://github.com/BestMile/av-js.git
+git clone https://github.com/BestMile/hermes.git av-js/hermes
 ```
 
 ## Run
@@ -28,7 +25,7 @@ Hermes Adapter:  Vehicles: [ 'olli_1', 'olli_2', 'olli_3' ]
 Hermes Adapter:  Core Engine Hermes address: { host: 'accessibleolli.env.partners.bestmile.io',
   port: '32363' }
 Hermes Adapter:  Keepalive ECHO requests frequency (ms): 3000
-Hermes Adaprm ter:  Registering vehicles.
+Hermes Adapter:  Registering vehicles.
 Hermes Adapter:  Connecting and announcing vehicle olli_1
 Hermes Adapter:  Connecting and announcing vehicle olli_2
 Hermes Adapter:  Connecting and announcing vehicle olli_3
@@ -42,4 +39,12 @@ Hermes Adapter:  Sending ECHO request from vehicle  olli_3
 
 ## Privacy
 
-**AV-JS** and the **Hermes** protocol source codes are proprietary of BestMile and have been shared to IBM exclusively in the scope of #AccessibleOlli. Their access and publishing is restricted. Please contact Bastien Rojanawisut <bastien.rojanawisut@bestmile.com> for receiving access to those source codes.
+**AV-JS** and the **Hermes** protocol source codes are proprietary of BestMile and have been shared to IBM exclusively in the scope of #AccessibleOlli. Their access and publishing is restricted. Please contact BestMile for receiving access to those source codes.
+
+## BestMile Team Contacts
+
+* Bastien Rojanawisut <bastien.rojanawisut@bestmile.com>, Integration Engineer, who wrote this code
+* David Geretti <david.geretti@bestmile.com>, Lead Engineer
+* Lissa Franklin <lissa.franklin@bestmile.com>, VP Business Development and Marketing
+* Leemor Chandally <leemor.chandally@bestmile.com>, Director of Strategic Partnerships (North America)
+* General BestMile support <support@bestmile.com>
