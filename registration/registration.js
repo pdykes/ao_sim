@@ -5,6 +5,10 @@ var writeJsonFile = require('write-json-file');
 var loadJsonFile = require('load-json-file');
 var config = require('config');
 
+
+// note, this file does not automatically overwrite
+// ../config version
+
 var filename = "registration.json";
 
 

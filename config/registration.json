@@ -1,0 +1,92 @@
+[
+	{
+		"persona": "init",
+		"id": "-1",
+		"epc": "000000000000",
+        "preferences" : {
+            "mobile_phone" : "507-234-1234",
+            "cuisine" : "Italian"
+        }
+	},
+	{
+		"persona": "Kathryn",
+		"id": "40",
+		"epc": "E280116060000209597B5241",
+        "preferences" : {
+            "mobile_phone" : "507-234-2234",
+            "cuisine" : "Italian"
+        }
+	},
+	{
+		"persona": "Kathryn",
+		"id": "02",
+		"epc": "000221550000000000000461",
+        "preferences" : {
+            "mobile_phone" : "507-234-3234",
+            "cuisine" : "Chinese"
+        }
+	},
+	{
+		"persona": "Erich",
+		"id": "41",
+		"epc": "000000000000000052313155",
+        "preferences" : {
+            "mobile_phone" : "507-234-4234",
+            "cuisine" : "Italian"
+        }
+	},
+	{
+		"persona": "Brent",
+		"id": "04",
+		"epc": "000221550000000000000464",
+        "preferences" : {
+            "mobile_phone" : "507-234-5234",
+            "cuisine" : "Chinese"
+        }
+	},
+	{
+		"persona": "Brent",
+		"id": "20",
+		"epc": "000221550000000000000465",
+        "preferences" : {
+            "mobile_phone" : "507-234-6234",
+            "cuisine" : "Italian"
+        }
+	},
+	{
+		"persona": "Erich",
+		"id": "27",
+		"epc": "000221252000000000000254",
+        "preferences" : {
+            "mobile_phone" : "507-234-7234",
+            "cuisine" : "Chinese"
+        }
+	},
+	{
+		"persona": "Brent",
+		"id": "34",
+		"epc": "300833B2DDD9014000000000",
+        "preferences" : {
+            "mobile_phone" : "507-234-8234",
+            "cuisine" : "Italian"
+        }
+	},
+	{
+		"persona": "Grace",
+		"id": "07",
+		"epc": "E280116060000209597B5202",
+        "preferences" : {
+            "mobile_phone" : "507-234-9234",
+            "cuisine" : "Chinese"
+        }
+	},
+	{
+		"persona": "Grace",
+		"id": "30",
+		"epc": "E280116060000209597B4862",
+        "preferences" : {
+            "mobile_phone" : "507-234-3334",
+            "cuisine" : "American"
+        }
+	}
+]

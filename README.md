@@ -1,6 +1,154 @@
-# mvp3 - Welcome!
+# mvp4b - Welcome!
 
-Changes
+Mvp4 Changes
+
+  - Key change, the rule_events database has been renamed to
+    rule_event_transitions due to required wildcarding for
+    event manager.  If you use the config (config/default.config)
+    should not be much of an issue.
+  - olli_audio_agent added
+    - Watson text to speach is now integrated
+    - configugration in box, normal spot in mvp4/
+    - these events can be add in either the simulation
+      or the telemetry rules (see config)
+    - the tagging and local file support is pending,
+      target mvp4b
+    - simulation example:
+```
+            {
+                "name": "audio_welcome_to_olli_1",
+                "event": "audio_welcome_to_olli_1",
+                "payload": {
+                    "action": "play",
+                    "type": "audio",
+                    "text": "Welcome to the 2018 Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners.",
+                    "accept": "audio/mp3",
+                    "audio_target" : "olli_1 or stop_1",
+                    "tag" : "Audio_Welcome_to_Olli",
+                    "local" : "welcome_olli.m4a",
+                    "parameters": "e1;e2;e3..."
+                }
+		    }
+
+```
+    - telemetry Watson text to speech example (note event same as above)
+```
+            {
+                "name": "audio_awareness_appraoching_stop_4",
+                "filter": "olli_1",
+                "event": "audio_awareness_appraoching_stop_4",
+                "payload": {
+                    "action": "play",
+                    "type": "audio",
+                    "text": "Olli is approaching Discovery Square, Stop 4.",
+                    "accept": "audio/mp3",
+                    "tag": "audio_approaching_stop_4",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "y1;y2;y3..."
+                }
+		    }
+```
+    
+  - persona data improvements
+    - phone and cuisine added, e.g.:
+    
+```
+            body: {
+                "_id": "Erich:41",
+                "_rev": "57-4583d43da4761a690a001087a41157c0",
+                "persona": "Erich",
+                "persona_id": "41",
+                "transition": "olli_stop_end_exit",
+                "preferences": {
+                    "mobile_phone": "507-234-4234",
+                    "cuisine": "Italian"
+                },
+                "time": 1514754156320,
+                "delta_time": 3039,
+                "location": "olli_stop",
+                "old_location": "exhibit",
+                "smartpass_id": "000000000000000052313155"
+            }
+```
+    
+  - event manager
+     - more standard attributes to be used for context
+     - events initiated from simulation rules
+       (payload attributes beginning with "_")
+```
+        {
+          "_id": "audio_welcome_to_olli_1:0fc11bd4-0796-4383-aa42-aafdb4e72e0e:1514755244315",
+          "_rev": "1-cecc8a44f62cd000933f8a478a3f5484",
+          "event": "audio_welcome_to_olli_1",
+          "payload": {
+            "action": "play",
+            "type": "audio",
+            "text": "Welcome to the 2018 Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners.",
+            "accept": "audio/mp3",
+            "audio_target": "olli_1 or stop_1",
+            "tag": "Audio_Welcome_to_Olli",
+            "local": "welcome_olli.m4a",
+            "parameters": "e1;e2;e3...",
+            "_event_type": "simulation_rule_event",
+            "_simulation_real_time": 1514755244315,
+            "_simulation_delta_time": 1000
+          }
+        }
+
+```
+   - event intiated from telemetry rules
+   
+```
+        {
+          "_id": "audio_olli_1_has_arrived_mayo_gonda_stop_5:e1c993c4-3af0-47d3-a71b-7eca06d27071:1507493012000",
+          "_rev": "1-048714e07f81cbed1c0ae24a35665cf9",
+          "event": "audio_olli_1_has_arrived_mayo_gonda_stop_5",
+          "payload": {
+            "action": "play",
+            "type": "audio",
+            "text": "Olli 1 has arrived at Mayo Gonda, Stop 1.",
+            "accept": "audio/mp3",
+            "tag": "audio_olli_1_stop_5",
+            "local": "welcome_olli.m4a",
+            "parameters": "y1;y2;y3...",
+            "_vehicle": "olli_1",
+            "_offset": 211,
+            "_simulation_delta_time": 106000,
+            "_simulation_real_time": 1514755349453,
+            "_event_type": "telemetry_rule_event"
+          }
+        }
+```
+
+     
+  - ces_control_agent
+     - new agent that implements items specifcially for
+       CES (maybe others, but leverages ao_sim work)
+     - this will be leveraged more in mvp4b
+     
+  - fixed a bug I introduced into bestmile ;-) after overwirting something (yea, it was late)
+  - event manager is close to supporting
+     - clearly state beginning and end of each iteration of simulation
+     - continuous running mode enabled (mvp4c to engage fully, especially for long running test)
+     - support for continuous but also stopping sim and stop 4 and stop 1 for show staff to re-engage
+     
+  - ces event manager start in place
+     - will be anchor for ramp and emergency stop
+     
+     
+  - ao_sim now offers a web interface if command line getting you down ;-)
+    - only simulation control support thus far
+    - to operate
+        - cd cmdline/
+        - export AOCLI_SERVICE=true
+        - node ao.js
+        - using browser, visit:  http://localhost:3007/
+        - Only the simulation control section (option 1 is operational)
+        - Focus on Initiate Simulation to kick off telemetry, otherwize
+          the command line, will flush out web function in future drops
+
+
+Mvp3 Changes
 
   - Event Manager (rule agent) added:
     - Simple model to script what should occur based on various input events
@@ -8,20 +156,20 @@ Changes
     - Each start and stop now support via events (see slack for more info), an example:
 
 ```
-{
-  "_id": "Trip Start:3bfa51e6-2234-4fb3-9b8d-4d8623d8fff9:1507493012500",
-  "_rev": "1-d44f5c8b701c5e907abcf9dd2aa744ba",
-  "event": "Leaving Mayo Gonda (Stop 1)",
-  "payload": {
-    "type": "event_data",
-    "state": "stop_4_departure",
-    "at_stop": "stop_1",
-    "previous_stop": "stop_5",
-    "next_stop": "stop_2",
-    "_vehicle": "olli_1",
-    "_offset": 212
-  }
-}
+        {
+          "_id": "Trip Start:3bfa51e6-2234-4fb3-9b8d-4d8623d8fff9:1507493012500",
+          "_rev": "1-d44f5c8b701c5e907abcf9dd2aa744ba",
+          "event": "Leaving Mayo Gonda (Stop 1)",
+          "payload": {
+            "type": "event_data",
+            "state": "stop_4_departure",
+            "at_stop": "stop_1",
+            "previous_stop": "stop_5",
+            "next_stop": "stop_2",
+            "_vehicle": "olli_1",
+            "_offset": 212
+          }
+        }
 ```
 
   - To use
@@ -67,9 +215,7 @@ Key things to notice:
 
  - telemetry.json (updated, still separate)
 
-    - Due to usage limations, you must acquire from the protected box folder
-    - This file is pivotal to the simulation
-    - Now (as of mvp3) ncludes what3words integration
+    - in box mvp4 directory (same as mvp2 version)
 
  - ../config/ now has rule files
 
@@ -117,15 +263,16 @@ Key things to notice:
              
 Currently inflight functions targeted for mpv4:
 
-    - audio agent serving up Watson, and will fallback to recordings
-    - olli ramp deploy agent
-    - olli emergency stop agent
+    - audio agent serving up Watson, and will fallback to recordings, need to account for stop and 
+    olli physical deploy) (first version complete, device specific work next)
+    - olli ramp deploy agent (ces_control_agent a start)
+    - olli emergency stop agent (ces_control_agent a start)
     - integrate detailed, per simulation time and event offset graphics and visual experience
     - control to initiate actual ramp deploy and retraction, separate tool
     - Kintrans avatar
-    - persona specific (e.g. kathyrn XX phone number, food choice, and whatever, let me know)
+    - persona specific (e.g. kathyrn XX phone number, food choice, and whatever, let me know) [done]
     - please drop requirements for critical needed functions
-    - automated startup and operation
+    - automated startup and operation [ao_cli has a start]
 
 Enabling debugging
 
@@ -611,6 +758,43 @@ This tool is like telemetry, event_manager, etc.. is will just continue until ab
 
 Each the agent_proxy elements (see ../config/default.json for a list of agents working with agent proxy)
 can be unique, so please refer to the solution specfiic readme.
+
+13. Starting Olli Audio Agent
+
+(note: if you set debug, e.g. export DEBUG=olli_audio_agent, you will see the text as they are queued up to be spoken by the system)
+
+```
+(cd olli_audio_agent)
+> node app.js
+```
+
+Then, the following will appear:
+
+```
+        Sun, 31 Dec 2017 20:54:55 GMT olli_audio_agent Debug enabled in module: olli_audio_agent
+        Sun, 31 Dec 2017 20:54:55 GMT olli_audio_agent [Olli Audio Agent] Retain Audio FIles: true
+        [Olli Audio Agent] Listener target: http://127.0.0.1:5984/rule_events ^c to exit
+
+        ***Once the simulation - the below will appear***
+        [Olli Audio Agent] ***Audio Event to be queued: {
+            "_id": "audio_welcome_to_olli_1:480532ac-d247-4941-982a-ab5f5c611f6d:1514753714789",
+            "_rev": "1-f88c1504f8c356457c682a42a7f200f6",
+            "event": "audio_welcome_to_olli_1",
+            "payload": {
+                "action": "play",
+                "type": "audio",
+                "text": "Welcome to the 2018 Accessible Olli Exhibit, provided by CTA, IBM, Local Motors and other partners.",
+                "accept": "audio/mp3",
+                "audio_target": "olli_1 or stop_1",
+                "tag": "Audio_Welcome_to_Olli",
+                "local": "welcome_olli.m4a",
+                "parameters": "e1;e2;e3...",
+                "_event_type": "simulation_rule_event",
+                "_simulation_real_time": 1514753714789,
+                "_simulation_delta_time": 1000
+            }
+        }
+```
 
 ## Docker container approach (Optional!)
  

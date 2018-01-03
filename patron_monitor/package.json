@@ -1,0 +1,16 @@
+{
+  "name": "patron_monitor",
+  "version": "0.0.1",
+  "description": "patron_monitor",
+  "main": "persona_locations.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^1.29.0",
+    "follow": "^1.0.0",
+    "request": "^2.83.0"
+  }
+}

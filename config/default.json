@@ -45,35 +45,41 @@
             "transition": "telemetry_transition",
             "configuration": "telemetry.json",
             "simulation_interval": 500,
-            "alert_interval" : 500
+            "alert_interval": 500
         },
-        "monitor" :  {
-            "module_name"   : "monitor",
-            "rfid_ip"       : "192.168.1.25",
-            "rfid_port"     : "14150",
-            "interval"      : "250",
-            "time_gap"      : "1000",
-            "database"      : "persona_transitions"
+        "monitor": {
+            "module_name": "monitor",
+            "rfid_ip": "192.168.1.25",
+            "rfid_port": "14150",
+            "interval": "250",
+            "time_gap": "1000",
+            "database": "persona_transitions"
         },
-        "patron_manager" : {
-            "module_name"      : "patron_manager",
-            "database"         : "persona_transitions",
-            "output_database"  : "patron_location_transitions",
-            "roller_record_key"         : "patrons_olli_roller",
-            "stop_record_key"           : "patrons_olli_stop",
-            "registration_record_key"   : "patrons_registration",
-            "exhibit_record_key"        : "patrons_exhibit" 
+        "patron_manager": {
+            "module_name": "patron_manager",
+            "database": "persona_transitions",
+            "output_database": "patron_location_transitions",
+            "roller_record_key": "patrons_olli_roller",
+            "stop_record_key": "patrons_olli_stop",
+            "registration_record_key": "patrons_registration",
+            "exhibit_record_key": "patrons_exhibit"
         },
-        "voice_agent" : {
-            "database" : "voice_requests"
+        "olli_audio_agent": {
+            "module_name": "olli_audio_agent",
+            "module_Name": "Olli Audio Agent",
+            "database": "audio_events",
+            "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
+            "watson_username": "See mvp4 directory for user",
+            "watson_password": "See mvp4 directory for pwd",
+            "retain_audio_artifacts" : "false"
         },
-        "event_manager" : {
+        "event_manager": {
             "module_name": "event_manager",
             "module_Name": "Event Manager",
-            "port"  :  "3006",
-            "simulation_event_rules" : "simulation_time_events.json",
-            "telemetry_event_rules" : "telemetry_offset_events.json",
-            "events_database" : "rule_events"
+            "port": "3006",
+            "simulation_event_rules": "simulation_time_events.json",
+            "telemetry_event_rules": "telemetry_offset_events.json",
+            "events_database": "rule_event_transitions"
         },
         "bestmile" : {
             "module_name" : "bestmile",
@@ -83,13 +89,21 @@
               "olli_2": "olli_2",
               "olli_3": "olli_3"
             },
-            "hermes_config": { "host": "accessibleolli.env.partners.bestmile.io", "port": "32363" }
+            "hermes_config": {
+                "host": "accessibleolli.env.partners.bestmile.io",
+                "port": "32363"
+            }
+        },
+        "ces_control_agent": {
+            "module_name": "ces_control_agent",
+            "module_Name": "CES Control Agent"
         }
     },
     "ao_cli": {
         "nosql_url": "http://127.0.0.1:5984",
         "nosql_user": "",
         "nosql_password": "",
+        "app_port": "3007",
         "module_name": "ao_cli",
         "module_Name": "#AO_cli",
         "telemetry": "telemetry_transitions",
@@ -97,12 +111,12 @@
         "telemetry_transition": "telemetry_transition",
         "kintrans_01": "kintrans_01_transitions",
         "kintrans_01_to_device": "to_device",
-        "kintrans_01_from_device": "from_device",  
+        "kintrans_01_from_device": "from_device",
         "kintrans_02": "kintrans_02_transitions",
         "kintrans_02_to_device": "to_device",
-        "kintrans_02_from_device": "from_device", 
+        "kintrans_02_from_device": "from_device",
         "ultrahaptics_01": "ultrahaptics_01_transitions",
         "ultrahaptics_01_to_device": "to_device",
-        "ultrahaptics_01_from_device": "from_device"         
+        "ultrahaptics_01_from_device": "from_device"
     }
 }

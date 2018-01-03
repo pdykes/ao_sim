@@ -1,0 +1,137 @@
+#AccessibleOlli Simulation Control Panel
+<img src="/images/cognitive-insights-drive-selfdriving-accessibility-1-638.jpg" alt="AccessibleOlli" align="right">
+<section>
+    <h1>Option 1 - Simulation Control</h1>
+    
+    <form action="/action" method="post" name="simulation_control">
+        <input type="hidden" name="request_type" value="simulation_control">
+        <input type="radio" name="option" value="not_active" Checked>No Action<br>
+        <br>
+        <input type="radio" name="option" value="iteration_continuous">Enable Continuously Looping Simulation<br>
+        <input type="radio" name="option" value="iteration_single">Enable Single Loop Simulation (default)<br>
+        <br>
+        <input type="radio" name="option" value="start_simulation">Initiate Simulation<br>
+        <input type="radio" name="option" value="suspend_simulation">Suspend Simulation<br>
+        <br>
+        <input type="radio" name="option" value="enable_suspend_at_stops_simulation">Enable Stopping at Stop 4 and Stop 1 (demo scenario)<br>
+        <input type="radio" name="option" value="disable_suspend_at_stops_simulation">Disable Stopping at Stop 4 and Stop 1 (demo scenario)<br>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</section>
+
+*** Remainder to be made operational post mvp4b...  ***
+
+<section>
+    <h1>Option 2 - Persona Use Case - Location</h1>
+    <form action="/action" method="post">
+        <input type="hidden" name="request_type" value="persona">First name:<br>
+        <input type="radio" name="firstname" value="not_active" checked>No Action<br>
+        <input type="radio" name="firstname" value="Brent">Brent<br>
+        <input type="radio" name="firstname" value="Erich">Erich<br>
+        <input type="radio" name="firstname" value="Grace">Grace<br>
+        <input type="radio" name="firstname" value="Katherine">Katherine<br>
+
+        <br><br> Persona Id (between 0 and 50):<br>
+        <input type="number" name="id" min="0" max="50" value="0">
+        <br><br>
+
+        <input type="radio" name="location" value="exhibit" Checked>Exhibit<br>
+        <input type="radio" name="location" value="stop">Enter Stop<br>
+        <input type="radio" name="location" value="olli">Enter Olli<br>
+        <input type="radio" name="location" value="stop">Exit Stop<br>
+        <input type="radio" name="location" value="olli">Exit Olli<br>
+
+        <input type="submit" value="Submit">
+    </form>
+</section>
+
+
+
+<section>
+    <h1>Option 3 - Agent Use Case - Control Agents</h1>
+    <form action="/action" method="post">
+        <input type="hidden" name="request_type" value="agent"> Proxy Agent Reference:<br>
+        <input type="radio" name="firstname" value="Kintrans_01" checked> Kintrans 01<br>
+        <input type="radio" name="firstname" value="Kintrans_02"> Kintrans 02<br>
+        <input type="radio" name="firstname" value="Ultrahaptics_01"> Ultrahaptics<br>
+        <input type="radio" name="firstname" value="Olli_control_01"> Olli Control><br><br> Control Option<br>
+        <input type="radio" name="agent_command" value="init" checked>Initialize<br>
+        <input type="radio" name="agent_command" value="start" checked> Start<br>
+        <input type="radio" name="agent_command" value="suspend" checked> Suspend<br>
+        <input type="radio" name="agent_command" value="exit" checked>Stop<br>
+
+        <input type="submit" value="Submit">
+    </form>
+</section>
+
+<section>
+    <h1>Option 4 - Emergency Stop Scenario</h1>
+    Wave Hand for Emergency STop
+    <form action="/action" method="post">
+        <input type="hidden" name="request_type" value="emergency_stop">
+        <input type="radio" name="option" value="not_active" checked> Not Active<br>
+        <input type="radio" name="option" value="post_howto">Post How to Enable Emergency Stop<br>
+        <input type="radio" name="option" value="simulate_hatpics">Wave Arm to Ultrhaptics<br>
+        <input type="radio" name="option" value="stop_olli">Stop Olli<br>
+        <input type="radio" name="option" value="engage_notify">Notify Emergency Stop<br> input type="radio" name="option" value="engage_restarting">Notify Emergency Stop Complete, Restarting<br>
+        <input type="submit" value="Submit">
+    </form>
+</section>
+
+<section>
+    <h1>Option 5 - Wheel Chair Boarding Scenario</h1>
+    Exit Web Application Instance
+    <form action="/action" method="post">
+        <input type="hidden" name="request_type" value="wheelchair_ingress">
+
+        <input type="radio" name="option" value="ingress_not_active" Checked>Not Active<br>
+        <input type="radio" name="option" value="enable_lights">Enable Lights<br>
+        <input type="radio" name="option" value="enable_sound_onboard">Enable Onboard Announcement<br>
+        <input type="radio" name="option" value="educate_pre_boarding">Pre Boarding Education<br>
+        <input type="radio" name="option" value="deploy_ramp">Deploy Ramp<br>
+        <input type="radio" name="option" value="educate_pre_restraint">Pre Restraint Education<br>
+        <input type="radio" name="option" value="active_restraint">Activate Restraint<br>
+        <input type="radio" name="option" value="ramp_restract_warning">Ramp Retract Warning<br>
+        <input type="radio" name="option" value="ramp_retract">Ramp Restract<br>
+        <input type="radio" name="option" value="ramp_restract_warning_complete">Enable Onboard Ramp Retract Complete Announcement<br>
+        <input type="radio" name="option" value="educate_success_wheelchair_ingress">Boarding Success<br>
+        <input type="radio" name="option" value="welcome_and_start">Welcome and Start<br>
+
+        <input type="submit" value="Submit">
+    </form>
+</section>
+
+<section>
+    <h1>Option 6 - Wheel Chair Exit Scenario</h1>
+    Exit Web Application Instance
+    <form action="/action" method="post">
+        <input type="hidden" name="request_type" value="wheelchair_egress">
+        <input type="radio" name="option" value="egress_not_active" Checked>Not Active<br>
+        <input type="radio" name="option" value="enable_egress_lights">Enable Lights<br>
+        <input type="radio" name="option" value="enable_egress_sound_onboard">Enable Onboard Announcement<br>
+        <input type="radio" name="option" value="educate_pre_egress">Pre Exit Education<br>
+        <input type="radio" name="option" value="educate_qstraint_egress">Restraint Education<br>
+        <input type="radio" name="option" value="active_restraint_egress">Activate Restraint<br>
+        <input type="radio" name="option" value="enable_sound_ramp_egress_deploy">Enable Onboard Ramp Deploy Announcement<br>
+        <input type="radio" name="option" value="deploy_ramp">Deploy Ramp<br>
+        <input type="radio" name="option" value="ramp_restract_warning">Deploy Ramp Retract Warning<br>
+        <input type="radio" name="option" value="ramp_retract">Ramp Restract<br>
+        <input type="radio" name="option" value="ramp_restract_warning_complete">Enable Onboard Ramp Retract Complete Announcement<br>
+        <input type="radio" name="option" value="ramp_thank_you">Thanks and User Exit<br>
+
+        <input type="submit" value="Submit">
+    </form>
+</section>
+
+<section>
+    <h1>Option 7 - Exit Tool</h1>
+    Exit Web Application Instance
+    <form action="/action" method="post">
+        <input type="hidden" name="request_type" value="exit">
+
+        <input type="radio" name="option" value="Yes"> Exit Application<br>
+        <input type="radio" name="option" value="No" checked> Continue Application<br>
+        <input type="submit" value="Submit">
+    </form>
+</section>

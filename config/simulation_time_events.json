@@ -1,4 +1,16 @@
 {
+    "simulation_record_500": {
+        "simulation_time": 500,
+        "events": [
+            {
+                "name": "Simulation Pass Start",
+                "event": "_simulation_start_event",
+                "payload": {
+                    "element1": "THIS MUST BE THE FIRST EVENT-Reserved"
+                }
+	       }
+        ]
+    },
     "simulation_record_1000": {
         "simulation_time": 1000,
         "events": [
@@ -14,14 +26,15 @@
                 "name": "audio_welcome_to_olli_1",
                 "event": "audio_welcome_to_olli_1",
                 "payload": {
-                    "action": "play",
                     "type": "audio",
-                    "audio_target" : "olli_1 or stop_1",
-                    "tag" : "Audio_Welcome_to_Olli",
-                    "uri" :  "ibm.bluemix.com:///->watson",
+                    "text": "Welcome to the 2018 CES Accessible Olli Exhibit.",
+                    "accept": "audio/mp3",
+                    "audio_target": "olli_1 or stop_1",
+                    "tag": "Audio_Welcome_to_Olli",
+                    "local": "welcome_olli.m4a",
                     "parameters": "e1;e2;e3..."
                 }
-		    },          
+		    },
             {
                 "name": "another_event_name_at_simtime_0",
                 "event": "another_event_at_simtime_0",
@@ -43,17 +56,17 @@
                     "element2": "4"
                 }
 	       },
-           {
+            {
                 "name": "welcome_to_olli_video_1",
                 "event": "welcome_to_olli_video_1",
                 "payload": {
                     "action": "show",
-                    "uri" : "display_some_url",
-                    "device" :  "monitor_5b",
+                    "uri": "display_some_url",
+                    "device": "monitor_5b",
                     "type": "display",
                     "parameters": "v1;v2;v3..."
                 }
-		    },            
+		    },
             {
                 "name": "another_event_name_at_simtime_1",
                 "event": "another_event_at_simtime_1",
@@ -63,6 +76,30 @@
                 }
 	       }
         ]
+    },
+    "simulation_record_323500": {
+        "simulation_time": 323500,
+        "events": [
+            {
+                "name": "audio_exit_from_olli_1",
+                "event": "audio_exit_from_olli_1",
+                "payload": {
+                    "type": "audio",
+                    "text": "Thank you for attending the Accessible Olli Exhibit, you have completed this persona's experience, and are welcome to experience another. CTA, IBM, Local Motors and our other partners appreciate your participation now and in the future. Thanks for making Autonomous for All of Us! possible",
+                    "accept": "audio/mp3",
+                    "audio_target": "olli_1 or stop_1",
+                    "tag": "Audio_Welcome_to_Olli",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "e1;e2;e3..."
+                }
+		    },
+            {
+                "name": "Simulation Pass Complete",
+                "event": "_simulation_complete_event",
+                "payload": {
+                    "comment": "THIS MUST BE THE LAST EVENT-Reserved"
+                }
+            }
+        ]
     }
 }
-

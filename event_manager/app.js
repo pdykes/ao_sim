@@ -20,12 +20,47 @@ debug("Debug enabled in module: %s", module_name);
 var express = require('express'),
     bodyParser = require('body-parser');
 
-var agent_name = "agent_proxy";
+var agent_name = module_name;
 var agent_version = "0.0.1";
 
 var app = express();
 
 app.use(bodyParser.json());
+
+// Ramp status
+var RAMP_UNDEPLOYED = 0;
+var RAMP_DEPLOYING = 1;
+var RAMP_DEPLOYED = 2;
+
+// QStraint status
+var QSTRAINT_UNDEPLOYED = 0;
+var QSTRAINT_DEPLOYING = 1;
+var QSTRAINT_DEPLOYED = 2;
+
+// special events
+var SIM_START_EVENT = "_simulation_start_event";
+var SIM_END_EVENT = "_simulation_complete_event";
+
+var TEL_START_EVENT = "_telemetry_start_event";
+var TEL_END_EVENT = "_telemetry_complete_event";
+
+var PATRONS_BOARD = "stop_simulation_board_patrons_stop_4";
+var PATRONS_EXIT = "stop_simulation_patrons_exit_stop_1";
+
+var operational_status = {
+    telemetry_status: "inactive", // are simulation events arrival active or inactive
+    simulation_status: "inactive", // are telemetry events arrival active or inactive
+    mode: "enabled", // Disabled another option
+    iteration: "single", // Continuous another option
+    pause_at_stops: false, // should the simulation pause at stops (e.g. on show floor)
+    delta_time: 0, // 0 when simulation is not running
+    interrupt: true, // Is single or continuous opertions, should
+    // interrupt (true) events be honored or not (false)
+    emergency_stop: false, // Emergency stop mode enabled (true) or not (false)
+    ramp_mode: false, // Is ramp operations enabled (be very careful here)
+    ramp_state: RAMP_UNDEPLOYED, // see above
+    qstraint_state: QSTRAINT_UNDEPLOYED // see above  
+};
 
 // setup the database follow...
 
@@ -54,6 +89,9 @@ var database_url = config.get("global.nosql_url");
 var database_user = config.get("global.nosql_user");
 var database_password = config.get("global.nosql_password");
 var database = config.get("agents.event_manager.events_database");
+
+var telemetry_database = config.get("agents.telemetry.database");
+var rule_events_database = config.get("agents.event_manager.events_database");
 
 var couch = null;
 var events_db = null;
@@ -222,15 +260,213 @@ var event_template = {
     }
 };
 
+// READ AND UPDATE LOGIC
 
-function evaluate_data(submit_record, callback) {
+// Database operations code
+
+//---------------------------------------------------------------
+
+function evaluate_data(database, database_key, control, operation, callback) {
+
+    try {
+        debug("Phase 1: Prepare control operation");
+
+        debug("Operation:", operation);
+        debug("Control:", control);
+
+        // expecting more function here potentialy
+
+        callback(null, database, database_key, control, operation);
+    } catch (err) {
+        debug("Phase 1: Error, evaluate_data");
+        callback(err);
+    }
+
+}
+
+function obtain_asset_record(database, database_key, control, operation, callback) {
+
+    var db_record_found = false;
+    control_event = null;
+
+    // attempt to get record from database
+    debug("Phase 2: DB Query, asset:", control + ":" + operation);
+    debug("Phase 2: DB Query, db key:" + database_key);
+
+    var control_command = null;
+
+    // clean this up in mvp3
+
+    if ((control == "telemetry_transitions") && (operation == "enable")) {
+        control_command = "enabled";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "disable")) {
+        control_command = "disabled";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "single")) {
+        control_command = "single";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+    if ((control == "telemetry_transitions") && (operation == "continuous")) {
+        control_command = "continuous";
+        control_event = {
+            _id: database_key
+        };
+    }
+
+
+
+    debug("control_event message:", JSON.stringify(control_event, null, 4));
+
+    try {
+        database.get(control_event._id, {
+            revs_info: false
+        }, function (err, event_body) {
+            if (!err) {
+                db_record_found = true;
+                if (db_record_found) {
+                    debug("Phase 2:Database record found:", JSON.stringify(control_event, 4, null));
+                    control_event['_rev'] = event_body._rev;
+                } else {
+                    debug("Phase 2: Database record found for", control_event._id);
+                }
+                control_event.mode = control_command;
+                debug("Phase 2: Attempting to store:", JSON.stringify(control_event, null, 4));
+                callback(null, database, database_key, control, operation, control_event);
+            } else {
+                // this should not occur...
+                control_event.mode = control_command;
+                debug("Phase 2: Database record not found for", control_event._id);
+                callback(null, database, database_key, control, operation, control_event);
+            }
+        });
+    } catch (err) {
+        debug("Phase 2: Database record not found for", control_event._id);
+        callback(err, "Phase 2: failure", err);
+    }
+}
+
+
+function update_asset_record(database, database_key, control, operation, control_event, callback) {
+
+    debug("Phase 3: Database update to " + control);
+
+    try {
+        database.insert(control_event, function (err, body) {
+            if (!err) {
+                if (body.hasOwnProperty('_rev')) {
+                    debug("Phase 3: Database asset updated:", control_event._id);
+                } else {
+                    debug("Phase 3: Database asset created:", control_event._id);
+                }
+                callback(null, database, database_key, control, operation, control_event);
+            } else {
+                debug("Phase 3: Database asset " + control_event._id + " throwing: ", err);
+                callback(err, database, database_key, control, operation, control_event);
+            }
+        }); // insert
+    } catch (err) {
+        debug("Phase 3: Database record not found for", control_event._id);
+        callback(err, "Phase 3: failure", err);
+    }
+}
+
+function asset_request_complete(database, database_key, control, operation, control_event, callback) {
+    try {
+        debug("Phase 4: Database update complete for", control_event._id);
+        callback(null, database, database_key, control, operation, control_event);
+    } catch (err) {
+        debug("Phase 4: Database record not found for", control_event._id);
+        callback(err, "Phase 4: failure", err);
+    }
+}
+
+// ------------------------------------------------------
+
+function update_control(dbname, key, state) {
+
+    // database, database_key, control, operation
+
+    // control   - telemetry_transitions
+    // operation - enable
+
+    debug("control handler");
+
+    var db = null;
+
+    try {
+        debug("Control Database  uri:" +
+            database_url +
+            " database name:" +
+            dbname);
+
+        couch = require('nano')({
+            url: database_url,
+            parseUrl: false
+        });
+        db = couch.use(dbname);
+    } catch (err) {
+        console.log("database init failure", err);
+    }
+
+    try {
+        debug(prefix_text, "Database operation starting");
+
+        debug("waterfall attributes:", key, dbname, state);
+
+        waterfall([
+            async.apply(evaluate_data,
+                    db,
+                    key,
+                    dbname,
+                    state),
+            obtain_asset_record,
+            update_asset_record,
+            asset_request_complete
+            ],
+            function (err, results) {
+                debug("Event result:", JSON.stringify(results, null, 4));
+                if (err !== null) {
+                    debug("Error Result:",
+                        err);
+                }
+            });
+        console.log(prefix_text, "Successful operation set " +
+            database_key +
+            " in database " +
+            database_name +
+            " now set to " +
+            operation_value + " state");
+    } catch (err) {
+        debug(prefix_text, "Error on database write:", err);
+
+    }
+
+}
+
+
+
+// INSERT ONLY LOGIC
+
+function insert_only_evaluate_data(submit_record, callback) {
 
     debug("Phase 1: Prepare proxy client");
     callback(null, submit_record);
 }
 
 
-function insert_asset_record(event_body, callback) {
+function insert_only_asset_record(event_body, callback) {
 
     debug("Phase 2: Database update to " + event_body._id);
 
@@ -246,7 +482,7 @@ function insert_asset_record(event_body, callback) {
                 callback(null, event_body);
             } else {
                 console.log("Phase 2: Database asset " + event_body._id + " throwing: ", err);
-                callback(err, event_body, req, resp);
+                callback(err, event_body);
             }
         }); // insert
     } catch (err) {
@@ -255,7 +491,7 @@ function insert_asset_record(event_body, callback) {
     }
 }
 
-function asset_request_complete(event_body, callback) {
+function insert_only_asset_request_complete(event_body, callback) {
     try {
         debug("Phase 3: Database update complete for", event_body._id);
         callback(null, event_body);
@@ -320,7 +556,9 @@ app.listen(http_port);
 // assumption all registered agents will be contacted
 
 
-// web server function
+// web server function - post mvp4b
+
+/*
 
 app.post('/', function (request, response) {
     debug("********************** Recieve Post Message *****************************");
@@ -357,6 +595,22 @@ app.post('/', function (request, response) {
 
 });
 
+*/
+
+/*
+
+        Key concept: event manager
+         a) produces rule events
+         b) listens and acts upon them once they are released
+
+        Processing the rule events is completed just like any other
+        consumer, this solution will listen for changes (in read-only
+        mode) and act upon them to control certain aspects of the simulation.
+        
+        This code listens to the async rules and acts accordingly.
+
+*/
+
 function follow_on_change(details, feed) {
 
 
@@ -364,140 +618,325 @@ function follow_on_change(details, feed) {
 
     console.log(prefix_text, "In database:", details.db_name, "Change record: ", details.change.id);
 
-
-    switch (details.change.id) {
-        case "telemetry_transition":
+    switch (details.db_name) {
+        case telemetry_database:
             {
-                console.log("Event Manager - telemetry rules db", details.db_name, " for record:", details.change.id, "[sim offset:", details.change.doc.transport_data.simulation_offset, "for sim time:", details.change.doc.delta_time, "]");
+                switch (details.change.id) {
+                    case "telemetry_transition":
+                        {
+                            console.log("Event Manager - telemetry rules db", details.db_name, " for record:", details.change.id, "[sim offset:", details.change.doc.transport_data.simulation_offset, "for sim time:", details.change.doc.delta_time, "]");
 
-                var telemetry_ref = details.change.doc;
+                            var telemetry_ref = details.change.doc;
 
-                var simulation_delta_time = details.change.doc.delta_time;
-                var simulation_real_time = details.change.doc.event_time;
+                            var simulation_delta_time = details.change.doc.delta_time;
+                            var simulation_real_time = details.change.doc.event_time;
 
-                var vehicle_list = telemetry_ref.transport_data.olli_vehicles;
+                            var vehicle_list = telemetry_ref.transport_data.olli_vehicles;
 
-                debug("buses:", Object.keys(telemetry_ref.transport_data.olli_vehicles));
+                            debug("buses:", Object.keys(telemetry_ref.transport_data.olli_vehicles));
 
-                debug("telemetry transition reference object:", telemetry_ref);
+                            debug("telemetry transition reference object:", telemetry_ref);
 
 
-                // process events for each simulation time
+                            // process events for each simulation time
 
-                /*
-                simulation_by_offset_rules.forEach(function (element) {
-                    debug("simulation_by_offset_rules data structure:");
-                    debug("   Delta_time:", element.index);
-                    debug("   Events:", element.events);
-                });
-                */
-
-                if (simulation_by_offset_rules.hasOwnProperty(simulation_delta_time)) {
-                    debug("Simulation event exist for this instance [" + simulation_delta_time + "]");
-                    simulation_by_offset_rules[simulation_delta_time].events.forEach(function (element) {
-                        debug("   Events:", JSON.stringify(element, null, 4));
-                        var submit_record = {
-                            _id: element.name + ':' + uuid() + ':' + simulation_real_time,
-                            event: element.event,
-                            payload: element.payload
-                        };
-                        debug("Event/Database record to be posted:", submit_record);
-                        waterfall([
-                                  async.apply(evaluate_data, submit_record),
-                                  insert_asset_record,
-                                  asset_request_complete
-                                ],
-                            function (err, results) {
-                                debug("Event result:", JSON.stringify(results, null, 4));
-                                if (err !== null) {
-                                    debug("Error Result:", err);
-                                }
+                            /*
+                            simulation_by_offset_rules.forEach(function (element) {
+                                debug("simulation_by_offset_rules data structure:");
+                                debug("   Delta_time:", element.index);
+                                debug("   Events:", element.events);
                             });
+                            */
 
-                    });
-                }
+                            if (simulation_by_offset_rules.hasOwnProperty(simulation_delta_time)) {
+                                debug("Simulation event exist for this instance [" + simulation_delta_time + "]");
+                                simulation_by_offset_rules[simulation_delta_time].events.forEach(function (element) {
+                                    debug("   Events:", JSON.stringify(element, null, 4));
 
-                // process events for all and each olli
+                                    // reminder, couchdb does not allow _* variables at root level,
+                                    // thus put in payload area, application specific anyway
 
-                // only do this if there are defined rules...
-
-                for (var key in vehicle_list) {
-
-                    var olli_offset = vehicle_list[key].offset;
-                    var olli_name = key;
-
-                    console.log("Processing vehicle:", key);
-
-                    if (telemetry_by_offset_rules.hasOwnProperty(olli_offset)) {
-                        debug("Telemetry event exist for this instance [" + olli_offset + "]");
-                        telemetry_by_offset_rules[olli_offset].events.forEach(function (element) {
-                            // debug("   Events:", JSON.stringify(element, null, 4));
-
-                            var release_event = false;
-                            if (element.hasOwnProperty("filter")) { // default to all
-                                if (element.filter == "all") {
-                                    release_event = true;
-                                    debug("Filer set - Apply this event to each instance");
-                                } else {
-                                    if (element.filter == olli_name) {
-                                        release_event = true;
-                                        debug("Apply this event to specific instance");
+                                    if (!element.payload.hasOwnProperty('_event_type')) {
+                                        console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                                        element.payload._event_type = "simulation_rule_event";
+                                    } else {
+                                        element.payload['_event_type'] = "simulation_rule_event";
                                     }
-                                }
-                            } else {
-                                release_event = true;
-                                debug("Filer not set - Apply this event to each instance");
+
+                                    if (!element.payload.hasOwnProperty('_simulation_real_time')) {
+                                        console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                                        element.payload._simulation_real_time = simulation_real_time;
+                                    } else {
+                                        element.payload['_simulation_real_time'] = simulation_real_time;
+                                    }
+
+                                    if (!element.payload.hasOwnProperty('_simulation_delta_time')) {
+                                        console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                                        element.payload._simulation_delta_time = simulation_delta_time;
+                                    } else {
+                                        element.payload['_simulation_delta_time'] = simulation_delta_time;
+                                    }
+
+                                    var submit_record = {
+                                        _id: element.name + ':' + uuid() + ':' + simulation_real_time,
+                                        event: element.event,
+                                        payload: element.payload
+                                    };
+                                    debug("Event/Database record to be posted:", submit_record);
+                                    waterfall([
+                                        async.apply(insert_only_evaluate_data, submit_record),
+                                        insert_only_asset_record,
+                                        insert_only_asset_request_complete
+                                    ],
+                                        function (err, results) {
+                                            debug("Event result:", JSON.stringify(results, null, 4));
+                                            if (err !== null) {
+                                                debug("Error Result:", err);
+                                            }
+                                        });
+
+                                });
                             }
 
-                            if (release_event) {
-                                debug("Fire this event:", JSON.stringify(element, null, 4));
-                                
-                                if (!element.hasOwnProperty('payload')) {
-                                    element['payload'] = {
-                                    }
-                                }
+                            // process events for all and each olli
 
-                                if (!element.payload.hasOwnProperty('_vehicle')) {
-                                    console.log("Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
-                                    element.payload._vehicle = olli_name;
-                                } else {
-                                    element.payload['_vehicle'] = olli_name;
-                                }
-                                
-                                if (!element.payload.hasOwnProperty('_offset')) {
-                                    console.log("Warning reserved attribute _offset attribute in payload, overriding in ", element.name);
-                                    element.payload._offset = olli_offset;
-                                } else {
-                                    element.payload['_offset'] = olli_offset;
-                                }                                
+                            // only do this if there are defined rules...
 
-                                var submit_record = {
-                                    _id: element.name + ':' + uuid() + ':' + vehicle_list[key].timestamp,
-                                    event: element.event,
-                                    payload: element.payload
-                                };
-                                
-                                debug("Event/Database record to be posted:", submit_record);
-                                
-                                waterfall([
-                                  async.apply(evaluate_data, submit_record),
-                                  insert_asset_record,
-                                  asset_request_complete
-                                ],
-                                    function (err, results) {
-                                        debug("Event result:", JSON.stringify(results, null, 4));
-                                        if (err !== null) {
-                                            debug("Error Result:", err);
+                            for (var key in vehicle_list) {
+
+                                var olli_offset = vehicle_list[key].offset;
+                                var olli_name = key;
+
+                                console.log("Processing vehicle:", key);
+
+                                if (telemetry_by_offset_rules.hasOwnProperty(olli_offset)) {
+                                    debug("Telemetry event exist for this instance [" + olli_offset + "]");
+                                    telemetry_by_offset_rules[olli_offset].events.forEach(function (element) {
+                                        // debug("   Events:", JSON.stringify(element, null, 4));
+
+                                        var release_event = false;
+                                        if (element.hasOwnProperty("filter")) { // default to all
+                                            if (element.filter == "all") {
+                                                release_event = true;
+                                                debug("Filer set - Apply this event to each instance");
+                                            } else {
+                                                if (element.filter == olli_name) {
+                                                    release_event = true;
+                                                    debug("Apply this event to specific instance");
+                                                }
+                                            }
+                                        } else { // no filter, just process for each vehicle
+                                            release_event = true;
+                                            debug("Filer not set - Apply this event to each instance");
+                                        }
+
+                                        if (release_event) {
+                                            debug("Fire this event:", JSON.stringify(element, null, 4));
+
+                                            if (!element.hasOwnProperty('payload')) {
+                                                element['payload'] = {}
+                                            }
+
+                                            if (!element.payload.hasOwnProperty('_vehicle')) {
+                                                console.log(prefix_text, "Warning reserved attribute _vehicle attribute in payload, overriding in ", element.name);
+                                                element.payload._vehicle = olli_name;
+                                            } else {
+                                                element.payload['_vehicle'] = olli_name;
+                                            }
+
+                                            if (!element.payload.hasOwnProperty('_offset')) {
+                                                console.log(prefix_text, "Warning reserved attribute _offset attribute in payload, overriding in ", element.name);
+                                                element.payload._offset = olli_offset;
+                                            } else {
+                                                element.payload['_offset'] = olli_offset;
+                                            }
+
+                                            // simulation_delta_time
+
+                                            if (!element.payload.hasOwnProperty('_simulation_delta_time')) {
+                                                console.log(prefix_text, "Warning reserved attribute _simulation_delta_time attribute in payload, overriding in ", element.name);
+                                                element.payload._simulation_delta_time = simulation_delta_time;
+                                            } else {
+                                                element.payload['_simulation_delta_time'] = simulation_delta_time;
+                                            }
+
+                                            // real-time
+
+                                            if (!element.payload.hasOwnProperty('_simulation_real_time')) {
+                                                console.log(prefix_text, "Warning reserved attribute _simulation_real_time attribute in payload, overriding in ", element.name);
+                                                element.payload._simulation_real_time = simulation_real_time;
+                                            } else {
+                                                element.payload['_simulation_real_time'] = simulation_real_time;
+                                            }
+
+                                            // real-time
+
+                                            if (!element.payload.hasOwnProperty('_event_type')) {
+                                                console.log(prefix_text, "Warning reserved attribute _event_type attribute in payload, overriding in ", element.name);
+                                                element.payload._event_type = "telemetry_rule_event";
+                                            } else {
+                                                element.payload['_event_type'] = "telemetry_rule_event";
+                                            }
+
+                                            var submit_record = {
+                                                _id: element.name + ':' + uuid() + ':' + vehicle_list[key].timestamp,
+                                                event: element.event,
+                                                payload: element.payload
+                                            };
+
+                                            debug("Event/Database record to be posted:", submit_record);
+
+                                            waterfall([
+                                              async.apply(insert_only_evaluate_data, submit_record),
+                                              insert_only_asset_record,
+                                              insert_only_asset_request_complete
+                                            ],
+                                                function (err, results) {
+                                                    debug("Event result:", JSON.stringify(results, null, 4));
+                                                    if (err !== null) {
+                                                        debug("Error Result:", err);
+                                                    }
+                                                });
                                         }
                                     });
+                                }
                             }
-                        });
-                    }
+                        }
+                        break;
+                    case "telemetry_control":
+                        {
+                            if (details.change.doc.mode == "enabled") {
+                                operational_status.mode = details.change.doc.mode;
+                                console.log(prefix_text, "Telemetry Control - Simulation Enabled");
+                            }
+
+                            if (details.change.doc.mode == "disabled") {
+                                operational_status.mode = details.change.doc.mode;
+                                console.log(prefix_text, "Telemetry Control - Simulation Disabled");
+                            }
+                            debug(prefix_text, "Operational Status:", JSON.stringify(operational_status, null, 4));
+                        }
+                        break;
+                    case "telemetry_pause_stops":
+                        {
+                            if (details.change.doc.mode == "enabled") {
+                                operational_status.pause_at_stops = details.change.doc.mode;
+                                console.log(prefix_text, "Pause for stops - Simulation Enabled");
+                            }
+
+                            if (details.change.doc.mode == "disabled") {
+                                operational_status.pause_at_stops = details.change.doc.mode;
+                                console.log(prefix_text, "Pause for stops - Simulation Disabled");
+                            }
+                            debug(prefix_text, "Operational Status:", JSON.stringify(operational_status, null, 4));
+                        }
+                        break;
+                    case "telemetry_iteration":
+                        {
+                            if (details.change.doc.mode == "single") {
+                                operational_status.iteration = details.change.doc.mode;
+                                console.log(prefix_text, "Iteration Mode - Simulation Iteration Model");
+                            }
+
+                            if (details.change.doc.mode == "continuous") {
+                                operational_status.iteration = details.change.doc.mode;
+                                console.log(prefix_text, "Iteration Mode - Simulation Continuous Model");
+                            }
+                            debug(prefix_text, "Operational Status:", JSON.stringify(operational_status, null, 4));
+                        }
+                        break;
+                    default:
+                        console.log("Record ignored arriving from database:", details.db_name, " record:", details.change.id);
                 }
             }
             break;
-        default:
-            console.log("Record ignored arriving from database:", details.db_name, " record:", details.change.id);
+
+        case rule_events_database:
+            {
+
+                // track simulation and telemetry start and stop
+                switch (details.change.doc.event) {
+                    case SIM_START_EVENT:
+                        {
+                            operational_status.simulation_status = "active";
+                            console.log(prefix_text, "Rule Processing - Simulation Iteration Start Event");
+                        }
+                        break;
+                    case SIM_END_EVENT:
+                        {
+                            operational_status.simulation_status = "inactive";
+                            // if continuous operation and both telemetry and simulation inactive, event_manager will
+                            // re-initialize telemetry
+                            if (operational_status.iteration == "continuous" &&
+                                operational_status.telemetry_status == "inactive") 
+                            
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "enable";
+                                update_control(dbname, key, state);                                  
+                                console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
+                            }
+                            console.log(prefix_text, "Rule Processing - Simulation Iteration Complete Event");
+                        }
+                        break;
+                    case TEL_START_EVENT:
+                        {
+                            operational_status.telemetry_status = "active";
+                            console.log(prefix_text, "Rule Processing - Telemetry Iteration Start Event");
+                        }
+                        break;
+                    case TEL_END_EVENT:
+                        {
+                            operational_status.telemetry_status = "inactive";
+                            if (operational_status.iteration == "continuous" &&
+                                operational_status.simulation_status == "inactive") 
+                            {
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "enable";
+                                update_control(dbname, key, state);                               
+                                console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
+                            }
+                            console.log(prefix_text, "Rule Processing - Telemetry Iteration Complete Event");
+                        }
+                        break;
+                    case PATRONS_BOARD:
+                        {
+                            console.log(prefix_text, "Rule Processing - Olli 1 at Stop 4, Patron Boarding");
+                            if (operational_status.pause_at_stops) {
+                                
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "disable";
+                                update_control(dbname, key, state);
+                                
+                                console.log(prefix_text, "Rule Processing - Pause at Stops Enabled, Olli 1 at Stop 4, Patron Can Board");
+                            }
+
+                        }
+                        break;
+                    case PATRONS_EXIT:
+                        {
+                            console.log(prefix_text, "Rule Processing - Rule Processing - Olli 1 at Stop 1, Patron Exit");
+                            if (operational_status.pause_at_stops) {
+                                
+                                var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "disable";
+                                update_control(dbname, key, state);                                
+                                console.log(prefix_text, "Rule Processing - Pause at Stops Enabled, Olli 1 at Stop 1, Patron Can Exit");
+                            }
+
+                        }
+                        break;
+                    default: // non special event awareness
+                        console.log(prefix_text, "Rule Processing - Event Arrived[" + details.change.doc.event + "]");
+                }
+
+            }
+            defauilt:
+                break;
     }
 }
 

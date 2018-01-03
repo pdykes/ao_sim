@@ -24,10 +24,22 @@ var loadJsonFile = require('load-json-file');
 // process command line args
 const commandLineArgs = require('command-line-args');
 
-var registrations_filename = "registration.json";
-var registrations_filename = "registration.json";
-var tracking_filename = "tracking.json";
-var location_filename = "location.json";
+var reg_filename = "registration.json";
+var track_filename = "tracking.json";
+var loc_filename = "location.json";
+
+var registrations_filename = null;
+var tracking_filename = null;
+var location_filename = null;
+
+if (process.env.NODE_CONFIG_DIR !== undefined) {
+    var registrations_filename = process.env.NODE_CONFIG_DIR + "/" + reg_filename;
+    var tracking_filename = process.env.NODE_CONFIG_DIR + "/" + track_filename;
+    var location_filename = process.env.NODE_CONFIG_DIR + "/" + loc_filename;
+} else {
+    console.log("Error NODE_CONFIG_DIR not set, please set and restart");
+    return;
+}
 
 var registation_complete = false;
 
@@ -416,6 +428,7 @@ function load_registration_information(callback) {
                         transition: "initialize",
                         time: event_time,
                         delta_time: 0,
+                        preferences: registration_records[i].preferences,
                         location: persona_location[registration_records[i].epc],
                         old_location: persona_location[registration_records[i].epc],
                         smartpass_id: registration_records[i].epc
@@ -759,6 +772,7 @@ function monitor(json_data) {
             persona: persona,
             persona_id: persona_id,
             transition: transition,
+            preferences: in_memory_database[smartpass_id].preferences,
             time: event_time,
             delta_time: delta_time,
             location: persona_location[smartpass_id],
@@ -772,6 +786,7 @@ function monitor(json_data) {
         persona: persona,
         persona_id: persona_id,
         transition: transition,
+        preferences: in_memory_database[smartpass_id].preferences,
         time: event_time,
         delta_time: delta_time,
         location: persona_location[smartpass_id],

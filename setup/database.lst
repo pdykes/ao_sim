@@ -6,7 +6,7 @@ mkdir kintrans_01_transitions
 mkdir kintrans_02_transitions
 mkdir patron_location_transitions
 mkdir persona_transitions
-mkdir rule_events
+mkdir rule_event_transitions  (new in mvp4)
 mkdir smartpass
 mkdir telemetry_transitions
 mkdir transport_replay
