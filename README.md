@@ -1,6 +1,124 @@
-# mvp4b - Welcome!
+# mvp4d - Welcome!
+
 
 Mvp4 Changes
+
+(mvp4d)
+
+  - Awareness - to generate real-time events, the event_manager agent needs 
+    to operation listen to telemetry agent, then the rule_event_transitions
+    data will be pushed.
+    
+  - olli_audio_agent is now operational (./olli_audio_agent)
+    - Acquire the Watson/IBM Cloud username and password from Box
+    - The concept of an audio zone is supported, and we have four zones
+      currently
+      - all (plays in each of the audio agents, more than one is supported)
+      - olli_stop  (public address in olli stop)
+      - olli_stop_kiosk (entry kiosk/monitor 1)  olli stop (still ensuring this supports audio)
+      - olli_1  (public address in the olli for CES)
+      
+      - Established an audio zone is specified in the default.json in
+        ../config tree for example see the audio_zone value:
+        
+```        
+        "olli_audio_agent": {
+            "module_name": "olli_audio_agent",
+            "module_Name": "Olli Audio Agent",
+            "database": "audio_events",
+            "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
+            "watson_username": "get username value from mvp4 box directory",
+            "watson_password": "get password value from mvp4 box directory", 
+            "audio_zone" : "all",
+            "retain_audio_artifacts" : "false"
+        }, 
+```
+      - Any olli_audio_agent started and configured to point to this
+        configuration directory, with this default.json would play
+        all audio events (great for testing, debugging, etc...)
+      - Set the vaue to something else (support items above), and only
+        events targeted to that audio zone will play in that agent
+        instance
+      - Example Audio Events
+      
+      - Play a welcome to CES message via all agents (assume agents
+        are in olli, stop and on olli_stop entry kiosk (this is a 
+        simulation time based event in ../config/simulation_time_events.json)
+        
+```
+    "simulation_record_1000": {
+        "simulation_time": 1000,
+        "events": [
+            {
+                "name": "audio_welcome_to_olli_1",
+                "event": "audio_welcome_to_olli_1",
+                "payload": {
+                    "type": "audio",
+                    "text": "Welcome! Thank you for visiting the 2018 C E S Accessible Olli Exhibit. We are glad you are here!",
+                    "audio_zone": "all",
+                    "accept": "audio/mp3",
+                    "tag": "Audio_Welcome_to_Olli",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "e1;e2;e3..."
+                }
+		    }
+	     ]
+    },
+
+```
+  - Play this snippet only at that olli_stop_kiosk:
+  
+```
+    "simulation_record_2000": {
+        "simulation_time": 3000,
+        "events": [
+            {
+                "name": "test_audio_welcome_to_olli_1_olli_stop_kiosk",
+                "event": "test_audio_welcome_to_olli_1_olli_stop_kiosk",
+                "payload": {
+                    "type": "audio",
+                    "text": "Welcome to the 2018 CES Accessible Olli Stop Entry Kiosk.",
+                    "audio_zone": "olli_stop_kiosk",
+                    "accept": "audio/mp3",
+                    "tag": "Audio_Welcome_to_Olli",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "e1;e2;e3..."
+                }
+		    }
+        ]
+    },
+```  
+  - Play this this snippet only on the Olli as we reach the point
+    to enable the emergency stop (note this is in the ../config/telemetry_offset_events.json file):
+```
+    "offset_record_69": {
+        "offset": 69,
+        "events": [
+            {
+                "name": "audio_olli_1_enable_emergency_stop_window_start",
+                "filter": "olli_1",
+                "event": "audio_olli_1_enable_emergency_stop_window_start",
+                "payload": {
+                    "type": "audio",
+                    "text": "replace patrons can now initiate the emergency stop demonstration.",
+                    "accept": "audio/mp3",
+                    "audio_zone" :  "olli_1",
+                    "tag": "audio_olli_1_emergency_stop",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "replace_vehicle_name"
+                }
+		    }
+        ]
+    },
+
+```
+  - Note the example above allows the _vehcile attribute in the event
+    to override or be "replaced" in the audio text.  Useful for
+    events that should be stated in each specific vehicle.
+  
+  
+- Earlier mvp4 changes    
+  
 
   - Key change, the rule_events database has been renamed to
     rule_event_transitions due to required wildcarding for

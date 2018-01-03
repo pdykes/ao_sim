@@ -1,6 +1,6 @@
 /* 
 
-   PJD Dykes
+   PJ Dykes
    #AccessibleOlli
    mvp4
    
@@ -41,6 +41,27 @@ var watson = require('watson-developer-cloud');
 var watson_url = config.get("agents.olli_audio_agent.watson_url");
 var watson_username = config.get("agents.olli_audio_agent.watson_username");
 var watson_password = config.get("agents.olli_audio_agent.watson_password");
+
+// Sound control per instance for testing, users can either listen
+// to all events (audio_zone=all), or they can listen for specific location 
+// events, which include "stop_kiosk", "stop", or "olli_1"
+
+var SOUND_ALL = "all";
+var SOUND_STOP_KIOSK = "olli_stop_kiosk"; // aka monitor 1
+var SOUND_STOP = "olli_stop"; // PA system on olli stop
+var SOUND_STOP_OLLI_1 = "olli_1"; // PA system on olli_1 (focus of CES)
+
+// Specific events can be enumerated in the
+
+var audio_zone = "unset";
+audio_zone = config.get("agents.olli_audio_agent.audio_zone");
+
+if ((audio_zone == null) || (audio_zone == "unset")) {
+    console.log(prefix_text, '"audio_zone" must be set in configuration, see github documentation for details. Exiting.');
+    return;
+} else {
+    console.log(prefix_text, "olli_audio_agent audio_zone:", audio_zone);
+}
 
 var text_to_speech_cfg = {
     version: 'v1',
@@ -99,22 +120,22 @@ function convert_text_to_speech(event_body, callback) {
         // console.log(prefix_text, "pjd test:", event_body.payload.text);
         if (event_body.payload.parameters == "replace_vehicle_name") {
             var spoken_name = null;
-            switch(event_body.payload._vehicle) {
+            switch (event_body.payload._vehicle) {
                 case "olli_1":
                     {
                         spoken_name = "Olli One";
                     }
-                break;
+                    break;
                 case "olli_2":
                     {
                         spoken_name = "Olli Two";
                     }
-                break;
+                    break;
                 case "olli_3":
                     {
                         spoken_name = "Olli Three";
                     }
-                break;
+                    break;
                 default:
                     spoken_name = "Olli";
             }
@@ -268,11 +289,11 @@ function confirm_playback(event_body, callback) {
 
 function audio_out(event_body, callback) {
     try {
-        debug(prefix_text, "Incoming audio event:", event_body);
+        debug(prefix_text, "For audio_zone", audio_zone, "Incoming audio event:", JSON.stringify(event_body, 4, null));
         waterfall([
              async.apply(evaluate_data, event_body),
              convert_text_to_speech,
-             /* correct_audio_header,   - may add back */
+             /* correct_audio_header,   - may add back, wave file issue windows 10, mp3 focus for now */
              write_audio_to_file, // will be caching these
              play_audio,
              confirm_playback
@@ -322,20 +343,45 @@ voice_playback_queue.on('drain', function () {
 // ---------------------------------------------------
 
 feed.on('change', function (change) {
+
     if (change.doc.payload.hasOwnProperty("type") &&
         change.doc.payload.type == "audio")
 
     {
         console.log(prefix_text, "***Audio Event to be queued:", JSON.stringify(change.doc, null, 4));
+        
+        var event_body = change.doc;
 
-        // audio_out(change.doc);
-        voice_playback_queue.push(change.doc)
-            .on('finish', function () {
-                console.log(prefix_text, "Audio event success.");
-            })
-            .on('failed', function () {
-                onsole.log(prefix_text, "Audio event failed.");
-            })
+        // first step, should this instance play this sound?
+
+        /*
+            var SOUND_ALL = "all";
+            var SOUND_STOP_KIOSK = "olli_stop_kiosk";  // aka monitor 1
+            var SOUND_STOP = "olli_stop";
+            var SOUND_STOP_OLLI_1 = "olli_1";     // olli_1 is focus of CES
+        */
+        var this_audio_zone = null;
+        if (event_body.payload.hasOwnProperty("audio_zone")) {
+            this_audio_zone = event_body.payload.audio_zone;
+        } else {
+            this_audio_zone = SOUND_ALL;
+        }
+
+        if ((this_audio_zone == SOUND_ALL) || (this_audio_zone == audio_zone)) {
+            console.log(prefix_text, "For audio_zone", audio_zone, "Incoming audio event:", event_body.event);
+
+            // audio_out(change.doc);
+            voice_playback_queue.push(event_body)
+                .on('finish', function () {
+                    console.log(prefix_text, "Audio event success:", event_body.event);
+                })
+                .on('failed', function () {
+                    console.log(prefix_text, "Audio event failed:", event_body.event);
+                })
+        } else {
+            console.log(prefix_text, "Event For other audio_zone", audio_zone, "and does not apply to this audio_zone, skipping:", event_body.event, );
+            debug(prefix_text, "Skipping event for other audio_zone", audio_zone, "Incoming audio event:", JSON.stringify(event_body, 4, null));
+        }
     }
 });
 

@@ -27,9 +27,9 @@
                 "event": "audio_welcome_to_olli_1",
                 "payload": {
                     "type": "audio",
-                    "text": "Welcome to the 2018 CES Accessible Olli Exhibit.",
+                    "text": "Welcome! Thank you for visiting the 2018 C E S Accessible Olli Exhibit. We are glad you are here!",
+                    "audio_zone": "all",
                     "accept": "audio/mp3",
-                    "audio_target": "olli_1 or stop_1",
                     "tag": "Audio_Welcome_to_Olli",
                     "local": "welcome_olli.m4a",
                     "parameters": "e1;e2;e3..."
@@ -77,6 +77,24 @@
 	       }
         ]
     },
+    "simulation_record_2000": {
+        "simulation_time": 3000,
+        "events": [
+            {
+                "name": "test_audio_welcome_to_olli_1_olli_stop_kiosk",
+                "event": "test_audio_welcome_to_olli_1_olli_stop_kiosk",
+                "payload": {
+                    "type": "audio",
+                    "text": "Welcome to the 2018 CES Accessible Olli Stop Entry Kiosk.",
+                    "audio_zone": "olli_stop_kiosk",
+                    "accept": "audio/mp3",
+                    "tag": "Audio_Welcome_to_Olli",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "e1;e2;e3..."
+                }
+		    }
+        ]
+    },
     "simulation_record_323500": {
         "simulation_time": 323500,
         "events": [
@@ -86,8 +104,8 @@
                 "payload": {
                     "type": "audio",
                     "text": "Thank you for attending the Accessible Olli Exhibit, you have completed this persona's experience, and are welcome to experience another. CTA, IBM, Local Motors and our other partners appreciate your participation now and in the future. Thanks for making Autonomous for All of Us! possible",
+                    "audio_zone": "all",
                     "accept": "audio/mp3",
-                    "audio_target": "olli_1 or stop_1",
                     "tag": "Audio_Welcome_to_Olli",
                     "local": "welcome_olli.m4a",
                     "parameters": "e1;e2;e3..."

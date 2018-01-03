@@ -69,8 +69,9 @@
             "module_Name": "Olli Audio Agent",
             "database": "audio_events",
             "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
-            "watson_username": "See mvp4 directory for user",
-            "watson_password": "See mvp4 directory for pwd",
+            "watson_username": "get username value from mvp4 box directory",
+            "watson_password": "get password value from mvp4 box directory", 
+            "audio_zone" : "all",
             "retain_audio_artifacts" : "false"
         },
         "event_manager": {
@@ -89,9 +90,9 @@
               "olli_2": "olli_2",
               "olli_3": "olli_3"
             },
-            "hermes_config": {
-                "host": "accessibleolli.env.partners.bestmile.io",
-                "port": "32363"
+            "hermes_config": { 
+                "host": "accessibleolli.env.partners.bestmile.io", 
+                "port": "32363" 
             }
         },
         "ces_control_agent": {
