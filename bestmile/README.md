@@ -7,8 +7,8 @@ Node.js adapter that connects to Core Engine and transforms events received thro
 The BestMile AccessibleOlli Adapter relies on two (private) remote GIT repositories, [AV-JS](https://github.com/BestMile/av-js) and [Hermes](https://github.com/BestMile/hermes), which you need to clone into `/av-js` and `/av-js/hermes` (respectively). Note that you need to be given access to those repositories in order to be able to clone them (send an e-mail to the BestMile team).
 
 ```
-git clone git@github.com:BestMile/av-js.git
-git clone git@github.com:BestMile/hermes.git av-js/hermes
+git clone https://github.com/BestMile/av-js.git
+git clone https://github.com/BestMile/hermes.git av-js/hermes
 ```
 
 ## Run
