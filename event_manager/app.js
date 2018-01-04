@@ -3,7 +3,7 @@
    Accessible Olli Telemetry Simulation Controller
     - Telemetry data
     - Simulation mode
-    
+
     pdykes@us.ibm.com
 
 */
@@ -59,7 +59,7 @@ var operational_status = {
     emergency_stop: false, // Emergency stop mode enabled (true) or not (false)
     ramp_mode: false, // Is ramp operations enabled (be very careful here)
     ramp_state: RAMP_UNDEPLOYED, // see above
-    qstraint_state: QSTRAINT_UNDEPLOYED // see above  
+    qstraint_state: QSTRAINT_UNDEPLOYED // see above
 };
 
 // setup the database follow...
@@ -160,18 +160,19 @@ if (process.env.NODE_CONFIG_DIR !== undefined) {
 for (key in simulation_event_rules) { // fill out sparse array
     console.log(prefix_text, "Processing key", key);
     var index = simulation_event_rules[key].simulation_time;
-    simulation_by_offset_rules[index] = [];
-    simulation_by_offset_rules[index]['events'] = simulation_event_rules[key].events;
+    simulation_by_offset_rules[index] = simulation_by_offset_rules[index] || { events: [] };
+    simulation_by_offset_rules[index]['events'] = simulation_by_offset_rules[index]['events'].concat(simulation_event_rules[key].events);
     simulation_by_offset_rules[index]['index'] = simulation_event_rules[key].simulation_time;
 }
 
 for (key in telemetry_event_rules) { // fill out sparse array
     console.log(prefix_text, "Processing key", key);
     var index = telemetry_event_rules[key].offset;
-    telemetry_by_offset_rules[index] = [];
-    telemetry_by_offset_rules[index]['events'] = telemetry_event_rules[key].events;
+    telemetry_by_offset_rules[index] = telemetry_by_offset_rules[index] || { events: [] };
+    telemetry_by_offset_rules[index]['events'] = telemetry_by_offset_rules[index]['events'].concat(telemetry_event_rules[key].events);
     telemetry_by_offset_rules[index]['index'] = telemetry_event_rules[key].offset;
 }
+
 
 simulation_by_offset_rules.forEach(function (element) {
     debug("simulation_by_offset_rules data structure:");
@@ -570,7 +571,7 @@ app.post('/', function (request, response) {
     try {
         debug("Incoming Post Message:", incoming);
 
-        waterfall([ //first function needs async.apply to post attributes, reset can get the 
+        waterfall([ //first function needs async.apply to post attributes, reset can get the
             async.apply(evaluate_data, request, response),
             obtain_asset_record,
             update_asset_record, // asset_record_id, asset_record, kafka_body.event_id
@@ -606,7 +607,7 @@ app.post('/', function (request, response) {
         Processing the rule events is completed just like any other
         consumer, this solution will listen for changes (in read-only
         mode) and act upon them to control certain aspects of the simulation.
-        
+
         This code listens to the async rules and acts accordingly.
 
 */
@@ -868,13 +869,13 @@ function follow_on_change(details, feed) {
                             // if continuous operation and both telemetry and simulation inactive, event_manager will
                             // re-initialize telemetry
                             if (operational_status.iteration == "continuous" &&
-                                operational_status.telemetry_status == "inactive") 
-                            
+                                operational_status.telemetry_status == "inactive")
+
                             {
                                 var dbname = "telemetry_transitions";
                                 var key = "telemetry_control";
                                 var state = "enable";
-                                update_control(dbname, key, state);                                  
+                                update_control(dbname, key, state);
                                 console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
                             }
                             console.log(prefix_text, "Rule Processing - Simulation Iteration Complete Event");
@@ -890,12 +891,12 @@ function follow_on_change(details, feed) {
                         {
                             operational_status.telemetry_status = "inactive";
                             if (operational_status.iteration == "continuous" &&
-                                operational_status.simulation_status == "inactive") 
+                                operational_status.simulation_status == "inactive")
                             {
                                 var dbname = "telemetry_transitions";
                                 var key = "telemetry_control";
                                 var state = "enable";
-                                update_control(dbname, key, state);                               
+                                update_control(dbname, key, state);
                                 console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
                             }
                             console.log(prefix_text, "Rule Processing - Telemetry Iteration Complete Event");
@@ -905,12 +906,12 @@ function follow_on_change(details, feed) {
                         {
                             console.log(prefix_text, "Rule Processing - Olli 1 at Stop 4, Patron Boarding");
                             if (operational_status.pause_at_stops) {
-                                
+
                                 var dbname = "telemetry_transitions";
                                 var key = "telemetry_control";
                                 var state = "disable";
                                 update_control(dbname, key, state);
-                                
+
                                 console.log(prefix_text, "Rule Processing - Pause at Stops Enabled, Olli 1 at Stop 4, Patron Can Board");
                             }
 
@@ -920,11 +921,11 @@ function follow_on_change(details, feed) {
                         {
                             console.log(prefix_text, "Rule Processing - Rule Processing - Olli 1 at Stop 1, Patron Exit");
                             if (operational_status.pause_at_stops) {
-                                
+
                                 var dbname = "telemetry_transitions";
                                 var key = "telemetry_control";
                                 var state = "disable";
-                                update_control(dbname, key, state);                                
+                                update_control(dbname, key, state);
                                 console.log(prefix_text, "Rule Processing - Pause at Stops Enabled, Olli 1 at Stop 1, Patron Can Exit");
                             }
 
@@ -947,9 +948,9 @@ feed.on('error', function (er) {
 });
 
 feed.on('db-persist', function (details) {
-    // after this, we can be sure the update sequence has been saved. 
-    // when this script is started again, it will pick up just where 
-    // it left off and not process any document a second time. 
+    // after this, we can be sure the update sequence has been saved.
+    // when this script is started again, it will pick up just where
+    // it left off and not process any document a second time.
     console.log("%s processed all documents in the database %s (up to update-sequence %s)", feed.namespace, details.db_name, details.persist.seq);
 });
 
