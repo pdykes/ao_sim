@@ -60,10 +60,19 @@ function disconnect_vehicles() {
     })
 }
 
-exports.process_trip_end_event = function(trip_end_event) {
-    debug(text_prefix, "Incoming:", JSON.stringify(trip_end_event, null, 4));
-    console.log(text_prefix, "Trip end. Sending Mission Complete.")
-    vehicles[vehicle_ids[0]].missionComplete(vehicle_ids[0])
+exports.process_trip_stop_event = function(trip_stop_event, olliToHermesMap) {
+    if(!trip_stop_event.payload || !trip_stop_event.payload._vehicle){
+        console.error(text_prefix, "Corrupted trip_stop_event received:", JSON.stringify(trip_stop_event, null, 2))
+        return
+    }
+    const olli_name = trip_stop_event.payload._vehicle
+    const hermes_vehicle_id = olliToHermesMap[olli_name] || olli_name
+    if(vehicle_ids.includes(hermes_vehicle_id)){
+        console.log(text_prefix, "Sending MISSION COMPLETE for vehicle "+ hermes_vehicle_id + ".")
+        vehicles[hermes_vehicle_id].missionComplete(hermes_vehicle_id)
+    } else {
+        debug(text_prefix, "Ignoring trip stop event related to unregistered vehicle '"+vehicle_id+"'.");
+    }
 }
 
 exports.process_telemetry_transition = function(telemetry_transition, olliToHermesMap) {
@@ -79,16 +88,34 @@ exports.process_telemetry_transition = function(telemetry_transition, olliToHerm
     }
 }
 
-exports.process_emergency_active_event = function(emergency_active_event) {
-    debug(text_prefix, "Incoming:", JSON.stringify(emergency_active_event, null, 4));
-    console.log(text_prefix, "Emergency stop activated. Updating vehicle state.")
-    vehicles[vehicle_ids[0]].setEmergencyState("active")
+exports.process_emergency_active_event = function(emergency_active_event, olliToHermesMap) {
+    if(!emergency_active_event.payload || !emergency_active_event.payload._vehicle){
+        console.error(text_prefix, "Corrupted emergency_active_event received:", JSON.stringify(emergency_active_event, null, 2))
+        return
+    }
+    const olli_name = emergency_active_event.payload._vehicle
+    const hermes_vehicle_id = olliToHermesMap[olli_name] || olli_name
+    if(vehicle_ids.includes(hermes_vehicle_id)){
+        console.log(text_prefix, "EMERGENCY STOP ACTIVATED for vehicle "+ hermes_vehicle_id + ". Updating vehicle state.")
+        vehicles[hermes_vehicle_id].setEmergencyState("active")
+    } else {
+        debug(text_prefix, "Ignoring emergency_active event related to unregistered vehicle '"+vehicle_id+"'.");
+    }
 }
 
-exports.process_emergency_released_event = function(emergency_released_event) {
-    debug(text_prefix, "Incoming:", JSON.stringify(emergency_released_event, null, 4));
-    console.log(text_prefix, "Emergency stop released. Updating vehicle state.")
-    vehicles[vehicle_ids[0]].setEmergencyState("resume")
+exports.process_emergency_released_event = function(emergency_released_event, olliToHermesMap) {
+    if(!emergency_released_event.payload || !emergency_released_event.payload._vehicle){
+        console.error(text_prefix, "Corrupted emergency_released_event received:", JSON.stringify(emergency_released_event, null, 2))
+        return
+    }
+    const olli_name = emergency_released_event.payload._vehicle
+    const hermes_vehicle_id = olliToHermesMap[olli_name] || olli_name
+    if(vehicle_ids.includes(hermes_vehicle_id)){
+        console.log(text_prefix, "EMERGENCY STOP RELEASED for vehicle "+ hermes_vehicle_id + ". Updating vehicle state.")
+        vehicles[hermes_vehicle_id].setEmergencyState("resume")
+    } else {
+        console.log(text_prefix, "Ignoring emergency_released event related to unregistered vehicle '"+vehicle_id+"'.");
+    }
 }
 
 function computeSpeed(oldLatLng, newLatLng, oldTimestamp, newTimestamp) {

@@ -28,23 +28,54 @@ debug("Agent name:", agent_name);
 
 adapter.start(Object.values(olliToHermesVehicleIDs), hermes)
 
-// Follow database changes ----------------------------------------------
+// Follow telemetry changes ----------------------------------------------
 
-const listener_target = config.get("global.nosql_url")+"/"+config.get("agents.telemetry.database");
-debug("Listener target:", listener_target);
+const telemetry_database = config.get("global.nosql_url")+"/"+config.get("agents.telemetry.database");
+debug("Telemetry listener target:", telemetry_database);
 
-const feed = new follow.Feed({
-    db: listener_target,
+const telemetry_feed = new follow.Feed({
+    db: telemetry_database,
     since: 'now',
     include_docs: true,
     filter: (doc, req) => doc._id == "telemetry_transition"
 });
 
-feed.on('change', change => adapter.process_telemetry_transition(change.doc, olliToHermesVehicleIDs))
+telemetry_feed.on('change', change => adapter.process_telemetry_transition(change.doc, olliToHermesVehicleIDs))
 
-feed.on('error', function(er) {
+telemetry_feed.on('error', function(er) {
     console.error('Since Follow always retries on errors, this must be serious', er);
     throw er;
 })
 
-feed.follow();
+telemetry_feed.follow();
+
+// Follow event changes ----------------------------------------------
+
+const events_database = config.get("global.nosql_url")+"/"+config.get("agents.event_manager.events_database");
+debug("Events listener target:", events_database);
+
+const event_feed = new follow.Feed({
+    db: events_database,
+    since: 'now',
+    include_docs: true,
+    filter: (doc, req) => doc.payload._event_type == "telemetry_rule_event"
+});
+
+event_feed.on('change', function(event_transition) {
+    if (event_transition.doc._id.indexOf("Trip Stop") != -1){
+        adapter.process_trip_stop_event(event_transition.doc, olliToHermesVehicleIDs)
+    }
+    else if (event_transition.doc.event == "emergency_stop_window_begin"){
+        adapter.process_emergency_active_event(event_transition.doc, olliToHermesVehicleIDs)
+    }
+    else if (event_transition.doc.event == "emergency_stop_window_end"){
+        adapter.process_emergency_released_event(event_transition.doc, olliToHermesVehicleIDs)
+    }
+})
+
+event_feed.on('error', function(er) {
+    console.error('Since Follow always retries on errors, this must be serious', er);
+    throw er;
+})
+
+event_feed.follow();
