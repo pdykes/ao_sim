@@ -37,7 +37,6 @@
                     "type": "commented-out-audio",
                     "text": "Telemetry test voice for all ollies at offset 5.",
                     "accept": "audio/mp3",
-                    "target": "olli_1",
                     "tag": "Audio_Play_Stop_1_Arrival",
                     "local": "welcome_olli.m4a",
                     "parameters": "x1;x2;x3..."
@@ -145,12 +144,27 @@
                 "payload": {
                     "type": "audio",
                     "text": "Olli 1 has arrived at Discovery Square, Stop 4.",
+                    "audio_zone" : "olli_1",                    
                     "accept": "audio/mp3",
                     "tag": "audio_olli_1_stop_4",
                     "local": "welcome_olli.m4a",
                     "parameters": "y1;y2;y3..."
                 }
-		    }
+		    },
+            {
+                "name": "audio_olli_1_has_arrived_discovery_square_stop_4",
+                "filter": "olli_1",
+                "event": "audio_olli_1_has_arrived_discovery_square_stop_4",
+                "payload": {
+                    "type": "audio",
+                    "text": "Olli 1 has arrived at Discovery Square, Stop 4, you may board",
+                    "audio_zone" : "olli_stop",
+                    "accept": "audio/mp3",
+                    "tag": "audio_olli_1_stop_4",
+                    "local": "welcome_olli.m4a",
+                    "parameters": "y1;y2;y3..."
+                }
+		    }            
 
         ]
     },
@@ -236,7 +250,8 @@
                     "type": "audio",
                     "text": "Olli 1 patrons can now initiate the emergency stop demonstration.",
                     "accept": "audio/mp3",
-                    "tag": "audio_olli_1_stop_4",
+                    "audio_zone" :  "olli_1",
+                    "tag": "audio_olli_1_emergency_stop",
                     "local": "welcome_olli.m4a",
                     "parameters": "y1;y2;y3..."
                 }
