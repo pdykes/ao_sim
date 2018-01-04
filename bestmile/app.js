@@ -58,10 +58,20 @@ const event_feed = new follow.Feed({
     db: events_database,
     since: 'now',
     include_docs: true,
-    filter: (doc, req) => doc.payload._event_type == "telemetry_rule_event" && doc._id.indexOf("Trip Stop") != -1
+    filter: (doc, req) => doc.payload._event_type == "telemetry_rule_event"
 });
 
-event_feed.on('change', trip_stop_event => adapter.process_trip_stop_event(trip_stop_event.doc, olliToHermesVehicleIDs))
+event_feed.on('change', function(event_transition) {
+    if (event_transition.doc._id.indexOf("Trip Stop") != -1){
+        adapter.process_trip_stop_event(event_transition.doc, olliToHermesVehicleIDs)
+    }
+    else if (event_transition.doc.event == "emergency_stop_window_begin"){
+        adapter.process_emergency_active_event(event_transition.doc, olliToHermesVehicleIDs)
+    }
+    else if (event_transition.doc.event == "emergency_stop_window_end"){
+        adapter.process_emergency_released_event(event_transition.doc, olliToHermesVehicleIDs)
+    }
+})
 
 event_feed.on('error', function(er) {
     console.error('Since Follow always retries on errors, this must be serious', er);
