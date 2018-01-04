@@ -2,6 +2,8 @@
 
 Node.js adapter that connects to Core Engine and transforms events received through the agent proxy into Hermes Messages using AV-JS and Hermes.
 
+**>> [Click here to access BestMile Operator Dashboard directly (no login required)](https://accessibleolli.env.partners.bestmile.io/sites/rochester/control-center?passphrase=eyJ1c2VybmFtZSI6ImFjY2Vzc2libGVvbGxpQGJlc3RtaWxlLmNvbSIsInBhc3N3b3JkIjoiYnE2VDJVZjgifQ==) <<**
+
 ## Installation
 
 The BestMile AccessibleOlli Adapter relies on two (private) remote GIT repositories, [AV-JS](https://github.com/BestMile/av-js) and [Hermes](https://github.com/BestMile/hermes), which you need to clone into `/av-js` and `/av-js/hermes` (respectively). Note that you need to be given access to those repositories in order to be able to clone them (send an e-mail to the BestMile team).
@@ -36,6 +38,10 @@ Hermes Adapter:  Sending ECHO request from vehicle  olli_2
 Hermes Adapter:  Sending ECHO request from vehicle  olli_3
 ...
 ```
+
+You can access BestMile Operator Dashboard to see the vehicles running following this link (no login required):
+
+[https://accessibleolli.env.partners.bestmile.io/sites/rochester/control-center?passphrase=eyJ1c2VybmFtZSI6ImFjY2Vzc2libGVvbGxpQGJlc3RtaWxlLmNvbSIsInBhc3N3b3JkIjoiYnE2VDJVZjgifQ==](https://accessibleolli.env.partners.bestmile.io/sites/rochester/control-center?passphrase=eyJ1c2VybmFtZSI6ImFjY2Vzc2libGVvbGxpQGJlc3RtaWxlLmNvbSIsInBhc3N3b3JkIjoiYnE2VDJVZjgifQ==)
 
 ## Privacy
 
