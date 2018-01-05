@@ -65,10 +65,10 @@ event_feed.on('change', function(event_transition) {
     if (event_transition.doc._id.indexOf("Trip Stop") != -1){
         adapter.process_trip_stop_event(event_transition.doc, olliToHermesVehicleIDs)
     }
-    else if (event_transition.doc.event == "emergency_stop_window_begin"){
+    else if (event_transition.doc.event == "emergency_stop_begin"){
         adapter.process_emergency_active_event(event_transition.doc, olliToHermesVehicleIDs)
     }
-    else if (event_transition.doc.event == "emergency_stop_window_end"){
+    else if (event_transition.doc.event == "emergency_stop_end"){
         adapter.process_emergency_released_event(event_transition.doc, olliToHermesVehicleIDs)
     }
 })
