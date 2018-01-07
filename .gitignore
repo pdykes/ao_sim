@@ -1,0 +1,36 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+.idea
+
+/dist
+/videos
+
+# dependencies
+/node_modules
+/server/node_modules
+/server/public/videos
+
+/client/node_modules
+/client/build
+/client/dist
+
+# testing
+/coverage
+
+# production
+
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# Allow 
+!/client/node_modules/react-anime
