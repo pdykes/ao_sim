@@ -11,3 +11,5 @@ mkdir smartpass
 mkdir telemetry_transitions
 mkdir transport_replay
 mkdir ultrahaptics_01_transitions
+mkdir olli_control_transitions  (new in mvp5)
+mkdir olli_stop_control_transitions  (new in mvp5)

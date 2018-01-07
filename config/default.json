@@ -33,6 +33,25 @@
                 "to_device_url": "http://127.0.0.1:3005",
                 "to_device": "to_device",
                 "from_device": "from_device"
+         },
+            {
+                "name": "olli_control",
+                "module_name" : "olli_control",
+                "module_Name" : "Olli Control",
+                "instance": "01",
+                "database": "olli_control_transitions",
+                "to_device_url": "http://127.0.0.1:3008",
+                "to_device": "to_device",
+                "from_device": "from_device",
+                "enable_io": true
+         }, {
+                "name": "olli_stop_control",
+                "instance": "01",
+                "database": "olli_stop_control_transitions",
+                "to_device_url": "http://127.0.0.1:3009",
+                "to_device": "to_device",
+                "from_device": "from_device",
+                "gpio_enabled": true
          }
         ]
     },
@@ -70,9 +89,9 @@
             "database": "audio_events",
             "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
             "watson_username": "get username value from mvp4 box directory",
-            "watson_password": "get password value from mvp4 box directory", 
-            "audio_zone" : "all",
-            "retain_audio_artifacts" : "false"
+            "watson_password": "get password value from mvp4 box directory",
+            "audio_zone": "all",
+            "retain_audio_artifacts": "false"
         },
         "event_manager": {
             "module_name": "event_manager",
@@ -81,18 +100,25 @@
             "simulation_event_rules": "simulation_time_events.json",
             "telemetry_event_rules": "telemetry_offset_events.json",
             "events_database": "rule_event_transitions"
+        },        
+        "boarding_manager": {
+            "module_name": "boarding_manager",
+            "module_Name": "Boarding Manager",
+            "port": "3010",
+            "telemetry_event_rules": "boarding_phase_events.json",
+            "events_database": "rule_event_transitions"
         },
-        "bestmile" : {
-            "module_name" : "bestmile",
+        "bestmile": {
+            "module_name": "bestmile",
             "name": "bestmile",
             "vehicle_ids": {
-              "olli_1": "olli_1",
-              "olli_2": "olli_2",
-              "olli_3": "olli_3"
+                "olli_1": "olli_1",
+                "olli_2": "olli_2",
+                "olli_3": "olli_3"
             },
-            "hermes_config": { 
-                "host": "accessibleolli.env.partners.bestmile.io", 
-                "port": "32363" 
+            "hermes_config": {
+                "host": "accessibleolli.env.partners.bestmile.io",
+                "port": "32363"
             }
         },
         "ces_control_agent": {
