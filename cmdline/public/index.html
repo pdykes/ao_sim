@@ -1,20 +1,114 @@
+<link rel="stylesheet" href="css/bootstrap.min.css" crossorigin="anonymous">
+<script src="js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="jquery-3.2.1.min.js"></script>
+<style>
+    button {
+        margin:0.25em;
+    }
+</style>
+
+<script>
+    jQuery(document).ready(function() {
+
+        //load stepcount from previous action
+        var savedStepCount = window.localStorage.getItem("stepcount");
+        if( typeof savedStepCount !== 'undefined' )
+            jQuery(".stepcount").val(savedStepCount);
+        else
+            jQuery(".stepcount").val(10);
+
+
+        jQuery('button').on('click', function() {
+
+            //button has the encoded data required by ao-dev.js
+            var btn = jQuery(this);
+            var option = btn.attr("name");
+            var value = btn.attr("value");
+
+            //look for special case step/goto buttons
+            if( value == "stepforward_" || value == "stepbackward_" || value == "goto_") {
+                var stepCount = jQuery(".stepcount").val();;
+                value += stepCount;
+                window.localStorage.setItem("stepcount", stepCount);
+            }
+
+            //reload events and exit out
+            if( option == 'reloadEvents' ) {
+
+                jQuery.post('/reload', {}, function(response) {
+                    console.log("Successfully Reloaded Telemetry Events");
+                });
+                return;
+            }
+
+            //modify hidden input to name/value for request
+            var hidden = btn.siblings(".option");
+            hidden.attr("name", option);
+            hidden.val(value);
+
+            //add the request type for request
+            var requestType = btn.siblings('input[name="request_type"]').val();
+
+            //make the request
+            var postData = {};
+            postData[option] = value;
+            postData['request_type'] = requestType;
+
+            //send the post request
+            jQuery.post('/action', postData, function(response) {
+                console.log("Submitted Action:");
+                console.log(response);
+            })
+        });
+
+        jQuery(".stepcount").on("keyup", function() {
+            this.value = this.value.replace(/[^0-9\.]/g,'');
+        });
+    })
+    
+</script>
+
+
 #AccessibleOlli Simulation Control Panel
 <img src="/images/cognitive-insights-drive-selfdriving-accessibility-1-638.jpg" alt="AccessibleOlli" align="right">
 <section>
+    <form action="/reload" method="GET" name="formReloadEvents">
+        <button class="btn btn-primary" type="button" class="reloadEvents" name="reloadEvents" value="Reload Events">Reload Events</button>
+    </form>
+    <br>
     <h1>Option 1 - Simulation Control</h1>
     
+
     <form action="/action" method="post" name="simulation_control">
         <input type="hidden" name="request_type" value="simulation_control">
-        <input type="radio" name="option" value="not_active" Checked>No Action<br>
+        <input type="hidden" class="option" name="option" value="">
+        <!--
+        <button class="btn btn-primary" type="button" name="option" value="not_active">No Action</button><br>
         <br>
-        <input type="radio" name="option" value="iteration_continuous">Enable Continuously Looping Simulation<br>
-        <input type="radio" name="option" value="iteration_single">Enable Single Loop Simulation (default)<br>
+    -->
+        
+        <!--
+        <button class="btn btn-primary" type="button" name="option" value="step_backward">Step Backward</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" type="button" name="option" value="step_forward">Step Forward</button><br>
         <br>
-        <input type="radio" name="option" value="start_simulation">Initiate Simulation<br>
-        <input type="radio" name="option" value="suspend_simulation">Suspend Simulation<br>
+    -->
         <br>
-        <input type="radio" name="option" value="enable_suspend_at_stops_simulation">Enable Stopping at Stop 4 and Stop 1 (demo scenario)<br>
-        <input type="radio" name="option" value="disable_suspend_at_stops_simulation">Disable Stopping at Stop 4 and Stop 1 (demo scenario)<br>
+        <button class="btn btn-primary" type="button" name="option" value="start_simulation">Start Simulation</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="suspend_simulation">Suspend Simulation</button><br>
+        
+        <br>
+        <button class="btn btn-primary" type="button" name="option" value="stepbackward_">Skip Backward</button>
+        <input type="number" name="stepcount" class="stepcount" value="1">
+        <button class="btn btn-primary" type="button" name="option" value="stepforward_">Skip Forward</button>
+        <button class="btn btn-primary" type="button" name="option" value="goto_">Goto Offset</button>
+        <br>
+        <br>
+        <button class="btn btn-primary" type="button" name="option" value="iteration_continuous">Enable Continuously Looping Simulation</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="iteration_single">Enable Single Loop Simulation (default)</button><br>
+        <br>
+
+        <button class="btn btn-primary" type="button" name="option" value="enable_suspend_at_stops_simulation">Enable Stopping at Stop 4 and Stop 1 (demo scenario)</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="disable_suspend_at_stops_simulation">Disable Stopping at Stop 4 and Stop 1 (demo scenario)</button><br>
         <br>
         <input type="submit" value="Submit">
     </form>
@@ -25,24 +119,25 @@
 <section>
     <h1>Option 2 - Persona Use Case - Location</h1>
     <form action="/action" method="post">
+        <input type="hidden" class="option" name="option" value="">
         <input type="hidden" name="request_type" value="persona">First name:<br>
-        <input type="radio" name="firstname" value="not_active" checked>No Action<br>
-        <input type="radio" name="firstname" value="Brent">Brent<br>
-        <input type="radio" name="firstname" value="Erich">Erich<br>
-        <input type="radio" name="firstname" value="Grace">Grace<br>
-        <input type="radio" name="firstname" value="Katherine">Katherine<br>
+
+        <button class="btn btn-primary" type="button" name="firstname" value="not_active">No Action</button><br>
+        <button class="btn btn-primary" type="button" name="firstname" value="Brent">Brent</button><br>
+        <button class="btn btn-primary" type="button" name="firstname" value="Erich">Erich</button><br>
+        <button class="btn btn-primary" type="button" name="firstname" value="Grace">Grace</button><br>
+        <button class="btn btn-primary" type="button" name="firstname" value="Katherine">Katherine</button><br>
 
         <br><br> Persona Id (between 0 and 50):<br>
         <input type="number" name="id" min="0" max="50" value="0">
         <br><br>
 
-        <input type="radio" name="location" value="exhibit" Checked>Exhibit<br>
-        <input type="radio" name="location" value="stop">Enter Stop<br>
-        <input type="radio" name="location" value="olli">Enter Olli<br>
-        <input type="radio" name="location" value="stop">Exit Stop<br>
-        <input type="radio" name="location" value="olli">Exit Olli<br>
+        <button class="btn btn-primary" type="button" name="location" value="exhibit">Exhibit</button><br>
+        <button class="btn btn-primary" type="button" name="location" value="stop">Enter Stop</button><br>
+        <button class="btn btn-primary" type="button" name="location" value="olli">Enter Olli</button><br>
+        <button class="btn btn-primary" type="button" name="location" value="stop">Exit Stop</button><br>
+        <button class="btn btn-primary" type="button" name="location" value="olli">Exit Olli</button><br>
 
-        <input type="submit" value="Submit">
     </form>
 </section>
 
@@ -51,17 +146,18 @@
 <section>
     <h1>Option 3 - Agent Use Case - Control Agents</h1>
     <form action="/action" method="post">
+        <input type="hidden" class="option" name="option" value="">
         <input type="hidden" name="request_type" value="agent"> Proxy Agent Reference:<br>
-        <input type="radio" name="firstname" value="Kintrans_01" checked> Kintrans 01<br>
-        <input type="radio" name="firstname" value="Kintrans_02"> Kintrans 02<br>
-        <input type="radio" name="firstname" value="Ultrahaptics_01"> Ultrahaptics<br>
-        <input type="radio" name="firstname" value="Olli_control_01"> Olli Control><br><br> Control Option<br>
-        <input type="radio" name="agent_command" value="init" checked>Initialize<br>
-        <input type="radio" name="agent_command" value="start" checked> Start<br>
-        <input type="radio" name="agent_command" value="suspend" checked> Suspend<br>
-        <input type="radio" name="agent_command" value="exit" checked>Stop<br>
 
-        <input type="submit" value="Submit">
+        <button class="btn btn-primary" type="button" name="firstname" value="Kintrans_01"> Kintrans 01</button><br>
+        <button class="btn btn-primary" type="button" name="firstname" value="Kintrans_02"> Kintrans 02</button><br>
+        <button class="btn btn-primary" type="button" name="firstname" value="Ultrahaptics_01"> Ultrahaptics</button><br>
+        <button class="btn btn-primary" type="button" name="firstname" value="Olli_control_01"> Olli Control></button><br><br> Control Option<br>
+        <button class="btn btn-primary" type="button" name="agent_command" value="init">Initialize</button><br>
+        <button class="btn btn-primary" type="button" name="agent_command" value="start"> Start</button><br>
+        <button class="btn btn-primary" type="button" name="agent_command" value="suspend"> Suspend</button><br>
+        <button class="btn btn-primary" type="button" name="agent_command" value="exit">Stop</button><br>
+
     </form>
 </section>
 
@@ -69,13 +165,16 @@
     <h1>Option 4 - Emergency Stop Scenario</h1>
     Wave Hand for Emergency STop
     <form action="/action" method="post">
+        <input type="hidden" class="option" name="option" value="">
         <input type="hidden" name="request_type" value="emergency_stop">
-        <input type="radio" name="option" value="not_active" checked> Not Active<br>
-        <input type="radio" name="option" value="post_howto">Post How to Enable Emergency Stop<br>
-        <input type="radio" name="option" value="simulate_hatpics">Wave Arm to Ultrhaptics<br>
-        <input type="radio" name="option" value="stop_olli">Stop Olli<br>
-        <input type="radio" name="option" value="engage_notify">Notify Emergency Stop<br> input type="radio" name="option" value="engage_restarting">Notify Emergency Stop Complete, Restarting<br>
-        <input type="submit" value="Submit">
+
+        <button class="btn btn-primary" type="button" name="option" value="not_active"> Not Active</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="post_howto">Post How to Enable Emergency Stop</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="simulate_hatpics">Wave Arm to Ultrhaptics</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="stop_olli">Stop Olli</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="engage_notify">Notify Emergency Stop</button><br> 
+        <button class="btn btn-primary" type="button" name="option" value="engage_restarting">Notify Emergency Stop Complete, Restarting</button><br> 
+
     </form>
 </section>
 
@@ -83,22 +182,22 @@
     <h1>Option 5 - Wheel Chair Boarding Scenario</h1>
     Exit Web Application Instance
     <form action="/action" method="post">
+        <input type="hidden" class="option" name="option" value="">
         <input type="hidden" name="request_type" value="wheelchair_ingress">
 
-        <input type="radio" name="option" value="ingress_not_active" Checked>Not Active<br>
-        <input type="radio" name="option" value="enable_lights">Enable Lights<br>
-        <input type="radio" name="option" value="enable_sound_onboard">Enable Onboard Announcement<br>
-        <input type="radio" name="option" value="educate_pre_boarding">Pre Boarding Education<br>
-        <input type="radio" name="option" value="deploy_ramp">Deploy Ramp<br>
-        <input type="radio" name="option" value="educate_pre_restraint">Pre Restraint Education<br>
-        <input type="radio" name="option" value="active_restraint">Activate Restraint<br>
-        <input type="radio" name="option" value="ramp_restract_warning">Ramp Retract Warning<br>
-        <input type="radio" name="option" value="ramp_retract">Ramp Restract<br>
-        <input type="radio" name="option" value="ramp_restract_warning_complete">Enable Onboard Ramp Retract Complete Announcement<br>
-        <input type="radio" name="option" value="educate_success_wheelchair_ingress">Boarding Success<br>
-        <input type="radio" name="option" value="welcome_and_start">Welcome and Start<br>
+        <button class="btn btn-primary" type="button" name="option" value="ingress_not_active">Not Active</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="enable_lights">Enable Lights</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="enable_sound_onboard">Enable Onboard Announcement</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="educate_pre_boarding">Pre Boarding Education</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="deploy_ramp">Deploy Ramp</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="educate_pre_restraint">Pre Restraint Education</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="active_restraint">Activate Restraint</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="ramp_restract_warning">Ramp Retract Warning</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="ramp_retract">Ramp Restract</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="ramp_restract_warning_complete">Enable Onboard Ramp Retract Complete Announcement</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="educate_success_wheelchair_ingress">Boarding Success</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="welcome_and_start">Welcome and Start</button><br>
 
-        <input type="submit" value="Submit">
     </form>
 </section>
 
@@ -106,21 +205,22 @@
     <h1>Option 6 - Wheel Chair Exit Scenario</h1>
     Exit Web Application Instance
     <form action="/action" method="post">
+        <input type="hidden" class="option" name="option" value="">
         <input type="hidden" name="request_type" value="wheelchair_egress">
-        <input type="radio" name="option" value="egress_not_active" Checked>Not Active<br>
-        <input type="radio" name="option" value="enable_egress_lights">Enable Lights<br>
-        <input type="radio" name="option" value="enable_egress_sound_onboard">Enable Onboard Announcement<br>
-        <input type="radio" name="option" value="educate_pre_egress">Pre Exit Education<br>
-        <input type="radio" name="option" value="educate_qstraint_egress">Restraint Education<br>
-        <input type="radio" name="option" value="active_restraint_egress">Activate Restraint<br>
-        <input type="radio" name="option" value="enable_sound_ramp_egress_deploy">Enable Onboard Ramp Deploy Announcement<br>
-        <input type="radio" name="option" value="deploy_ramp">Deploy Ramp<br>
-        <input type="radio" name="option" value="ramp_restract_warning">Deploy Ramp Retract Warning<br>
-        <input type="radio" name="option" value="ramp_retract">Ramp Restract<br>
-        <input type="radio" name="option" value="ramp_restract_warning_complete">Enable Onboard Ramp Retract Complete Announcement<br>
-        <input type="radio" name="option" value="ramp_thank_you">Thanks and User Exit<br>
+        
+        <button class="btn btn-primary" type="button" name="option" value="egress_not_active">Not Active</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="enable_egress_lights">Enable Lights</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="enable_egress_sound_onboard">Enable Onboard Announcement</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="educate_pre_egress">Pre Exit Education</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="educate_qstraint_egress">Restraint Education</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="active_restraint_egress">Activate Restraint</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="enable_sound_ramp_egress_deploy">Enable Onboard Ramp Deploy Announcement</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="deploy_ramp">Deploy Ramp</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="ramp_restract_warning">Deploy Ramp Retract Warning</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="ramp_retract">Ramp Restract</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="ramp_restract_warning_complete">Enable Onboard Ramp Retract Complete Announcement</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="ramp_thank_you">Thanks and User Exit</button><br>
 
-        <input type="submit" value="Submit">
     </form>
 </section>
 
@@ -129,9 +229,11 @@
     Exit Web Application Instance
     <form action="/action" method="post">
         <input type="hidden" name="request_type" value="exit">
+        <input type="hidden" class="option" name="option" value="">
 
-        <input type="radio" name="option" value="Yes"> Exit Application<br>
-        <input type="radio" name="option" value="No" checked> Continue Application<br>
-        <input type="submit" value="Submit">
+        <button class="btn btn-primary" type="button" name="option" value="Yes"> Exit Application</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="No"> Continue Application</button><br>
     </form>
 </section>
+
+

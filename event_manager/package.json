@@ -4,6 +4,7 @@
   "description": "Propogates events to rules_database the UE teams puts in place",
   "main": "app.js",
   "scripts": {
+    "start": "node app-dev.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pdykes@us.ibm.com",

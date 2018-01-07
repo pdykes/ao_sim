@@ -4,7 +4,13 @@
   "description": "#AccessibleOlli demonstration infrastructure",
   "main": "index.js",
   "scripts": {
-    "test": "test.js"
+    "sim": "concurrently \"npm run telemetry\" \"npm run event_manager\" \"npm run cmdInterface\"",
+    "event_manager": "cd event_manager && npm start",
+    "telemetry": "cd telemetry && npm start",
+    "cmdInterface": "cd cmdline && npm start",
+    "monitor": "cd monitor && npm start",
+    "enable": "cd cmdline && node ao.js --control telemetry --operation enable",
+    "disable": "cd cmdline && node ao.js --control telemetry --operation disable"
   },
   "repository": {
     "type": "git",
@@ -18,6 +24,10 @@
   "homepage": "https://github.com/<todo>#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "child_process": "^1.0.2",
+    "concurrently": "^3.5.1",
+    "cross-spawn": "^5.1.0",
+    "wait-on": "^2.0.2"
   }
 }

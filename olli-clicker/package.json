@@ -1,0 +1,14 @@
+{
+    "name": "ollie-clicker",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "gkm": "^0.1.0"
+    },
+    "scripts": {
+        "start": "npm run app.js",
+        "test": "",
+        "eject": "",
+        "prebuild": ""
+    }
+}
