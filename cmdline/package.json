@@ -4,7 +4,7 @@
   "description": "#AccessibleOlli command line",
   "main": "ao-dev.js",
   "scripts": {
-    "start": "node ao-dev.js",
+    "start": "node ao.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pdykes@us.ibm.com",

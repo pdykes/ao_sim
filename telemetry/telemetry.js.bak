@@ -320,12 +320,7 @@ function simulation_next_events() {
     date = new Date();
     time_ms = date.getTime();
 
-    console.log("Telemetry count: " + telemetry.length);
-     console.log("Simulation Counter:", simulation_counter, 
-        "\nDelta Time:", telemetry[simulation_counter].delta_time, 
-        "\nStart Time:", simulation_start_time, 
-        "\nCurrent Time:", time_ms, 
-        "\nTime Diff: ", (time_ms - (telemetry[simulation_counter].delta_time+simulation_start_time)));
+    // debug("Simulation Counter:", simulation_counter, "Simulated Event Time:", tracking_simulation_data[simulation_counter].delta_time + simulation_start_time, "Current Time:", time_ms);
 
     while ((simulation_counter < telemetry.length) && (telemetry[simulation_counter].delta_time + simulation_start_time <= time_ms)) {
 
@@ -398,51 +393,6 @@ function establish_simluation_start( /* callback */ ) {
 
 }
 
-function establish_simulation_start_position( positionOffset ) {
-    clearInterval(simulation_interval_object);
-
-    simulation_counter = positionOffset;
-    suspend_simulation_thread = false;
-
-    //keep counter between 0 and telemetry.length-1
-    simulation_counter = Math.min(telemetry.length-1, Math.max(0, simulation_counter));
-    
-    //relative start time from counter
-    if( simulation_counter <= 5 ) 
-        simulation_start_time = (new Date()).getTime() - ((simulation_counter)*alert_interval); // establish time start in milliseconds
-    else
-        simulation_start_time = (new Date()).getTime() - ((simulation_counter+1)*alert_interval); // establish time start in milliseconds
-
-    debug(text_prefix, "****Establish the simulation time");
-    console.log(text_prefix, 'Simulation start time established');
-    simulation_next_events();
-    console.log(text_prefix, 'Simulation start request initiated');
-    in_progress = true;
-}
-
-function establish_simulation_start_offset( step ) {
-    
-    clearInterval(simulation_interval_object);
-
-    simulation_counter += step;
-    suspend_simulation_thread = false;
-
-    //keep counter between 0 and telemetry.length-1
-    simulation_counter = Math.min(telemetry.length-1, Math.max(0, simulation_counter));
-    
-    //relative start time from counter
-    if( simulation_counter <= 5 ) 
-        simulation_start_time = (new Date()).getTime() - ((simulation_counter)*alert_interval); // establish time start in milliseconds
-    else
-        simulation_start_time = (new Date()).getTime() - ((simulation_counter+1)*alert_interval); // establish time start in milliseconds
-
-    debug(text_prefix, "****Establish the simulation time");
-    console.log(text_prefix, 'Simulation start time established');
-    simulation_next_events();
-    console.log(text_prefix, 'Simulation start request initiated');
-    in_progress = true;
-}
-
 function suspend_simluation() {
 
     if (in_progress) {
@@ -451,7 +401,6 @@ function suspend_simluation() {
         console.log(text_prefix, "Simulation is completed, awaiting next restart");
     }
 
-    in_progress = false;
     if (simulation_interval_object != null) {
         clearInterval(simulation_interval_object);
         simulation_interval_object = null;
@@ -494,23 +443,6 @@ feed.on('change', function (change) {
     if (change.doc._id == telemetry_control_key) {
         console.log(text_prefix, "Control mode change request arrived:", change.doc.mode);
         switch (change.doc.mode) {
-            case "step_forward":
-                {
-                    console.log(text_prefix, "Control Mode", change.doc.mode);
-                    console.log("STEPPING FORWARD");
-                    
-                        establish_simulation_start_offset(0);
-                    // control value
-                }
-                break;
-            case "step_backward":
-                {
-                    console.log(text_prefix, "Control Mode", change.doc.mode);
-                    console.log("STEPPING BACK");
-                    establish_simulation_start_offset(-2);
-                    // control value
-                }
-                break;
             case "enabled":
                 {
                     console.log(text_prefix, "Control Mode", change.doc.mode);
@@ -522,27 +454,11 @@ feed.on('change', function (change) {
                 {
                     console.log(text_prefix, "Control Mode", change.doc.mode);
                     suspend_simulation_thread = true;
-                    suspend_simluation();
                 }
                 break;
             default:
                 {
-                    if(change.doc.mode.indexOf("stepforward_") > -1) {
-                        var stepParts = change.doc.mode.split("_");
-                        var count = parseInt(stepParts[1]) - 1;
-                        establish_simulation_start_offset(count);
-                    } else if(change.doc.mode.indexOf("stepbackward_") > -1) {
-                        var stepParts = change.doc.mode.split("_");
-                        var count = parseInt(stepParts[1]) + 1;
-                        establish_simulation_start_offset(-count);
-                    } else if(change.doc.mode.indexOf("goto_") > -1) {
-                        var stepParts = change.doc.mode.split("_");
-                        var count = parseInt(stepParts[1]) + 1;
-                        establish_simulation_start_position(count);
-                    } else {
-                        console.log(text_prefix, "Unknown Control Mode", json_body.mode);
-                    }
-                    
+                    console.log(text_prefix, "Unknown Control Mode", json_body.mode);
                 }
                 break;
         }

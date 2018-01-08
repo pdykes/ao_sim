@@ -2,9 +2,9 @@
   "name": "uh_stub",
   "version": "0.0.1",
   "description": "Propogates events to rules_database the UE teams puts in place",
-  "main": "app-dev.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node app-dev.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pdykes@us.ibm.com",

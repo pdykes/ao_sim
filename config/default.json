@@ -99,8 +99,12 @@
             "module_name": "event_manager",
             "module_Name": "Event Manager",
             "port": "3006",
-            "simulation_event_rules": "simulation_time_events.json",
-            "telemetry_event_rules": "telemetry_offset_events.json",
+            "simulation_event_rules": [
+                "simulation_time_events.json"
+            ],
+            "telemetry_event_rules": [
+                "telemetry_offset_events.json"
+            ],
             "events_database": "rule_event_transitions"
         },        
         "sequence_manager": {

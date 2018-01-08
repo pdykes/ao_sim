@@ -18,7 +18,7 @@ var net = require('net');
 var fs = require('fs');
 var config = require('config');
 var follow = require('follow');
-var request = require('request');
+
 // async waterfall
 
 var async = require('async');
@@ -176,41 +176,6 @@ function obtain_asset_record(database, database_key, control, operation, callbac
 
     if ((control == "telemetry_transitions") && (operation == "disable")) {
         control_command = "disabled";
-        control_event = {
-            _id: database_key
-        };
-    }
-
-    if ((control == "telemetry_transitions") && (operation == "step_forward")) {
-        control_command = "step_forward";
-        control_event = {
-            _id: database_key
-        };
-    }
-
-    if ((control == "telemetry_transitions") && (operation == "step_backward")) {
-        control_command = "step_backward";
-        control_event = {
-            _id: database_key
-        };
-    }
-
-    if ((control == "telemetry_transitions") && (operation.indexOf("stepforward_")>-1)) {
-        control_command = operation;
-        control_event = {
-            _id: database_key
-        };
-    }
-
-    if ((control == "telemetry_transitions") && (operation.indexOf("stepbackward_")>-1)) {
-        control_command = operation;
-        control_event = {
-            _id: database_key
-        };
-    }
-
-    if ((control == "telemetry_transitions") && (operation.indexOf("goto_")>-1)) {
-        control_command = operation;
         control_event = {
             _id: database_key
         };
@@ -877,11 +842,11 @@ function update_control(dbname, key, state) {
                 }
             });
         console.log(prefix_text, "Successful operation set " +
-            key +
+            database_key +
             " in database " +
-            dbname +
+            database_name +
             " now set to " +
-            state + " state");
+            operation_value + " state");
     } catch (err) {
         debug(prefix_text, "Error on database write:", err);
 
@@ -964,12 +929,6 @@ if (so_service) {
     //tell express that www is the root of our public web folder
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.post('/reload', function(req, res) {
-        request('http://localhost:' + config.get('agents.event_manager.port') + '/reload', function (error, response, body) {
-            res.send("success");
-        });
-    });
-
     //tell express what to do when the /form route is requested
     app.post('/action', function (req, res) {
         debug("Post entry:", JSON.stringify(req.body, null, 4));
@@ -1036,24 +995,6 @@ if (so_service) {
                                 update_control(dbname, key, state);
                             }
                             break;
-                        case "step_forward":
-                            {
-                                var dbname = "telemetry_transitions";
-                                var key = "telemetry_control";
-                                var state = "step_forward";
-
-                                update_control(dbname, key, state);
-                            }
-                            break;
-                        case "step_backward":
-                            {
-                                var dbname = "telemetry_transitions";
-                                var key = "telemetry_control";
-                                var state = "step_backward";
-
-                                update_control(dbname, key, state);
-                            }
-                            break;
                         case "start_simulation":
                             {
                                 var dbname = "telemetry_transitions";
@@ -1093,30 +1034,12 @@ if (so_service) {
 
                         default:
                             {
-                                if( req.body.option.indexOf("stepforward_") > -1  || req.body.option.indexOf("stepbackward_") > -1
-                                    || req.body.option.indexOf("goto_")>-1 ) {
-                                    var dbname = "telemetry_transitions";
-                                    var key = "telemetry_control";
-                                    var state = req.body.option;
-
-                                    update_control(dbname, key, state);
-                                } else {
-                                    console.log(prefix_text, "Unknown simulation control option");
-                                }
-                                
+                                console.log(prefix_text, "Unknown simulation control option");
                             }
                     }
 
-                    //setTimeout(function () {
+                    setTimeout(function () {
                         res.setHeader('Content-Type', 'application/json');
-                        res.json({
-                            simmode: req.body.request_type || null,
-                            simcontrol: req.body.option || null,
-                            firstname: req.body.firstname || null,
-                            id: req.body.id || null,
-                            location: req.body.location || null,
-                            lastname: req.body.lastname || null
-                        });
                         debug("web data:", (JSON.stringify({
                             simmode: req.body.request_type || null,
                             simcontrol: req.body.option || null,
@@ -1125,9 +1048,9 @@ if (so_service) {
                             location: req.body.location || null,
                             lastname: req.body.lastname || null
                         })));
-                        //res.redirect("/")
+                        res.redirect("/")
 
-                    //}, 1000)
+                    }, 1000)
 
 
                 }

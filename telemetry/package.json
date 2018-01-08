@@ -4,7 +4,7 @@
   "description": "",
   "main": "app-dev.js",
   "scripts": {
-    "start": "node telemetry-dev.js",
+    "start": "node telemetry.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

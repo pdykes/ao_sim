@@ -124,75 +124,104 @@ var prefix_text = "[" + config.get("agents.event_manager.module_Name") + "]";
 
 // Load the rules
 
-var simulation_event_rules = null;
+var simulation_event_rules = [];
 var simulation_by_offset_rules = [];
 var simulation_rules_input_file = config.get("agents.event_manager.simulation_event_rules");
 
-var telemetry_event_rules = null;
+var telemetry_event_rules = [];
 var telemetry_by_offset_rules = [];
 var telemetry_rules_input_file = config.get("agents.event_manager.telemetry_event_rules");
 
-if (process.env.NODE_CONFIG_DIR !== undefined) {
-    var file_path = process.env.NODE_CONFIG_DIR + "/" + simulation_rules_input_file;
-    if (fs.existsSync(file_path)) {
-        try {
-            var simulation_event_rules_data = fs.readFileSync(file_path);
-            // Define to JSON type
-            simulation_event_rules = JSON.parse(simulation_event_rules_data);
-        } catch (err) {
-            console.log(prefix_text, "Error Handling Rules, check:", file_path);
+
+function loadEventRules()
+{
+    if (process.env.NODE_CONFIG_DIR !== undefined) {
+        for(var i=0; i<simulation_rules_input_file.length; i++) {
+            var file_path = process.env.NODE_CONFIG_DIR + "/" + simulation_rules_input_file[i];
+            if (fs.existsSync(file_path)) {
+                try {
+                    var simulation_event_rules_data = fs.readFileSync(file_path);
+                    // Define to JSON type
+                    simulation_event_rules[i] = JSON.parse(simulation_event_rules_data);
+                } catch (err) {
+                    console.log(prefix_text, "Error Handling Rules, check:", file_path);
+                }
+            }
+        }
+    } else {
+        console.log("Error NODE_CONFIG_DIR not set, please set and restart");
+        return;
+    }
+
+    if (process.env.NODE_CONFIG_DIR !== undefined) {
+        for(var i=0; i<telemetry_rules_input_file.length; i++) {
+            var file_path = process.env.NODE_CONFIG_DIR + "/" + telemetry_rules_input_file[i];
+            if (fs.existsSync(file_path)) {
+                try {
+                    var telemetry_event_rules_data = fs.readFileSync(file_path);
+                    // Define to JSON type
+                    telemetry_event_rules[i] = JSON.parse(telemetry_event_rules_data);
+                } catch (err) {
+                    console.log(prefix_text, "Error Handling Rules, check:", file_path);
+                }
+            }
+        }
+        
+    } else {
+        console.log("Error NODE_CONFIG_DIR not set, please set and restart");
+        return;
+    }
+
+    // Process rules during startup
+    for(var i=0; i<simulation_event_rules.length; i++) {
+        for (key in simulation_event_rules[i]) { // fill out sparse array
+            console.log(prefix_text, "Processing key", key);
+            var index = simulation_event_rules[i][key].simulation_time;
+            simulation_by_offset_rules[index] = [];
+
+            //simulation_by_offset_rules[index]['events'] = simulation_event_rules[key].events;
+            if( typeof simulation_by_offset_rules[index]['events'] !== 'array' )
+                simulation_by_offset_rules[index]['events'] = [];
+
+            simulation_by_offset_rules[index]['events'] = 
+                simulation_by_offset_rules[index]['events'].concat(simulation_event_rules[i][key].events);
+
+            simulation_by_offset_rules[index]['index'] = simulation_event_rules[i][key].simulation_time;
         }
     }
-} else {
-    console.log("Error NODE_CONFIG_DIR not set, please set and restart");
-    return;
-}
 
-if (process.env.NODE_CONFIG_DIR !== undefined) {
-    var file_path = process.env.NODE_CONFIG_DIR + "/" + telemetry_rules_input_file;
-    if (fs.existsSync(file_path)) {
-        try {
-            var telemetry_event_rules_data = fs.readFileSync(file_path);
-            // Define to JSON type
-            telemetry_event_rules = JSON.parse(telemetry_event_rules_data);
-        } catch (err) {
-            console.log(prefix_text, "Error Handling Rules, check:", file_path);
+    for(var i=0; i<telemetry_event_rules.length; i++) {
+        for (key in telemetry_event_rules[i]) { // fill out sparse array
+            console.log(prefix_text, "Processing key", key);
+            var index = telemetry_event_rules[i][key].offset;
+            telemetry_by_offset_rules[index] = [];
+
+            if( typeof telemetry_by_offset_rules[index]['events'] !== 'array' )
+                telemetry_by_offset_rules[index]['events'] = [];
+            //concat events of each file
+            telemetry_by_offset_rules[index]['events'] = 
+                telemetry_by_offset_rules[index]['events'].concat(telemetry_event_rules[i][key].events);
+
+            console.log("Event count: " + telemetry_by_offset_rules[index]['events'].length);
+            telemetry_by_offset_rules[index]['index'] = telemetry_event_rules[i][key].offset;
         }
     }
-} else {
-    console.log("Error NODE_CONFIG_DIR not set, please set and restart");
-    return;
+    
+
+    simulation_by_offset_rules.forEach(function (element) {
+        debug("simulation_by_offset_rules data structure:");
+        debug("   Delta_time:", element.index);
+        debug("   Events:", element.events);
+    });
+
+    telemetry_by_offset_rules.forEach(function (element) {
+        debug("telemetry_by_offset_rules data structure:");
+        debug("   Delta_time:", element.index);
+        debug("   Events:", element.events);
+    });
 }
 
-// Process rules during startup
-
-for (key in simulation_event_rules) { // fill out sparse array
-    console.log(prefix_text, "Processing key", key);
-    var index = simulation_event_rules[key].simulation_time;
-    simulation_by_offset_rules[index] = [];
-    simulation_by_offset_rules[index]['events'] = simulation_event_rules[key].events;
-    simulation_by_offset_rules[index]['index'] = simulation_event_rules[key].simulation_time;
-}
-
-for (key in telemetry_event_rules) { // fill out sparse array
-    console.log(prefix_text, "Processing key", key);
-    var index = telemetry_event_rules[key].offset;
-    telemetry_by_offset_rules[index] = [];
-    telemetry_by_offset_rules[index]['events'] = telemetry_event_rules[key].events;
-    telemetry_by_offset_rules[index]['index'] = telemetry_event_rules[key].offset;
-}
-
-simulation_by_offset_rules.forEach(function (element) {
-    debug("simulation_by_offset_rules data structure:");
-    debug("   Delta_time:", element.index);
-    debug("   Events:", element.events);
-});
-
-telemetry_by_offset_rules.forEach(function (element) {
-    debug("telemetry_by_offset_rules data structure:");
-    debug("   Delta_time:", element.index);
-    debug("   Events:", element.events);
-});
+loadEventRules();
 
 
 /*
@@ -564,7 +593,9 @@ app.listen(http_port);
 // ready for interaction, initialize all registered agents...
 // assumption all registered agents will be contacted
 
-
+app.get('/reload', function(request, response) {
+    loadEventRules();
+});
 // web server function - post mvp4b
 
 /*
@@ -716,10 +747,10 @@ function follow_on_change(details, feed) {
                                 var olli_offset = vehicle_list[key].offset;
                                 var olli_name = key;
 
-                                console.log("Processing vehicle:", key);
-
+                                //console.log("Processing vehicle:", olli_name, " at offset: " + olli_offset);
+                                //console.log(telemetry_by_offset_rules);
                                 if (telemetry_by_offset_rules.hasOwnProperty(olli_offset)) {
-                                    debug("Telemetry event exist for this instance [" + olli_offset + "]");
+                                    //console.log("Telemetry event exist for this instance [" + olli_offset + "]");
                                     telemetry_by_offset_rules[olli_offset].events.forEach(function (element) {
                                         // debug("   Events:", JSON.stringify(element, null, 4));
 
@@ -727,20 +758,20 @@ function follow_on_change(details, feed) {
                                         if (element.hasOwnProperty("filter")) { // default to all
                                             if (element.filter == "all") {
                                                 release_event = true;
-                                                debug("Filer set - Apply this event to each instance");
+                                                console.log("Filer set - Apply this event to each instance");
                                             } else {
                                                 if (element.filter == olli_name) {
                                                     release_event = true;
-                                                    debug("Apply this event to specific instance");
+                                                    console.log("Apply this event to specific instance");
                                                 }
                                             }
                                         } else { // no filter, just process for each vehicle
                                             release_event = true;
-                                            debug("Filer not set - Apply this event to each instance");
+                                            console.log("Filer not set - Apply this event to each instance");
                                         }
-
+                                        console.log("Vehicle: "+ olli_name + " release_event: " + release_event);
                                         if (release_event) {
-                                            debug("Fire this event:", JSON.stringify(element, null, 4));
+                                            console.log("Fire this event:", JSON.stringify(element, null, 4));
 
                                             if (!element.hasOwnProperty('payload')) {
                                                 element['payload'] = {}
