@@ -173,6 +173,7 @@ function loadEventRules()
         var index = telemetry_event_rules[key].offset;
         telemetry_by_offset_rules[index] = [];
         telemetry_by_offset_rules[index]['events'] = telemetry_event_rules[key].events;
+        console.log("Event count: " + telemetry_by_offset_rules[index]['events'].length);
         telemetry_by_offset_rules[index]['index'] = telemetry_event_rules[key].offset;
     }
 
@@ -189,6 +190,7 @@ function loadEventRules()
     });
 }
 
+loadEventRules();
 
 
 /*
@@ -714,10 +716,10 @@ function follow_on_change(details, feed) {
                                 var olli_offset = vehicle_list[key].offset;
                                 var olli_name = key;
 
-                                console.log("Processing vehicle:", key);
-
+                                //console.log("Processing vehicle:", olli_name, " at offset: " + olli_offset);
+                                //console.log(telemetry_by_offset_rules);
                                 if (telemetry_by_offset_rules.hasOwnProperty(olli_offset)) {
-                                    debug("Telemetry event exist for this instance [" + olli_offset + "]");
+                                    //console.log("Telemetry event exist for this instance [" + olli_offset + "]");
                                     telemetry_by_offset_rules[olli_offset].events.forEach(function (element) {
                                         // debug("   Events:", JSON.stringify(element, null, 4));
 
@@ -725,20 +727,20 @@ function follow_on_change(details, feed) {
                                         if (element.hasOwnProperty("filter")) { // default to all
                                             if (element.filter == "all") {
                                                 release_event = true;
-                                                debug("Filer set - Apply this event to each instance");
+                                                console.log("Filer set - Apply this event to each instance");
                                             } else {
                                                 if (element.filter == olli_name) {
                                                     release_event = true;
-                                                    debug("Apply this event to specific instance");
+                                                    console.log("Apply this event to specific instance");
                                                 }
                                             }
                                         } else { // no filter, just process for each vehicle
                                             release_event = true;
-                                            debug("Filer not set - Apply this event to each instance");
+                                            console.log("Filer not set - Apply this event to each instance");
                                         }
-
+                                        console.log("Vehicle: "+ olli_name + " release_event: " + release_event);
                                         if (release_event) {
-                                            debug("Fire this event:", JSON.stringify(element, null, 4));
+                                            console.log("Fire this event:", JSON.stringify(element, null, 4));
 
                                             if (!element.hasOwnProperty('payload')) {
                                                 element['payload'] = {}

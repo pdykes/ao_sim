@@ -522,6 +522,7 @@ feed.on('change', function (change) {
                 {
                     console.log(text_prefix, "Control Mode", change.doc.mode);
                     suspend_simulation_thread = true;
+                    suspend_simluation();
                 }
                 break;
             default:
