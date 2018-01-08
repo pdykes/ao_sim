@@ -4,6 +4,7 @@
 
 /dist
 /videos
+/telemetry/telemetry.json
 
 # dependencies
 /node_modules
