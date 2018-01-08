@@ -115,11 +115,11 @@ var prefix_text = "[" + config.get("agents.event_manager.module_Name") + "]";
 
 // Load the rules
 
-var simulation_event_rules = null;
+var simulation_event_rules = [];
 var simulation_by_offset_rules = [];
 var simulation_rules_input_file = config.get("agents.event_manager.simulation_event_rules");
 
-var telemetry_event_rules = null;
+var telemetry_event_rules = [];
 var telemetry_by_offset_rules = [];
 var telemetry_rules_input_file = config.get("agents.event_manager.telemetry_event_rules");
 
@@ -127,14 +127,16 @@ var telemetry_rules_input_file = config.get("agents.event_manager.telemetry_even
 function loadEventRules()
 {
     if (process.env.NODE_CONFIG_DIR !== undefined) {
-        var file_path = process.env.NODE_CONFIG_DIR + "/" + simulation_rules_input_file;
-        if (fs.existsSync(file_path)) {
-            try {
-                var simulation_event_rules_data = fs.readFileSync(file_path);
-                // Define to JSON type
-                simulation_event_rules = JSON.parse(simulation_event_rules_data);
-            } catch (err) {
-                console.log(prefix_text, "Error Handling Rules, check:", file_path);
+        for(var i=0; i<simulation_rules_input_file.length; i++) {
+            var file_path = process.env.NODE_CONFIG_DIR + "/" + simulation_rules_input_file[i];
+            if (fs.existsSync(file_path)) {
+                try {
+                    var simulation_event_rules_data = fs.readFileSync(file_path);
+                    // Define to JSON type
+                    simulation_event_rules[i] = JSON.parse(simulation_event_rules_data);
+                } catch (err) {
+                    console.log(prefix_text, "Error Handling Rules, check:", file_path);
+                }
             }
         }
     } else {
@@ -143,39 +145,59 @@ function loadEventRules()
     }
 
     if (process.env.NODE_CONFIG_DIR !== undefined) {
-        var file_path = process.env.NODE_CONFIG_DIR + "/" + telemetry_rules_input_file;
-        if (fs.existsSync(file_path)) {
-            try {
-                var telemetry_event_rules_data = fs.readFileSync(file_path);
-                // Define to JSON type
-                telemetry_event_rules = JSON.parse(telemetry_event_rules_data);
-            } catch (err) {
-                console.log(prefix_text, "Error Handling Rules, check:", file_path);
+        for(var i=0; i<telemetry_rules_input_file.length; i++) {
+            var file_path = process.env.NODE_CONFIG_DIR + "/" + telemetry_rules_input_file[i];
+            if (fs.existsSync(file_path)) {
+                try {
+                    var telemetry_event_rules_data = fs.readFileSync(file_path);
+                    // Define to JSON type
+                    telemetry_event_rules[i] = JSON.parse(telemetry_event_rules_data);
+                } catch (err) {
+                    console.log(prefix_text, "Error Handling Rules, check:", file_path);
+                }
             }
         }
+        
     } else {
         console.log("Error NODE_CONFIG_DIR not set, please set and restart");
         return;
     }
 
     // Process rules during startup
+    for(var i=0; i<simulation_event_rules.length; i++) {
+        for (key in simulation_event_rules[i]) { // fill out sparse array
+            console.log(prefix_text, "Processing key", key);
+            var index = simulation_event_rules[i][key].simulation_time;
+            simulation_by_offset_rules[index] = [];
 
-    for (key in simulation_event_rules) { // fill out sparse array
-        console.log(prefix_text, "Processing key", key);
-        var index = simulation_event_rules[key].simulation_time;
-        simulation_by_offset_rules[index] = [];
-        simulation_by_offset_rules[index]['events'] = simulation_event_rules[key].events;
-        simulation_by_offset_rules[index]['index'] = simulation_event_rules[key].simulation_time;
+            //simulation_by_offset_rules[index]['events'] = simulation_event_rules[key].events;
+            if( typeof simulation_by_offset_rules[index]['events'] !== 'array' )
+                simulation_by_offset_rules[index]['events'] = [];
+
+            simulation_by_offset_rules[index]['events'] = 
+                simulation_by_offset_rules[index]['events'].concat(simulation_event_rules[i][key].events);
+
+            simulation_by_offset_rules[index]['index'] = simulation_event_rules[i][key].simulation_time;
+        }
     }
 
-    for (key in telemetry_event_rules) { // fill out sparse array
-        console.log(prefix_text, "Processing key", key);
-        var index = telemetry_event_rules[key].offset;
-        telemetry_by_offset_rules[index] = [];
-        telemetry_by_offset_rules[index]['events'] = telemetry_event_rules[key].events;
-        console.log("Event count: " + telemetry_by_offset_rules[index]['events'].length);
-        telemetry_by_offset_rules[index]['index'] = telemetry_event_rules[key].offset;
+    for(var i=0; i<telemetry_event_rules.length; i++) {
+        for (key in telemetry_event_rules[i]) { // fill out sparse array
+            console.log(prefix_text, "Processing key", key);
+            var index = telemetry_event_rules[i][key].offset;
+            telemetry_by_offset_rules[index] = [];
+
+            if( typeof telemetry_by_offset_rules[index]['events'] !== 'array' )
+                telemetry_by_offset_rules[index]['events'] = [];
+            //concat events of each file
+            telemetry_by_offset_rules[index]['events'] = 
+                telemetry_by_offset_rules[index]['events'].concat(telemetry_event_rules[i][key].events);
+
+            console.log("Event count: " + telemetry_by_offset_rules[index]['events'].length);
+            telemetry_by_offset_rules[index]['index'] = telemetry_event_rules[i][key].offset;
+        }
     }
+    
 
     simulation_by_offset_rules.forEach(function (element) {
         debug("simulation_by_offset_rules data structure:");
