@@ -35,6 +35,35 @@ var request = require('request');
 var gpio_enabled = false;
 var gpio = null;
 
+var IOModule = {
+    RAMP_EXTEND_OUTPUT: {
+        value: 0,
+        name: "Ramp_Extend_Output",
+        pin: 40
+    },
+    RAMP_RETRACT_OUTPUT: {
+        value: 1,
+        name: "Ramp_Retract_Output",
+        pin: 37
+    },
+    LIGHTS_OUTPUT: {
+        value: 2,
+        name: "Lights_Output",
+        pin: 38
+    },
+    QSTRAINT_OUTPUT: {
+        value: 3,
+        name: "QSTRAINT_Output",
+        pin: 35
+    },
+    QSTRAINT_INPUT: {
+        value: 4,
+        name: "QSTRAINT_Input",
+        pin: 36
+    },
+}
+
+
 
 if (olli_config[0].gpio_enabled) {
     gpio = require('rpi-gpio');
@@ -67,33 +96,8 @@ var agent_from_device_key = olli_config[0].from_device;
 var agent_version = "0.0.1";
 
 
-var IOModule = {
-    RAMP_EXTEND_OUTPUT: {
-        value: 0,
-        name: "Ramp_Extend_Output",
-        pin: 40
-    },
-    RAMP_RETRACT_OUTPUT: {
-        value: 1,
-        name: "Ramp_Retract_Output",
-        pin: 37
-    },
-    LIGHTS_OUTPUT: {
-        value: 2,
-        name: "Lights_Output",
-        pin: 38
-    },
-    QSTRAINT_OUTPUT: {
-        value: 3,
-        name: "QSTRAINT_Output",
-        pin: 35
-    },
-    QSTRAINT_INPUT: {
-        value: 4,
-        name: "QSTRAINT_Input",
-        pin: 36
-    },
-}
+
+debug("IO values:", JSON.stringify(IOModule,null,4));
 
 //flashing lights variables
 var flash_timer1;
@@ -134,6 +138,7 @@ var response_template = {
 function initialize_io() {
     if (gpio_enabled) {
         try {
+            debug("IOModule:", JSON.stringify(IOModule, null, 4));
             gpio.setup(IOModule.RAMP_EXTEND_OUTPUT.pin, gpio.DIR_HIGH, initOutput);
             gpio.setup(IOModule.RAMP_RETRACT_OUTPUT.pin, gpio.DIR_HIGH, initOutput);
             gpio.setup(IOModule.LIGHTS_OUTPUT.pin, gpio.DIR_HIGH, initOutput);

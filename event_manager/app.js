@@ -37,6 +37,13 @@ var QSTRAINT_UNDEPLOYED = 0;
 var QSTRAINT_DEPLOYING = 1;
 var QSTRAINT_DEPLOYED = 2;
 
+// Simulation status
+var SIMULATION_PAUSED = 0;
+var SIMULATION_TELEMETRY = 1;
+var SIMUlATION_BOARDING = 2;
+var SIMULATION_DISEMBARKING = 3;
+var SIMULATION_EMERGENCY_STOP = 4;
+
 // special events
 var SIM_START_EVENT = "_simulation_start_event";
 var SIM_END_EVENT = "_simulation_complete_event";
@@ -46,6 +53,7 @@ var TEL_END_EVENT = "_telemetry_complete_event";
 
 var PATRONS_BOARD = "stop_simulation_board_patrons_stop_4";
 var PATRONS_EXIT = "stop_simulation_patrons_exit_stop_1";
+
 
 var operational_status = {
     telemetry_status: "inactive", // are simulation events arrival active or inactive
@@ -59,7 +67,8 @@ var operational_status = {
     emergency_stop: false, // Emergency stop mode enabled (true) or not (false)
     ramp_mode: false, // Is ramp operations enabled (be very careful here)
     ramp_state: RAMP_UNDEPLOYED, // see above
-    qstraint_state: QSTRAINT_UNDEPLOYED // see above  
+    qstraint_state: QSTRAINT_UNDEPLOYED, // see above  
+    simulation_state:  SIMULATION_PAUSED   // se above
 };
 
 // setup the database follow...

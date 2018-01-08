@@ -12,9 +12,12 @@
 var net = require('net');
 var fs = require('fs');
 var async = require('async');
+var waterfall = require('async-waterfall');
 var config = require('config');
 
 var module_name = config.get("agents.monitor.module_name");
+var module_Name = config.get("agents.monitor.module_Name");
+
 
 var debug = require("debug")(module_name);
 debug("Debug enabled in module: %s", module_name);
@@ -23,6 +26,12 @@ var writeJsonFile = require('write-json-file');
 var loadJsonFile = require('load-json-file');
 // process command line args
 const commandLineArgs = require('command-line-args');
+
+var post_tracking = false;
+var post_simulation_tracking = config.get("agents.monitor.simulation_tracking");
+if (post_simulation_tracking == "true") {
+    post_tracking = true;
+}
 
 var reg_filename = "registration.json";
 var track_filename = "tracking.json";
@@ -43,7 +52,7 @@ if (process.env.NODE_CONFIG_DIR !== undefined) {
 
 var registation_complete = false;
 
-var text_prefix = "SmartPass:";
+var prefix_text = "[" + module_Name + "]";
 
 var simulation_mode = true;
 var rfid_mode = false;
@@ -311,7 +320,7 @@ function reset_state() {
     current_epc = null;
 }
 
-function db_update(dbase, database_record) {
+function db_update_legacy(dbase, database_record) {
     stime = null;
     etime = null;
 
@@ -358,7 +367,7 @@ function db_update(dbase, database_record) {
             if (dbperf_tracking) {
                 var date = new Date();
                 etime = date.getTime();
-                debug(text_prefix, "db perf [" + database_record._id + "]:", etime - stime, "ms");
+                debug(prefix_text, "db perf [" + database_record._id + "]:", etime - stime, "ms");
             }
         }); // get
     } catch (err) {
@@ -366,8 +375,34 @@ function db_update(dbase, database_record) {
     }
 }
 
-function persona_transition_record(reg_record) { // note, this just replaces the record, always
+// ===========================================================
 
+function db_update(database, database_record) {
+
+    debug("To be persisted:", JSON.stringify(database_record,null,4));
+    try {
+        waterfall([
+                async.apply(evaluate_data, database, database_record),
+                obtain_asset_record,
+                update_asset_record,
+                asset_request_complete
+            ],
+            function (err, results) {
+                debug("Event result:", JSON.stringify(results, null, 4));
+                if (err !== null) {
+                    debug("Error Result:",
+                        err);
+                }
+            });
+    } catch (error) {
+        console.log(prefix_text,
+            "Monitor database record processing error:", error);
+    }
+}
+
+// ===========================================================
+
+function persona_transition_record(reg_record) { // note, this just replaces the record, always
 
     debug("Database asset get request");
     if (reg_record.persona == "init") return;
@@ -388,18 +423,108 @@ function reset_persona_record(reg_record) { // note, this just replaces the reco
 
 }
 
+// =================================================================
+
+// Improved data base operations
+
+// Database operations code
+
+//---------------------------------------------------------------
+
+function evaluate_data(the_db, the_data, callback) {
+
+    try {
+        debug("Phase 1: Prepare control operation");
+
+        callback(null, the_db, the_data);
+    } catch (err) {
+        debug("Phase 1: Error, evaluate_data");
+        callback(err);
+    }
+
+}
+
+function obtain_asset_record(the_db, the_data, callback) {
+
+    var db_record_found = false;
+
+    // attempt to get record from database
+    debug("Phase 2: DB Query, asset");
+
+    try {
+        the_db.get(the_data._id, {
+            revs_info: false
+        }, function (err, event_body) {
+            if (!err) {
+                db_record_found = true;
+                if (db_record_found) {
+                    debug("Phase 2:Database record found:", JSON.stringify(the_data, 4, null));
+                    the_data['_rev'] = event_body._rev;
+                } else {
+                    debug("Phase 2: Database record found for", the_data._id);
+                }
+                debug("Phase 2: Attempting to store:", JSON.stringify(the_data, 4, null));
+                callback(null, the_db, the_data);
+            } else {
+                debug("Phase 2: Database record not found for", the_data._id);
+                callback(null, the_db, the_data);
+            }
+        });
+    } catch (err) {
+        debug("Phase 2: Database record not found for", the_data._id);
+        callback(err, "Phase 2: failure", err);
+    }
+}
+
+
+function update_asset_record(the_db, the_data, callback) {
+
+    debug("Phase 3: Database update");
+
+    try {
+        the_db.insert(the_data, function (err, body) {
+            if (!err) {
+                if (body.hasOwnProperty('_rev')) {
+                    debug("Phase 3: Database asset updated:", the_data._id);
+                } else {
+                    debug("Phase 3: Database asset created:", the_data._id);
+                }
+                callback(null, the_db, the_data);
+            } else {
+                debug("Phase 3: Database asset " + the_data._id + " throwing: ", err);
+                callback(err, the_db, the_data);
+            }
+        }); // insert
+    } catch (err) {
+        debug("Phase 3: Database record not found for", the_data._id);
+        callback(err, "Phase 3: failure", err);
+    }
+}
+
+function asset_request_complete(the_db, the_data, callback) {
+    try {
+        debug("Phase 4: Database update complete for", the_data._id);
+        callback(null, the_db, the_data);
+    } catch (err) {
+        debug("Phase 4: Database record not found for", the_data._id);
+        callback(err, "Phase 4: failure", err);
+    }
+}
+
+//==========================================================================
+
 function load_registration_information(callback) {
     var registrations_records_in = null;
     var location_data_in = null;
 
 
-    debug(text_prefix, "****Load the registration data");
+    debug(prefix_text, "****Load the registration data");
 
     fs.readFile(registrations_filename, 'utf8', function (err, registrations_records_in) {
         registration_records = JSON.parse(registrations_records_in);
         for (var i = 0; i < registration_records.length; i++) {
             if (registration_records[i].persona != "init") {
-                console.log(text_prefix, "Registation records:[" + i + "]", "{", registration_records[i].persona + ":" + registration_records[i].id, "SmartPass Id[" + registration_records[i].epc + "] }");
+                console.log(prefix_text, "Registation records:[" + i + "]", "{", registration_records[i].persona + ":" + registration_records[i].id, "SmartPass Id[" + registration_records[i].epc + "] }");
 
                 //  **** Note: these rely on a sparse matrics of javascript arrays
                 // timer track upon entry
@@ -439,7 +564,7 @@ function load_registration_information(callback) {
                 }
             }
         }
-        console.log(text_prefix, 'Registration File Loaded:', registrations_filename);
+        console.log(prefix_text, 'Registration File Loaded:', registrations_filename);
         registation_complete = true;
         callback(null, "Init: Phase 1");
     });
@@ -450,19 +575,19 @@ function load_registration_information(callback) {
 function load_location(callback) {
 
 
-    debug(text_prefix, "****Load the location data");
+    debug(prefix_text, "****Load the location data");
 
     fs.readFile(location_filename, 'utf8', function (err, location_data_in) {
         var location_data = JSON.parse(location_data_in);
         location_records = location_data.locations;
         for (var i = 0; i < location_records.length; i++) {
-            console.log(text_prefix, "Location records:[" + i + "]", "{", location_records[i].antennaPort + ":" + location_records[i].location + "] }");
+            console.log(prefix_text, "Location records:[" + i + "]", "{", location_records[i].antennaPort + ":" + location_records[i].location + "] }");
 
             simulation_location[location_records[i].location] = location_records[i].antennaPort;
             debug("Simulation Location Mapping [" + location_records[i].location + "]: ",
                 "antennaPort:", simulation_location[location_records[i].location]);
         }
-        debug(text_prefix, 'Location File Loaded:', location_filename);
+        debug(prefix_text, 'Location File Loaded:', location_filename);
         callback(null, "Init: Phase 2");
     });
 }
@@ -478,7 +603,7 @@ function load_database(ldb_callback) {
     debug("Entering load_database...");
 
     if (database_interaction) {
-        debug(text_prefix, "****Load the database - begin");
+        debug(prefix_text, "****Load the database - begin");
         var result = registration_records.map(reset_persona_record);
         ldb_callback(null, "Init: Phase 3");
     } else {
@@ -493,7 +618,7 @@ function simulation_next_events() {
 
     // loop based on the former tracking data
 
-    debug(text_prefix, "****Establish the simulation events");
+    debug(prefix_text, "****Establish the simulation events");
 
     date = new Date();
     time_ms = date.getTime();
@@ -515,18 +640,18 @@ function simulation_next_events() {
         simulation_counter++;
     }
     if (simulation_counter >= tracking_simulation_data.length) {
-        console.log(text_prefix, "Simulation Mode Complete")
+        console.log(prefix_text, "Simulation Mode Complete")
         process.exit();
     }
 }
 
 function establish_simluation_start(callback) {
 
-    debug(text_prefix, "****Establish the simulation time");
+    debug(prefix_text, "****Establish the simulation time");
 
     var date = new Date();
     simulation_start_time = date.getTime(); // establish time start in milliseconds
-    console.log(text_prefix, 'Simulation start time established');
+    console.log(prefix_text, 'Simulation start time established');
     callback(null, "Init: Phase 4 [Time:" + simulation_start_time + "]");
 
 }
@@ -535,9 +660,9 @@ function connect_to_rfid(callback) {
 
     debug("Entering connect_to_rfid...");
 
-    debug(text_prefix, "****Connect to the RFID Reader");
+    debug(prefix_text, "****Connect to the RFID Reader");
     client.connect(host_port, host_ip, function () {
-        console.log(text_prefix, 'Connected to speedway [ host:' + host_ip + ', port:' + host_port + ']');
+        console.log(prefix_text, 'Connected to speedway [ host:' + host_ip + ', port:' + host_port + ']');
         callback(null, "Init: Phase 5");
     });
 }
@@ -547,7 +672,7 @@ function connect_to_rfid(callback) {
 client.on('data', function (data) {
     try {
         if (registation_complete == false) {
-            console.log(text_prefix, "Events arrived before registration prepared, waiting");
+            console.log(prefix_text, "Events arrived before registration prepared, waiting");
             return;
         }
         var parsing_string = data + ''; // convert to a string
@@ -560,29 +685,29 @@ client.on('data', function (data) {
         }
     } catch (err) {
         if (!err.message.includes('Unexpected token')) { // most common annoying error
-            console.log(text_prefix, "Error Processing Record: [" + data + "]");
-            console.log(text_prefix, "Specific Error:", err.message);
-            debug(text_prefix, "Specific Error:", err);
+            console.log(prefix_text, "Error Processing Record: [" + data + "]");
+            console.log(prefix_text, "Specific Error:", err.message);
+            debug(prefix_text, "Specific Error:", err);
         }
     }
 });
 
 client.on('close', function () {
-    console.log(text_prefix, 'Connection closed');
+    console.log(prefix_text, 'Connection closed');
 });
 
 client.on('error', function (ex) {
-    console.log(text_prefix, "Issue connecting to the Impinj Reader at IP:[" + host_ip + "] Port:[" + host_port + "], verify is opertional and web console https://<ip address> has been visited to activate the reader.");
-    console.log(text_prefix, "Exception recieved:", ex);
+    console.log(prefix_text, "Issue connecting to the Impinj Reader at IP:[" + host_ip + "] Port:[" + host_port + "], verify is opertional and web console https://<ip address> has been visited to activate the reader.");
+    console.log(prefix_text, "Exception recieved:", ex);
 });
 
 
 process.on('SIGINT', function () {
-    console.log(text_prefix, "Caught interrupt signal");
+    console.log(prefix_text, "Caught interrupt signal");
 
     if (!simulation_mode) {
         writeJsonFile(tracking_filename, transaction_data).then(() => {
-            console.log(text_prefix, 'Verified Registration File, complete, exiting...', tracking_filename);
+            console.log(prefix_text, 'Verified Registration File, complete, exiting...', tracking_filename);
             process.exit();
         });
     } else {
@@ -616,38 +741,46 @@ function monitor(json_data) {
 
     debug("Entering monitor...");
 
+    /* PJD minimal delay change
+
     if (json_data.epc !== 'undefined') {
         if (current_epc == json_data.epc) {
             reset_state();
-            debug(text_prefix, "current_epc failure");
+            debug(prefix_text, "current_epc failure");
             return;
         }
     } else {
         reset_state();
-        debug(text_prefix, "current_epc not set error");
+        debug(prefix_text, "current_epc not set error");
         return;
     }
 
     if (busy == true) { // skip entries, focus on processing good hits
-        debug(text_prefix, "function busy error");
+        debug(prefix_text, "function busy error");
         return;
     }
 
     busy = true;
     current_epc = json_data.epc;
+    
+    */
 
     var date = new Date();
     var event_time = date.getTime();
     var delta_time = event_time - simulation_start_time;
 
+    /*
+
     // console.log(event_time,(parseInt(visit_tracker[json_data.epc]) + 2500));
     if (event_time < (visit_tracker[json_data.epc] + time_gap)) {
-        // console.log(text_prefix, "detected duplicate close time proximity");
+        // console.log(prefix_text, "detected duplicate close time proximity");
         reset_state();
         return;
     }
+    
+    */
 
-    debug(text_prefix, "Incoming:", JSON.stringify(json_data, null, 4));
+    debug(prefix_text, "Incoming:", JSON.stringify(json_data, null, 4));
 
     var transition = null;
     var persona = null;
@@ -661,14 +794,14 @@ function monitor(json_data) {
         ((i < location_records.length) && (transition_found == false)); i++) {
         if (json_data.antennaPort == location_records[i].antennaPort) {
             transition_found = true;
-            // debug(text_prefix,"transition match:", location_records[i].location);
+            // debug(prefix_text,"transition match:", location_records[i].location);
             transition = location_records[i].location;
         }
     }
 
     if (transition_found == false) {
-        debug(text_prefix, "Record not a match (l):", JSON.stringify(json_data, null, 4));
-        reset_state();
+        debug(prefix_text, "Record not a match (l):", JSON.stringify(json_data, null, 4));
+        /* reset_state(); */
         return;
     }
 
@@ -679,7 +812,7 @@ function monitor(json_data) {
         if (registration_records[i].persona != "init") {
             if (registration_records[i].epc == json_data.epc) {
                 registration_found = true;
-                debug(text_prefix, "Registation match:", registration_records[i].persona);
+                debug(prefix_text, "Registation match:", registration_records[i].persona);
                 persona = registration_records[i].persona;
                 persona_id = registration_records[i].id;
                 smartpass_id = registration_records[i].epc;
@@ -688,8 +821,8 @@ function monitor(json_data) {
     }
 
     if (registration_found == false) {
-        console.log(text_prefix, "Record not a match error (p):", JSON.stringify(json_data, null, 4));
-        reset_state();
+        console.log(prefix_text, "Record not a match error (p):", JSON.stringify(json_data, null, 4));
+        /* reset_state(); */
         return;
     }
 
@@ -766,7 +899,7 @@ function monitor(json_data) {
     persona_location_state[rec_id][persona_location[smartpass_id]] = true;
     persona_location_state[rec_id][previous_location] = false;
 
-    if (!simulation_mode) { // dont track if simulation mode
+    if (!simulation_mode && post_tracking) { // dont track if simulation mode(see config file)
         transaction_data.push({ // simulation logging
             _id: rec_id,
             persona: persona,
@@ -799,14 +932,22 @@ function monitor(json_data) {
 
     if (database_interaction) {
         persona_transition_record(event_record);
-        debug(text_prefix, "Data base Update recorded:", JSON.stringify(event_record, null, 4));
+
+
+
+
+        debug(prefix_text, "Data base Update recorded:", JSON.stringify(event_record, null, 4));
     }
 
-    console.log(text_prefix, "Persona:", event_record._id, "Location:", event_record.location, "Transistion:", event_record.transition, "Simulation Time:", event_time);
+    console.log(prefix_text, "Persona:", event_record._id, "Location:", event_record.location, "Transistion:", event_record.transition, "Simulation Time:", event_time);
 
-    (text_prefix, "Reported:", JSON.stringify(event_record, null, 4));
+    (prefix_text, "Reported:", JSON.stringify(event_record, null, 4));
+
+    /* PJD minimal reset 
 
     reset_state();
+    
+    */
 }
 
 

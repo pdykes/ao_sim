@@ -43,7 +43,7 @@
                 "to_device_url": "http://127.0.0.1:3008",
                 "to_device": "to_device",
                 "from_device": "from_device",
-                "enable_io": true
+                "gpio_enabled": false
          }, {
                 "name": "olli_stop_control",
                 "instance": "01",
@@ -68,10 +68,12 @@
         },
         "monitor": {
             "module_name": "monitor",
-            "rfid_ip": "192.168.1.25",
+            "module_Name": "SmartPass Monitor",
+            "rfid_ip": "192.168.1.17",
             "rfid_port": "14150",
             "interval": "250",
-            "time_gap": "1000",
+            "simulation_tracking" : "false",
+            "time_gap": "500",
             "database": "persona_transitions"
         },
         "patron_manager": {
@@ -87,11 +89,11 @@
             "module_name": "olli_audio_agent",
             "module_Name": "Olli Audio Agent",
             "database": "audio_events",
-            "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
-            "watson_username": "get username value from mvp4 box directory",
-            "watson_password": "get password value from mvp4 box directory",
+            "watson_urlolli_": "https://stream.watsonplatform.net/text-to-speech/api",
+            "watson_username": "f0cfae5b-02bb-441e-abaf-589094976a76",
+            "watson_password": "iSVa8zeDL6uj",
             "audio_zone": "all",
-            "retain_audio_artifacts": "false"
+            "retain_audio_artifacts": "true"
         },
         "event_manager": {
             "module_name": "event_manager",
@@ -101,11 +103,13 @@
             "telemetry_event_rules": "telemetry_offset_events.json",
             "events_database": "rule_event_transitions"
         },        
-        "boarding_manager": {
-            "module_name": "boarding_manager",
-            "module_Name": "Boarding Manager",
+        "sequence_manager": {
+            "module_name": "sequence_manager",
+            "module_Name": "Sequence Manager",
             "port": "3010",
-            "telemetry_event_rules": "boarding_phase_events.json",
+            "boarding_events": "boarding_events.json",
+            "disembark_events": "disembark_events.json",
+            "emergency_events": "emergency_events.json",
             "events_database": "rule_event_transitions"
         },
         "bestmile": {
