@@ -1025,6 +1025,16 @@ if (so_service) {
 
                             }
                             break;
+                        case "extend_ramp":
+                        {
+
+                            break;
+                        }
+                        case "retract_ramp":
+                        {
+                            
+                            break;
+                        }
                         case "iteration_continuous":
                             {
                                 var dbname = "telemetry_transitions";

@@ -1,0 +1,131 @@
+<link rel="stylesheet" href="css/bootstrap.min.css" crossorigin="anonymous">
+<script src="js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="jquery-3.2.1.min.js"></script>
+<style>
+    button {
+        margin:0.25em;
+    }
+</style>
+
+<script>
+    jQuery(document).ready(function() {
+
+        //load stepcount from previous action
+        var savedStepCount = window.localStorage.getItem("stepcount");
+        if( typeof savedStepCount !== 'undefined' )
+            jQuery(".stepcount").val(savedStepCount);
+        else
+            jQuery(".stepcount").val(10);
+
+
+        var resetRampTimeout = 0;
+
+        jQuery(".activate_ramp2").on("keyup", function() {
+            if( resetRampTimeout != 0 )
+                clearTimeout(resetRampTimeout);
+            resetRampTimeout = setTimeout(function() {
+                jQuery(".activate_ramp2").val('');
+                resetRampTimeout = 0;
+            }, 10000)
+        });
+
+        jQuery('button').on('click', function() {
+
+            //button has the encoded data required by ao-dev.js
+            var btn = jQuery(this);
+            var option = btn.attr("name");
+            var value = btn.attr("value");
+
+            //look for special case step/goto buttons
+            if( value == "stepforward_" || value == "stepbackward_" || value == "goto_") {
+                var stepCount = jQuery(".stepcount").val();;
+                value += stepCount;
+                window.localStorage.setItem("stepcount", stepCount);
+            }
+
+            if( value == "extend_ramp" || value == "retract_ramp" ) {
+                if( !jQuery(".activate_ramp").is(":checked") ) {
+                    alert("Please activate ramp checkbox");
+                    return;
+                } else {
+                    if( !confirm("Are you ready for moving ramp?!") ) {
+                        return;
+                    }
+                }
+
+                jQuery(".activate_ramp").attr('checked', false);
+            }
+
+
+            if( value == "extend_qstraint" || value == "retract_qstraint" ) {
+                if( !jQuery(".activate_qstraint").is(":checked") ) {
+                    alert("Please activate Q'Straint checkbox");
+                    return;
+                } else {
+                    if( !confirm("Are you ready for moving Q'Straint?!") ) {
+                        return;
+                    }
+                }
+
+                jQuery(".activate_qstraint").attr('checked', false);
+            }
+
+            //reload events and exit out
+            if( option == 'reloadEvents' ) {
+
+                jQuery.post('/reload', {}, function(response) {
+                    console.log("Successfully Reloaded Telemetry Events");
+                });
+                return;
+            }
+
+            //modify hidden input to name/value for request
+            var hidden = btn.siblings(".option");
+            hidden.attr("name", option);
+            hidden.val(value);
+
+            //add the request type for request
+            var requestType = btn.siblings('input[name="request_type"]').val();
+
+            //make the request
+            var postData = {};
+            postData[option] = value;
+            postData['request_type'] = requestType;
+
+            //send the post request
+            jQuery.post('/action', postData, function(response) {
+                console.log("Submitted Action:");
+                console.log(response);
+            })
+        });
+
+        jQuery(".stepcount").on("keyup", function() {
+            this.value = this.value.replace(/[^0-9\.]/g,'');
+        });
+    })
+    
+</script>
+
+
+    <h1>Special Olli Controls</h1>
+    <form action="/action" method="post">
+        <input type="hidden" class="option" name="option" value="">
+        <input type="hidden" name="request_type" value="simulation_control"><br>
+        <br>
+        <button class="btn btn-primary" type="button" name="option" value="extend_ramp">Extend Ramp</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" type="button" name="option" value="retract_ramp">Retract Ramp</button>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" class="activate_ramp" name="activate_ramp" value="1" /> Enable Ramp
+        <input type="text" class="activate_ramp2" name="activate_ramp2" value="" placeholder="type olliramp" />
+        <br><br >
+        <button class="btn btn-primary" type="button" name="option" value="extend_qstraint">Extend Q'Straint</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" type="button" name="option" value="retract_qstraint">Retract Q'Straint</button>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" class="activate_qstraint" name="activate_qstraint" value="1" /> Enable Q'Straint
+        <br><br>
+
+        <button class="btn btn-primary" type="button" name="option" value="lights_on">Lights On</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" type="button" name="option" value="lights_off">Lights Off</button>&nbsp;&nbsp;&nbsp;
+        
+    </form>
+
+</section>
+

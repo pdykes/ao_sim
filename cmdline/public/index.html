@@ -32,6 +32,33 @@
                 window.localStorage.setItem("stepcount", stepCount);
             }
 
+            if( value == "extend_ramp" || value == "retract_ramp" ) {
+                if( !jQuery(".activate_ramp").is(":checked") ) {
+                    alert("Please activate ramp checkbox");
+                    return;
+                } else {
+                    if( !confirm("Are you ready for moving ramp?!") ) {
+                        return;
+                    }
+                }
+
+                jQuery(".activate_ramp").attr('checked', false);
+            }
+
+
+            if( value == "extend_qstraint" || value == "retract_qstraint" ) {
+                if( !jQuery(".activate_qstraint").is(":checked") ) {
+                    alert("Please activate Q'Straint checkbox");
+                    return;
+                } else {
+                    if( !confirm("Are you ready for moving Q'Straint?!") ) {
+                        return;
+                    }
+                }
+
+                jQuery(".activate_qstraint").attr('checked', false);
+            }
+
             //reload events and exit out
             if( option == 'reloadEvents' ) {
 
@@ -96,7 +123,7 @@
         <button class="btn btn-primary" type="button" name="option" value="start_simulation">Start Simulation</button><br>
         <button class="btn btn-primary" type="button" name="option" value="suspend_simulation">Suspend Simulation</button><br>
         <br>
-        <button class="btn btn-primary" type="button" name="option" value="suspend_simulation">Restart Simulation</button><br>
+        <button class="btn btn-primary" type="button" name="option" value="restart_simulation">Restart Simulation</button><br>
         <br>
         <button class="btn btn-primary" type="button" name="option" value="stepbackward_">Skip Backward</button>
         <input type="number" name="stepcount" class="stepcount" value="1">
@@ -113,6 +140,9 @@
     </form>
 </section>
 
+
+
+<br /><br /><br /><br /><br /><br /><br />
 *** Remainder to be made operational post mvp4b...  ***
 
 <section>
