@@ -1016,7 +1016,7 @@ if (so_service) {
                     var dbname = "telemetry_transitions";
                     var key = "telemetry_iteration";
                     var state = "continuous";    
-                    
+                    school fence shut
                     */
 
                     switch (req.body.option) {
@@ -1027,10 +1027,30 @@ if (so_service) {
                             break;
                         case "extend_ramp":
                         {
-
+                            
                             break;
                         }
                         case "retract_ramp":
+                        {
+                            
+                            break;
+                        }
+                        case "extend_qstraint":
+                        {
+
+                            break;
+                        }
+                        case "retract_qstraint":
+                        {
+                            
+                            break;
+                        }
+                        case "lights_on":
+                        {
+
+                            break;
+                        }
+                        case "lights_off":
                         {
                             
                             break;

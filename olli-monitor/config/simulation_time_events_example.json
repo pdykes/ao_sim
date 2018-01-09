@@ -1,0 +1,268 @@
+{
+  "simulation_record_0":
+  {
+    "simulation_time": 2000,
+    "events": [
+      {
+        "name": "clear_all_content",
+        "event": "display",
+        "payload": {
+          "device": "all"
+        }
+      },
+      {
+        "name": "message_01",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "message",
+          "txt": "Pre-loading all Web and Video elements"
+        }
+      },
+      {
+        "name": "rear_video",
+        "event": "display",
+        "payload": {
+          "device": "monitor4",
+          "action": "hide",
+          "element": "video",
+          "src": "Video-Rear-6.mov",
+          "fullscreen": true,
+          "depth": 0
+        }
+      },
+      {
+        "name": "front_video",
+        "event": "display",
+        "payload": {
+          "device": "monitor6",
+          "action": "hide",
+          "element": "video",
+          "src": "Video-Front.mov",
+          "fullscreen": true,
+          "depth": 0
+        }
+      },
+      {
+        "name": "front_lidar",
+        "event": "display",
+        "payload": {
+          "device": "monitor6",
+          "action": "hide",
+          "element": "video",
+          "src": "Lidar-FrontView.mp4",
+          "fullscreen": false,
+          "top": 0,
+          "left": 0,
+          "width": 300,
+          "height": 150,
+          "depth": 1
+        }
+      },
+      {
+        "name": "front_youtube_spiderman",
+        "event": "display",
+        "payload": {
+          "device": "monitor4",
+          "action": "hide",
+          "element": "video",
+          "src": "https://www.youtube.com/watch?v=RO014qcVkJc",
+          "fullscreen": false,
+          "top": 0,
+          "left": 0,
+          "width": 600,
+          "height": 400,
+          "depth": 3
+        }
+      },
+      {
+        "name": "best_mile_front",
+        "event": "display",
+        "payload": {
+          "device": "monitor6",
+          "action": "hide",
+          "element": "bestMile",
+          "top": 0,
+          "left": 0
+        }
+      }
+    ]
+  },
+  "simulation_record_10": {
+    "simulation_time": 7000,
+    "events": [
+      {
+        "name": "message",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "message",
+          "txt": "Showing front and rear video"
+        }
+      },
+      {
+        "name": "rear_video",
+        "event": "display",
+        "payload": {
+          "action": "show"
+        }
+      },
+      {
+        "name": "front_video",
+        "event": "display",
+        "payload": {
+          "action": "show"
+        }
+      }
+    ]
+  },
+  "simulation_record_20": {
+    "simulation_time": 12000,
+    "events": [
+      {
+        "name": "message_03",
+        "event": "display",
+        "payload": {
+          "device": "monitor4",
+          "element": "message",
+          "txt": "Showing front lidar on monitor 6 and pausing rear video"
+        }
+      },
+      {
+        "name": "front_lidar",
+        "event": "display",
+        "payload": {
+          "action": "show"
+        }
+      },
+      {
+        "name": "rear_video",
+        "event": "display",
+        "payload": {
+          "action": "pause"
+        }
+      }
+    ]
+  },
+  "simulation_record_30": {
+    "simulation_time": 17000,
+    "events": [
+      {
+        "name": "message",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "message",
+          "txt": "Youtube example on monitor 4",
+          "m_id": 1
+        }
+      },
+      {
+        "name": "front_youtube_spiderman",
+        "event": "display",
+        "payload": {
+          "action": "show"
+        }
+      },
+      {
+        "name": "rear_video",
+        "event": "display",
+        "payload": {
+          "action": "play"
+        }
+      }
+    ]
+  },
+  "simulation_record_40": {
+    "simulation_time": 22000,
+    "events": [
+      {
+        "name": "message",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "message",
+          "txt": "BestMile on monitor 6",
+          "m_id": 1
+        }
+      },
+      {
+        "name": "best_mile_front",
+        "event": "display",
+        "payload": {
+          "action": "show"
+        }
+      }
+    ]
+  },
+  "simulation_record_50": {
+    "simulation_time": 27000,
+    "events": [
+      {
+        "name": "message",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "message",
+          "txt": "Deleting youtube of spiderman to free up resources"
+        }
+      },
+      {
+        "name": "front_youtube_spiderman",
+        "event": "display",
+        "payload": {
+          "action": "delete"
+        }
+      }
+    ]
+  },
+  "simulation_record_60": {
+    "simulation_time": 32000,
+    "events": [
+      {
+        "name": "message",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "message",
+          "txt": "Hiding lidar (resource still exists)"
+        }
+      },
+      {
+        "name": "front_lidar",
+        "event": "display",
+        "payload": {
+          "action": "hide"
+        }
+      }
+    ]
+  },
+  "simulation_record_70": {
+    "simulation_time": 37000,
+    "events": [
+      {
+        "name": "message",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "message",
+          "txt": "Deleting everything in 2 seconds",
+          "m_id": 1
+        }
+      }
+    ]
+  },
+  "simulation_record_80": {
+    "simulation_time": 39000,
+    "events": [
+      {
+        "name": "clear_all_content",
+        "event": "display",
+        "payload": {
+          "device": "all"
+        }
+      }
+    ]
+  }
+}
+

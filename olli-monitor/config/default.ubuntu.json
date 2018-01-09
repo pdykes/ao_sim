@@ -1,0 +1,141 @@
+{
+    "global": {
+        "nosql_url": "http://192.168.1.105:5984",
+        "nosql_user": "admin",
+        "nosql_password": "admin"
+    },
+    "agent_proxy": {
+        "module_name": "proxy_agent",
+        "module_Name": "Proxy Agent",
+        "endpoint_url": "http://127.0.0.1:3002",
+        "simulation_interval": "1000",
+        "proxy_list": [
+            {
+                "name": "ultrahaptics_01",
+                "instance": "01",
+                "database": "ultrahaptics_01_transitions",
+                "to_device_url": "http://127.0.0.1:3003",
+                "to_device": "to_device",
+                "from_device": "from_device"
+         },
+            {
+                "name": "kintrans_01",
+                "instance": "01",
+                "database": "kintrans_01_transitions",
+                "to_device_url": "http://127.0.0.1:3004",
+                "to_device": "to_device",
+                "from_device": "from_device"
+         },
+            {
+                "name": "kintrans_02",
+                "instance": "02",
+                "database": "kintrans_02_transitions",
+                "to_device_url": "http://127.0.0.1:3005",
+                "to_device": "to_device",
+                "from_device": "from_device"
+         }
+        ]
+    },
+    "agents": {
+        "telemetry": {
+            "module_name": "telemetry",
+            "module_Name": "Telemetry Agent",
+            "database": "telemetry_transitions",
+            "control": "telemetry_control",
+            "transition": "telemetry_transition",
+            "configuration": "telemetry.json",
+            "simulation_interval": 500,
+            "alert_interval": 500
+        },
+        "monitor": {
+            "module_name": "monitor",
+            "rfid_ip": "192.168.1.25",
+            "rfid_port": "14150",
+            "interval": "250",
+            "time_gap": "1000",
+            "database": "persona_transitions"
+        },
+        "patron_manager": {
+            "module_name": "patron_manager",
+            "database": "persona_transitions",
+            "output_database": "patron_location_transitions",
+            "roller_record_key": "patrons_olli_roller",
+            "stop_record_key": "patrons_olli_stop",
+            "registration_record_key": "patrons_registration",
+            "exhibit_record_key": "patrons_exhibit"
+        },
+        "olli_audio_agent": {
+            "module_name": "olli_audio_agent",
+            "module_Name": "Olli Audio Agent",
+            "database": "audio_events",
+            "watson_url": "https://stream.watsonplatform.net/text-to-speech/api",
+            "watson_username": "See mvp4 directory for user",
+            "watson_password": "See mvp4 directory for pwd",
+            "retain_audio_artifacts" : "false"
+        },
+        "event_manager": {
+            "module_name": "event_manager",
+            "module_Name": "Event Manager",
+            "port": "3006",
+            "simulation_event_rules": "simulation_time_events.json",
+            "telemetry_event_rules": "telemetry_offset_events.json",
+            "events_database": "rule_event_transitions"
+        },
+        "bestmile" : {
+            "module_name" : "bestmile",
+            "name": "bestmile",
+            "vehicle_ids": {
+              "olli_1": "olli_1",
+              "olli_2": "olli_2",
+              "olli_3": "olli_3"
+            },
+            "hermes_config": {
+                "host": "accessibleolli.env.partners.bestmile.io",
+                "port": "32363"
+            }
+        },
+        "ces_control_agent": {
+            "module_name": "ces_control_agent",
+            "module_Name": "CES Control Agent"
+        }
+    },
+    "ao_cli": {
+        "nosql_url": "http://127.0.0.1:5984",
+        "nosql_user": "",
+        "nosql_password": "",
+        "app_port": "3007",
+        "module_name": "ao_cli",
+        "module_Name": "#AO_cli",
+        "telemetry": "telemetry_transitions",
+        "telemetry_control": "telemetry_control",
+        "telemetry_transition": "telemetry_transition",
+        "kintrans_01": "kintrans_01_transitions",
+        "kintrans_01_to_device": "to_device",
+        "kintrans_01_from_device": "from_device",
+        "kintrans_02": "kintrans_02_transitions",
+        "kintrans_02_to_device": "to_device",
+        "kintrans_02_from_device": "from_device",
+        "ultrahaptics_01": "ultrahaptics_01_transitions",
+        "ultrahaptics_01_to_device": "to_device",
+        "ultrahaptics_01_from_device": "from_device"
+    },
+    "react": {
+        "videos": {
+            "src": "./server/public/videos",
+            "tags": {
+                "front": "front-final.mp4",
+                "front-lidar": "Front-Lidar-short.mp4",
+                "rear": "rear-final.mp4",
+                "left_5a": "left-5a.mp4",
+                "left_5b": "left-5b.mp4",
+                "left_5c": "left-5c.mp4"
+            }
+        },
+        "images": {
+            "src": "./server/public/images",
+            "tags": {
+                "busmap": "BusMap.png"
+            }
+        }
+    }
+}

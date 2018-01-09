@@ -1,0 +1,21 @@
+{
+  "offset_record_3": {
+    "offset": 3,
+    "events": [
+      {
+        "_id": "what3words",
+        "event": "display",
+        "payload": {
+          "device": "monitor5c",
+          "action": "show",
+          "element": "what3Words",
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      }
+    ]
+  }
+}

@@ -4,15 +4,11 @@
   "description": "#AccessibleOlli demonstration infrastructure",
   "main": "index.js",
   "scripts": {
-    "sim": "concurrently \"npm run telemetry\" \"npm run event_manager\" \"npm run monitor\" \"npm run cmdInterface\" \"npm run bestMile\" \"npm run olliAudioAgent\" \"npm run patronManager\" \"npm run agentProxy\"",
+    "sim": "concurrently \"npm run telemetry\" \"npm run event_manager\" \"npm run cmdInterface\"",
     "event_manager": "cd event_manager && npm start",
     "telemetry": "cd telemetry && npm start",
     "cmdInterface": "cd cmdline && npm start",
-    "bestMile": "cd bestmile && cross-env NODE_CONFIG_DIR=../../../olli-monitor/config && node app.js",
-    "olliAudioAgent": "cd olli_audio_agent && cross-env NODE_CONFIG_DIR=../../../olli-monitor/config && node app.js",
-    "patronManager": "cd patron_manager && cross-env NODE_CONFIG_DIR=../../../olli-monitor/config && node app.js",
-    "agentProxy": "cd agent_proxy && cross-env NODE_CONFIG_DIR=../../../olli-monitor/config && node app.js",
-    "monitor": "cd monitor && cross-env NODE_CONFIG_DIR=../../../olli-monitor/config && npm start",
+    "monitor": "cd monitor && npm start",
     "enable": "cd cmdline && node ao.js --control telemetry --operation enable",
     "disable": "cd cmdline && node ao.js --control telemetry --operation disable"
   },
@@ -33,8 +29,5 @@
     "concurrently": "^3.5.1",
     "cross-spawn": "^5.1.0",
     "wait-on": "^2.0.2"
-  },
-  "devDependencies": {
-    "cross-env": "^5.1.1"
   }
 }

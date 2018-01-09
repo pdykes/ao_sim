@@ -1,0 +1,721 @@
+{
+  "offset_record_1": {
+    "offset": 1,
+    "events": [
+      {
+        "name": "Telemetry Pass Start",
+        "filter": "olli_1",
+        "event": "_telemetry_start_event",
+        "payload": {
+          "comment": "THIS MUST BE THE FIRST EVENT-Reserved"
+        }
+      }
+    ]
+  },
+  "offset_record_2": {
+    "offset": 2,
+    "events": [
+      {
+        "name": "clear_all_content",
+        "event": "display",
+        "payload": {
+          "device": "all"
+        }
+      }
+    ]
+  },
+  "offset_record_3": {
+    "offset": 3,
+    "events": [
+      {
+        "name": "localmotors_olli",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "video",
+          "action": "show",
+          "depth": 1,
+          "src": "https://www.youtube.com/watch?v=Ymz4SYVr_EE",
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      },
+      {
+        "name": "kintrans_front_back",
+        "event": "display",
+        "payload": {
+          "message": "olli arrive",
+          "device": "monitor5a",
+          "action": "show",
+          "element": "kintrans_message",
+          "layout": {
+            "outer": "layoutBottomLeft",
+            "inner": "layoutFullScreen"
+          }
+        }
+      },
+      {
+        "name": "driving_video",
+        "event": "display",
+        "payload": {
+          "device": "all",
+          "element": "drivingVideo",
+          "action": "show",
+          "startTime": 145,
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen"
+          }
+        }
+      },
+      {
+        "name": "center_message_6",
+        "event": "display",
+        "payload": {
+          "device": "monitor6",
+          "element": "message",
+          "txt": "6",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutCenter",
+            "inner": "subLayoutCenter",
+            "class": "buttonBlue"
+          }
+        }
+      },
+      {
+        "name": "center_message_4",
+        "event": "display",
+        "payload": {
+          "device": "monitor4",
+          "element": "message",
+          "txt": "4",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutCenter",
+            "inner": "subLayoutCenter",
+            "class": "buttonBlue"
+          }
+        }
+      },
+      {
+        "name": "center_message_5a",
+        "event": "display",
+        "payload": {
+          "device": "monitor5a",
+          "element": "message",
+          "txt": "5a",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutCenter",
+            "inner": "subLayoutCenter",
+            "class": "buttonBlue"
+          }
+        }
+      },
+      {
+        "name": "center_message_5b",
+        "event": "display",
+        "payload": {
+          "device": "monitor5b",
+          "element": "message",
+          "txt": "5b",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutCenter",
+            "inner": "subLayoutCenter",
+            "class": "buttonBlue"
+          }
+        }
+      },
+      {
+        "name": "center_message_5c",
+        "event": "display",
+        "payload": {
+          "device": "monitor5c",
+          "element": "message",
+          "txt": "5c",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutCenter",
+            "inner": "subLayoutCenter",
+            "class": "buttonBlue"
+          }
+        }
+      },
+      {
+        "name": "front_lidar",
+        "event": "display",
+        "payload": {
+          "device": "monitor6",
+          "action": "show",
+          "element": "video",
+          "tag": "front_lidar",
+          "depth": 2,
+          "layout": {
+            "outer": "layoutSmallRight",
+            "inner": "subLayoutCenter"
+          }
+        }
+      },
+      {
+        "name": "best_mile_front_back",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "action": "show",
+          "element": "bestMile",
+          "layout": {
+            "outer": "layoutBigLeft",
+            "inner": "layoutFullScreen"
+          }
+        }
+      }
+      
+    ]
+  },
+  "offset_record_4": {
+    "offset": 4,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "txt": "We are approaching Discovery Square. We will be taking on passengers"
+        }
+      }
+    ]
+  },
+  "offset_record_5": {
+    "offset": 5,
+    "events": [
+      {
+        "name": "test_olli_at_stop_show_ui_element_1",
+        "filter": "all",
+        "event": "olli_at_stop_show_ui_element_1",
+        "payload": {
+          "action": "show",
+          "uri": "display_some_url",
+          "device": "monitor_2/olli_stop_monitor2",
+          "fallback": "some video",
+          "type": "display",
+          "data": "tag_data",
+          "parameters": "x1;x2;x3..."
+        }
+      },
+      {
+        "name": "test_audio_olli_at_stop_play_audio_1",
+        "filter": "all",
+        "event": "olli_at_stop_play_audio_1",
+        "payload": {
+          "type": "commented-out-audio",
+          "text": "Telemetry test voice for all ollies at offset 5.",
+          "accept": "audio/mp3",
+          "tag": "Audio_Play_Stop_1_Arrival",
+          "local": "welcome_olli.m4a",
+          "parameters": "x1;x2;x3..."
+        }
+      },
+      {
+        "name": "test_event_name1_at_offset_0_for_olli_1_only",
+        "filter": "olli_1",
+        "event": "event_name1_at_offset_0_for_olli_1_only",
+        "payload": {
+          "element1": "this_data_element_for_olli_1",
+          "type": "data",
+          "element2": "78"
+        }
+      },
+      {
+        "name": "test_event_video_you_tube",
+        "filter": "olli_1",
+        "event": "event_video_you_tube_olli_intro_video",
+        "payload": {
+          "action": "show",
+          "uri": "http://youtube.tv/....",
+          "device": "monitor_5c",
+          "type": "display",
+          "parameters": "y1;y2;y3..."
+        }
+      }
+    ]
+  },
+  "offset_record_7": {
+    "offset": 7,
+    "events": [
+      {
+        "name": "audio_awareness_appraoching_stop_4",
+        "filter": "all",
+        "event": "audio_awareness_appraoching_stop_4",
+        "payload": {
+          "type": "audio",
+          "text": "replace is approaching Discovery Square, Stop 4.",
+          "accept": "audio/mp3",
+          "tag": "audio_approaching_stop_4",
+          "local": "welcome_olli.m4a",
+          "parameters": "replace_vehicle_name"
+        }
+      }
+    ]
+  },
+  "offset_record_10": {
+    "offset": 10,
+    "events": [
+      {
+        "name": "test_olli_at_stop_show_ui_element_2",
+        "filter": "all",
+        "event": "olli_at_stop_show_ui_element_2",
+        "payload": {
+          "action": "show",
+          "uri": "display_some_url_y",
+          "device": "monitor_5c",
+          "type": "display",
+          "parameters": "y1;y2;y3..."
+        }
+      },
+      {
+        "name": "test_event_name2_at_offset_20_for_oll2_2_only",
+        "filter": "olli_2",
+        "event": "event_name1_at_offset_20_for_olli_2_only",
+        "payload": {
+          "element1": "this_data_element_for_olli_2",
+          "type": "data",
+          "element2": "345"
+        }
+      }
+    ]
+  },
+  "offset_record_19": {
+    "offset": 19,
+    "events": [
+      {
+        "name": "Trip Stop",
+        "filter": "all",
+        "event": "Arriving Discovery Square (Stop 4)",
+        "payload": {
+          "state": "stop_4_arrival",
+          "at_stop": "stop_4",
+          "previous_stop": "stop_3",
+          "next_stop": "stop_5"
+        }
+      },
+      {
+        "name": "CES Boarding Stop Simulation",
+        "filter": "olli_1",
+        "event": "stop_simulation_board_patrons_stop_4",
+        "payload": {
+          "state": "stop_4_arrival",
+          "at_stop": "stop_4",
+          "previous_stop": "stop_3",
+          "next_stop": "stop_5",
+          "comment": "This is a special, reserved event"
+        }
+      },
+      {
+        "name": "audio_olli_1_has_arrived_discovery_square_stop_4",
+        "filter": "olli_1",
+        "event": "audio_olli_1_has_arrived_discovery_square_stop_4",
+        "payload": {
+          "type": "audio",
+          "text": "Olli 1 has arrived at Discovery Square, Stop 4.",
+          "audio_zone": "olli_1",
+          "accept": "audio/mp3",
+          "tag": "audio_olli_1_stop_4",
+          "local": "welcome_olli.m4a",
+          "parameters": "y1;y2;y3..."
+        }
+      },
+      {
+        "name": "audio_olli_1_has_arrived_discovery_square_stop_4",
+        "filter": "olli_1",
+        "event": "audio_olli_1_has_arrived_discovery_square_stop_4",
+        "payload": {
+          "type": "audio",
+          "text": "Olli 1 has arrived at Discovery Square, Stop 4, you may board",
+          "audio_zone": "olli_stop",
+          "accept": "audio/mp3",
+          "tag": "audio_olli_1_stop_4",
+          "local": "welcome_olli.m4a",
+          "parameters": "y1;y2;y3..."
+        }
+      },
+      {
+        "name": "kintrans_left",
+        "event": "display",
+        "payload": {
+          "action": "show",
+          "message": "We have arrived at Discovery Square"
+        }
+      }
+    ]
+  },
+  "offset_record_20": {
+    "offset": 20,
+    "events": [
+      {
+        "name": "Trip Start",
+        "filter": "all",
+        "event": "Leaving Discovery Square (Stop 4)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_4_departure",
+          "at_stop": "stop_4",
+          "next_stop": "stop_5",
+          "previous_stop": "stop_3"
+        }
+      }
+    ]
+  },
+  "offset_record_68": {
+    "offset": 68,
+    "events": [
+      {
+        "name": "Trip Stop",
+        "filter": "all",
+        "event": "Arriving Mayo Guggenheim (Stop 5)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_5_arrival",
+          "at_stop": "stop_5",
+          "previous_stop": "stop_4",
+          "next_stop": "stop_1"
+        }
+      },
+      {
+        "name": "audio_olli_1_has_arrived_mayo_guggenheim_stop_5",
+        "filter": "olli_1",
+        "event": "audio_olli_1_has_arrived_mayo_guggenheim_stop_5",
+        "payload": {
+          "type": "audio",
+          "text": "Olli 1 has arrived at Mayo Guggenheim, Stop 5.",
+          "accept": "audio/mp3",
+          "tag": "audio_olli_1_stop_4",
+          "local": "welcome_olli.m4a",
+          "parameters": "y1;y2;y3..."
+        }
+      },
+      {
+        "name": "center_message_front_back",
+        "payload": {
+          "txt": "We are passing Mayo Guggenheim Building. Next stop is Mayo Gonda Building"
+        }
+      },
+      {
+        "name": "kintrans_front_back",
+        "event": "display",
+        "payload": {
+          "action": "show",
+          "message": "We are passing Mayo Guggenheim"
+        }
+      }
+    ]
+  },
+  "offset_record_69": {
+    "offset": 69,
+    "events": [
+      {
+        "name": "Trip Start",
+        "filter": "all",
+        "event": "Leaving Mayo Guggenheim (Stop 5)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_4_departure",
+          "at_stop": "stop_5",
+          "previous_stop": "stop_4",
+          "next_stop": "stop_1"
+        }
+      },
+      {
+        "name": "Emergency Stop Window Start",
+        "filter": "olli_1",
+        "event": "emergency_stop_window_begin",
+        "payload": {
+          "type": "event_data",
+          "state": "emergency_stop_window_begin",
+          "at_stop": "stop_5",
+          "previous_stop": "stop_4",
+          "next_stop": "stop_1"
+        }
+      },
+      {
+        "name": "audio_olli_1_enable_emergency_stop_window_start",
+        "filter": "olli_1",
+        "event": "audio_olli_1_enable_emergency_stop_window_start",
+        "payload": {
+          "type": "audio",
+          "text": "Olli 1 patrons can now initiate the emergency stop demonstration.",
+          "accept": "audio/mp3",
+          "audio_zone": "olli_1",
+          "tag": "audio_olli_1_emergency_stop",
+          "local": "welcome_olli.m4a",
+          "parameters": "y1;y2;y3..."
+        }
+      }
+    ]
+  },
+  "offset_record_95": {
+    "offset": 95,
+    "events": [
+      {
+        "name": "audio_olli_1_approaching_2nd_st_sw",
+        "filter": "olli_1",
+        "event": "audio_olli_1_approaching_2nd_st_sw",
+        "payload": {
+          "type": "audio",
+          "text": "Olli 1 crossing 2nd Street Southwest, soon arriving at Mayo Gonda, Stop 1.",
+          "accept": "audio/mp3",
+          "tag": "audio_olli_1_stop_4",
+          "local": "welcome_olli.m4a",
+          "parameters": "y1;y2;y3..."
+        }
+      }
+    ]
+  },
+  "offset_record_150": {
+    "offset": 150,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "We are approaching Mayo Gonda Building"
+        }
+      }
+    ]
+  },
+  "offset_record_180": {
+    "offset": 180,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "Brent, this is your stop"
+        }
+      }
+    ]
+  },
+  "offset_record_194": {
+    "offset": 25,
+    "events": [
+      {
+        "name": "audio_awareness_approaching_stop_5",
+        "filter": "all",
+        "event": "audio_awareness_approaching_stop_5",
+        "payload": {
+          "type": "audio",
+          "text": "replace is approaching the Mayo Guggenheim Building, Stop 5.",
+          "accept": "audio/mp3",
+          "tag": "audio_approaching_stop_5",
+          "parameters": "replace_vehicle_name",
+          "local": "welcome_olli.m4a"
+        }
+      }
+    ]
+  },
+  "offset_record_202": {
+    "offset": 202,
+    "events": [
+      {
+        "name": "Emergency Stop Window End",
+        "filter": "all",
+        "event": "emergency_stop_window_end",
+        "payload": {
+          "type": "event_data",
+          "state": "emergency_stop_window_end",
+          "at_stop": "stop_5",
+          "previous_stop": "stop_4",
+          "next_stop": "stop_1"
+        }
+      },
+      {
+        "name": "audio_olli_1_enable_emergency_stop_window_end",
+        "filter": "olli_1",
+        "event": "audio_olli_1_enable_emergency_stop_window_end",
+        "payload": {
+          "type": "audio",
+          "text": "Olli 1 patrons can no longer initiate the emergency stop demonstration.",
+          "accept": "audio/mp3",
+          "tag": "audio_olli_1_stop_1",
+          "local": "welcome_olli.m4a",
+          "parameters": "y1;y2;y3..."
+        }
+      }
+    ]
+  },
+  "offset_record_211": {
+    "offset": 211,
+    "events": [
+      {
+        "name": "CES Boarding Exit Simulation",
+        "filter": "olli_1",
+        "event": "stop_simulation_patrons_exit_stop_1",
+        "payload": {
+          "state": "stop_1_arrival",
+          "at_stop": "stop_1",
+          "previous_stop": "stop_5",
+          "next_stop": "stop_2"
+        }
+      },
+      {
+        "name": "Trip Stop",
+        "filter": "all",
+        "event": "Arriving Mayo Gonda (Stop 1)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_1_arrival",
+          "at_stop": "stop_1",
+          "previous_stop": "stop_5",
+          "next_stop": "stop_2"
+        }
+      },
+      {
+        "name": "audio_olli_1_has_arrived_mayo_gonda_stop_5",
+        "filter": "olli_1",
+        "event": "audio_olli_1_has_arrived_mayo_gonda_stop_5",
+        "payload": {
+          "type": "audio",
+          "text": "Olli 1 has arrived at Mayo Gonda, Stop 1.",
+          "accept": "audio/mp3",
+          "tag": "audio_olli_1_stop_5",
+          "local": "welcome_olli.m4a",
+          "parameters": "y1;y2;y3..."
+        }
+      },
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "We have arrive at Mayo Gonda Building"
+        }
+      },
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "We have arrive at Mayo Gonda Building"
+        }
+      }
+    ]
+  },
+  "offset_record_212": {
+    "offset": 212,
+    "events": [
+      {
+        "name": "Trip Start",
+        "filter": "all",
+        "event": "Leaving Mayo Gonda (Stop 1)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_1_departure",
+          "at_stop": "stop_1",
+          "previous_stop": "stop_5",
+          "next_stop": "stop_2"
+        }
+      }
+    ]
+  },
+  "offset_record_419": {
+    "offset": 419,
+    "events": [
+      {
+        "name": "audio_awareness_approaching_stop_4",
+        "filter": "all",
+        "event": "audio_awareness_approaching_stop_4",
+        "payload": {
+          "type": "audio",
+          "text": "replace is approaching Peace Plaza, Stop 2.",
+          "accept": "audio/mp3",
+          "tag": "audio_approaching_stop_4",
+          "local": "welcome_olli.m4a",
+          "parameters": "replace_vehicle_name"
+        }
+      }
+    ]
+  },
+  "offset_record_427": {
+    "offset": 427,
+    "events": [
+      {
+        "name": "Trip Stop",
+        "filter": "all",
+        "event": "Arriving Peace Plaza (Stop 2)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_2_arrival",
+          "at_stop": "stop_2",
+          "previous_stop": "stop_1",
+          "next_stop": "stop_3"
+        }
+      }
+    ]
+  },
+  "offset_record_428": {
+    "offset": 428,
+    "events": [
+      {
+        "name": "Trip Start",
+        "filter": "all",
+        "event": "Leaving Peace Plaza (Stop 2)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_2_departure",
+          "at_stop": "stop_2",
+          "previous_stop": "stop_1",
+          "next_stop": "stop_3"
+        }
+      }
+    ]
+  },
+  "offset_record_570": {
+    "offset": 570,
+    "events": [
+      {
+        "name": "Trip Stop",
+        "filter": "all",
+        "event": "Arriving Restaurant District (Stop 3)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_3_arrival",
+          "at_stop": "stop_3",
+          "previous_stop": "stop_2",
+          "next_stop": "stop_4"
+        }
+      }
+    ]
+  },
+  "offset_record_571": {
+    "offset": 571,
+    "events": [
+      {
+        "name": "Trip Start",
+        "filter": "all",
+        "event": "Leaving Restaurant District (Stop 3)",
+        "payload": {
+          "type": "event_data",
+          "state": "stop_3_departure",
+          "at_stop": "stop_3",
+          "previous_stop": "stop_2",
+          "next_stop": "stop_4"
+        }
+      }
+    ]
+  },
+  "offset_record_640": {
+    "offset": 640,
+    "events": [
+      {
+        "name": "Telemetry Pass Complete",
+        "filter": "olli_1",
+        "event": "_telemetry_complete_event",
+        "payload": {
+          "comment": "THIS MUST BE THE LAST EVENT-Reserved"
+        }
+      }
+    ]
+  }
+}

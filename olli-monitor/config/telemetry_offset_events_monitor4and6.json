@@ -1,0 +1,266 @@
+{
+  "offset_record_1": {
+    "offset": 1,
+    "events": [
+      {
+        "name": "Telemetry Pass Start",
+        "filter": "olli_1",
+        "event": "_telemetry_start_event",
+        "payload": {
+          "comment": "THIS MUST BE THE FIRST EVENT-Reserved"
+        }
+      }
+    ]
+  },
+  "offset_record_2": {
+    "offset": 2,
+    "events": [
+      {
+        "name": "clear_all_content",
+        "event": "display",
+        "payload": {
+          "device": "all"
+        }
+      }
+    ]
+  },
+  
+  "offset_record_3": {
+    "offset": 3,
+    "events": [
+      {
+        "name": "Driving_front_back",
+        "event": "display",
+        "payload": {
+          "device": "all",
+          "action": "show",
+          "element": "drivingVideo",
+          "startTime": 0,
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      },
+      {
+        "name": "lidar",
+        "event": "display",
+        "payload": {
+          "device": "monitor6",
+          "action": "show",
+          "element": "video",
+          "tag": "front-lidar",
+          "startTime": 0,
+          "layout": {
+            "outer": "layoutTopRight",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      },
+      {
+        "name": "kintrans_welcome_4_6",
+        "event": "display",
+        "payload": {
+          "device": "monitor6,monitor4",
+          "action": "hide",
+          "element": "kintrans_avatar",
+          "message": "olli arrive",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutBottomRight",
+            "inner": "layoutFullScreen"
+          }
+        }
+      },
+      {
+        "name": "localmotors_olli",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "element": "youtube",
+          "action": "hide",
+          "src": "https://www.youtube.com/watch?v=Ymz4SYVr_EE",
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      },
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "txt": "",
+          "element": "message",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutTopHalf",
+            "inner": "subLayoutCenter",
+            "class": "buttonBlue h3"
+          }
+        }
+      }
+    ]
+  },
+  "offset_record_19": {
+    "offset": 19,
+    "events": [
+      {
+        "name": "localmotors_olli",
+        "event": "display",
+        "payload": {
+          "action": "hide"
+        }
+      },
+      {
+        "name": "kintrans_left",
+        "event": "display",
+        "payload": {
+          "action": "show",
+          "message": "We have arrived at Discovery Square"
+        }
+      },
+      {
+        "name": "Driving_front_back",
+        "event": "display",
+        "payload": {
+          "device": "all",
+          "action": "pause",
+          "element": "drivingVideo",
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      },
+      {
+        "name": "lidar",
+        "event": "display",
+        "payload": {
+          "action": "pause"
+        }
+      }
+    ]
+  },
+  "offset_record_20": {
+    "offset": 20,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "We will be at Mayo Gonda building in 1 minute"
+        }
+      },
+      {
+        "name": "Driving_front_back",
+        "event": "display",
+        "payload": {
+          "device": "all",
+          "action": "play",
+          "element": "drivingVideo",
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      },
+      {
+        "name": "lidar",
+        "event": "display",
+        "payload": {
+          "action": "play"
+        }
+      }
+    ]
+  },
+  "offset_record_68": {
+    "offset": 68,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "We are passing Mayo Guggenheim Building. Next stop is Mayo Gonda Building"
+        }
+      },
+      {
+        "name": "kintrans_front_back",
+        "event": "display",
+        "payload": {
+          "action": "show",
+          "message": "We are passing Mayo Guggenheim"
+        }
+      }
+    ]
+  },
+  "offset_record_70": {
+    "offset": 70,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "Reach for the Ultrahaptics sensor to trigger an emergency stop"
+        }
+      }
+    ]
+  },
+  "offset_record_150": {
+    "offset": 150,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "We are passing Mayo Guggenheim Building. Next stop is Mayo Gonda Building"
+        }
+      }
+    ]
+  },
+  "offset_record_180": {
+    "offset": 180,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "Katherine, this is your stop"
+        }
+      }
+    ]
+  },
+  "offset_record_211": {
+    "offset": 211,
+    "events": [
+      {
+        "name": "center_message_front_back",
+        "event": "display",
+        "payload": {
+          "txt": "We have arrived at Mayo Gonda Building"
+        }
+      },
+      {
+        "name": "kintrans_disembark",
+        "event": "display",
+        "payload": {
+          "device": "monitor4,monitor6",
+          "action": "show",
+          "element": "kintrans_avatar",
+          "message": "disembark",
+          "timeout": 5000,
+          "layout": {
+            "outer": "layoutBottomRight",
+            "inner": "layoutFullScreen"
+          }
+        }
+      }
+    ]
+  }
+}

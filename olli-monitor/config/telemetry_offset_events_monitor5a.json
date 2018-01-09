@@ -1,0 +1,21 @@
+{
+  "offset_record_3": {
+    "offset": 3,
+    "events": [
+      {
+        "name": "bestmile",
+        "event": "display",
+        "payload": {
+          "device": "monitor5a",
+          "action": "show",
+          "element": "bestMile",
+          "layout": {
+            "outer": "layoutFullScreen",
+            "inner": "layoutFullScreen",
+            "class": ""
+          }
+        }
+      }
+    ]
+  }
+}
