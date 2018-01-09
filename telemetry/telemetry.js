@@ -321,12 +321,12 @@ function simulation_next_events() {
     time_ms = date.getTime();
 
     console.log("Telemetry count: " + telemetry.length);
-     console.log("Simulation Counter:", simulation_counter, 
+     /*console.log("Simulation Counter:", simulation_counter, 
         "\nDelta Time:", telemetry[simulation_counter].delta_time, 
         "\nStart Time:", simulation_start_time, 
         "\nCurrent Time:", time_ms, 
         "\nTime Diff: ", (time_ms - (telemetry[simulation_counter].delta_time+simulation_start_time)));
-
+    */
      if(simulation_counter < telemetry.length) {
     //while ((simulation_counter < telemetry.length) && (telemetry[simulation_counter].delta_time + simulation_start_time <= time_ms)) {
 
