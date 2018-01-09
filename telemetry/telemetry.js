@@ -327,7 +327,8 @@ function simulation_next_events() {
         "\nCurrent Time:", time_ms, 
         "\nTime Diff: ", (time_ms - (telemetry[simulation_counter].delta_time+simulation_start_time)));
 
-    while ((simulation_counter < telemetry.length) && (telemetry[simulation_counter].delta_time + simulation_start_time <= time_ms)) {
+     if(simulation_counter < telemetry.length) {
+    //while ((simulation_counter < telemetry.length) && (telemetry[simulation_counter].delta_time + simulation_start_time <= time_ms)) {
 
         try {
             debug("Simulation Counter:", simulation_counter);
@@ -378,8 +379,19 @@ function establish_simluation_start( /* callback */ ) {
 
         debug(text_prefix, "****Establish the simulation time");
         var date = new Date();
-        simulation_counter = 0;
-        simulation_start_time = date.getTime(); // establish time start in milliseconds
+        
+        //this restarts from beginning
+        //simulation_counter = 0;
+        //simulation_start_time = date.getTime(); // establish time start in milliseconds
+        
+        //resume from current position
+        //relative start time from counter
+        if( simulation_counter <= 5 ) 
+            simulation_start_time = (new Date()).getTime() - ((simulation_counter)*alert_interval); // establish time start in milliseconds
+        else
+            simulation_start_time = (new Date()).getTime() - ((simulation_counter+1)*alert_interval); // establish time start in milliseconds
+
+
         console.log(text_prefix, 'Simulation start time established');
         simulate_telemetry();
         console.log(text_prefix, 'Simulation start request initiated');
@@ -451,7 +463,7 @@ function suspend_simluation() {
         console.log(text_prefix, "Simulation is completed, awaiting next restart");
     }
 
-    simulation_counter = 0;
+    //simulation_counter = 0;
 
     in_progress = false;
     if (simulation_interval_object != null) {
