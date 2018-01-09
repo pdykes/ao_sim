@@ -135,6 +135,14 @@ var telemetry_rules_input_file = config.get("agents.event_manager.telemetry_even
 
 function loadEventRules()
 {
+    simulation_event_rules = [];
+    simulation_by_offset_rules = [];
+    simulation_rules_input_file = config.get("agents.event_manager.simulation_event_rules");
+
+    telemetry_event_rules = [];
+    telemetry_by_offset_rules = [];
+    telemetry_rules_input_file = config.get("agents.event_manager.telemetry_event_rules");
+
     if (process.env.NODE_CONFIG_DIR !== undefined) {
         for(var i=0; i<simulation_rules_input_file.length; i++) {
             var file_path = process.env.NODE_CONFIG_DIR + "/" + simulation_rules_input_file[i];
@@ -177,7 +185,10 @@ function loadEventRules()
         for (key in simulation_event_rules[i]) { // fill out sparse array
             console.log(prefix_text, "Processing key", key);
             var index = simulation_event_rules[i][key].simulation_time;
-            simulation_by_offset_rules[index] = [];
+            //simulation_by_offset_rules[index] = [];
+            if( typeof simulation_by_offset_rules !== 'object' ) {
+                simulation_by_offset_rules[index] = [];
+            }
 
             //simulation_by_offset_rules[index]['events'] = simulation_event_rules[key].events;
             if( typeof simulation_by_offset_rules[index]['events'] !== 'object' )
@@ -194,10 +205,17 @@ function loadEventRules()
         for (key in telemetry_event_rules[i]) { // fill out sparse array
             console.log(prefix_text, "Processing key", key);
             var index = telemetry_event_rules[i][key].offset;
-            telemetry_by_offset_rules[index] = [];
 
-            if( typeof telemetry_by_offset_rules[index]['events'] !== 'object' )
+            if( typeof telemetry_by_offset_rules !== 'object' ) {
+                telemetry_by_offset_rules[index] = [];
+            }
+
+            if( typeof telemetry_by_offset_rules[index]['events'] !== 'object' ) {
                 telemetry_by_offset_rules[index]['events'] = [];
+                console.log("resetting telemetry offset rules ("+index+") to zero");
+                //console.log(telemetry_by_offset_rules[index]['events']);
+                
+            }
 
             //concat events of each file
             telemetry_by_offset_rules[index]['events'] = 
