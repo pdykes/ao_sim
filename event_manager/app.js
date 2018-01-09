@@ -180,7 +180,7 @@ function loadEventRules()
             simulation_by_offset_rules[index] = [];
 
             //simulation_by_offset_rules[index]['events'] = simulation_event_rules[key].events;
-            if( typeof simulation_by_offset_rules[index]['events'] !== 'array' )
+            if( typeof simulation_by_offset_rules[index]['events'] !== 'object' )
                 simulation_by_offset_rules[index]['events'] = [];
 
             simulation_by_offset_rules[index]['events'] = 
@@ -196,13 +196,14 @@ function loadEventRules()
             var index = telemetry_event_rules[i][key].offset;
             telemetry_by_offset_rules[index] = [];
 
-            if( typeof telemetry_by_offset_rules[index]['events'] !== 'array' )
+            if( typeof telemetry_by_offset_rules[index]['events'] !== 'object' )
                 telemetry_by_offset_rules[index]['events'] = [];
+
             //concat events of each file
             telemetry_by_offset_rules[index]['events'] = 
                 telemetry_by_offset_rules[index]['events'].concat(telemetry_event_rules[i][key].events);
 
-            console.log("Event count: " + telemetry_by_offset_rules[index]['events'].length);
+            console.log("Event count (" + index + "): " + telemetry_by_offset_rules[index]['events'].length);
             telemetry_by_offset_rules[index]['index'] = telemetry_event_rules[i][key].offset;
         }
     }
