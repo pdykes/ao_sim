@@ -311,7 +311,7 @@ function simulation_next_events() {
 
     debug(text_prefix, "****Establish the simulation events");
 
-    if (suspend_simulation_thread == true) {
+    if (simulation_interval_object == null) {
         suspend_simluation();
         console.log(text_prefix, "Simulation Suspended");
         return;
@@ -320,7 +320,7 @@ function simulation_next_events() {
     date = new Date();
     time_ms = date.getTime();
 
-    console.log("Telemetry count: " + telemetry.length);
+    //console.log("Telemetry count: " + telemetry.length);
      /*console.log("Simulation Counter:", simulation_counter, 
         "\nDelta Time:", telemetry[simulation_counter].delta_time, 
         "\nStart Time:", simulation_start_time, 
@@ -365,16 +365,34 @@ function simulation_next_events() {
                 " failure ",
                 error);
         }
+    } else {
+
     }
+    /*
     if (simulation_counter >= telemetry.length) {
         console.log(text_prefix, "Simulation Mode Complete")
         in_progress = false;
         suspend_simluation();
-    }
+    }*/
 }
 
 function establish_simluation_start( /* callback */ ) {
 
+    if( simulation_interval_object != null ) {
+        clearInterval(simulation_interval_object);
+        simulation_interval_object = null;
+    }
+
+    if( simulation_counter <= 5 ) 
+        simulation_start_time = (new Date()).getTime() - ((simulation_counter)*alert_interval); // establish time start in milliseconds
+    else
+        simulation_start_time = (new Date()).getTime() - ((simulation_counter+1)*alert_interval); // establish time start in milliseconds
+
+
+    console.log(text_prefix, 'Simulation start time established');
+    simulate_telemetry();
+    console.log(text_prefix, 'Simulation start request initiated');
+    /*
     if (!in_progress) { // beginning of new run
 
         debug(text_prefix, "****Establish the simulation time");
@@ -386,15 +404,7 @@ function establish_simluation_start( /* callback */ ) {
         
         //resume from current position
         //relative start time from counter
-        if( simulation_counter <= 5 ) 
-            simulation_start_time = (new Date()).getTime() - ((simulation_counter)*alert_interval); // establish time start in milliseconds
-        else
-            simulation_start_time = (new Date()).getTime() - ((simulation_counter+1)*alert_interval); // establish time start in milliseconds
-
-
-        console.log(text_prefix, 'Simulation start time established');
-        simulate_telemetry();
-        console.log(text_prefix, 'Simulation start request initiated');
+        
         in_progress = true;
 
     } else { // continue an existing run
@@ -402,19 +412,23 @@ function establish_simluation_start( /* callback */ ) {
         // continue a suspended run
 
         suspend_simulation_thread = false;
+        suspend_simluation();
         simulate_telemetry();
 
         console.log(text_prefix, 'Simulation restart request complete');
 
-    }
+    }*/
 
 }
 
 function establish_simulation_start_position( positionOffset ) {
-    clearInterval(simulation_interval_object);
+    
+    if( simulation_interval_object != null ) {
+        clearInterval(simulation_interval_object);
+        simulation_interval_object = null;
+    }
 
     simulation_counter = positionOffset;
-    suspend_simulation_thread = false;
 
     //keep counter between 0 and telemetry.length-1
     simulation_counter = Math.min(telemetry.length-1, Math.max(0, simulation_counter));
@@ -429,15 +443,18 @@ function establish_simulation_start_position( positionOffset ) {
     console.log(text_prefix, 'Simulation start time established');
     simulation_next_events();
     console.log(text_prefix, 'Simulation start request initiated');
-    in_progress = true;
+    //in_progress = true;
 }
 
 function establish_simulation_start_offset( step ) {
     
-    clearInterval(simulation_interval_object);
+    if( simulation_interval_object != null ) {
+        clearInterval(simulation_interval_object);
+        simulation_interval_object = null;
+    }
 
     simulation_counter += step;
-    suspend_simulation_thread = false;
+    //suspend_simulation_thread = false;
 
     //keep counter between 0 and telemetry.length-1
     simulation_counter = Math.min(telemetry.length-1, Math.max(0, simulation_counter));
@@ -452,20 +469,22 @@ function establish_simulation_start_offset( step ) {
     console.log(text_prefix, 'Simulation start time established');
     simulation_next_events();
     console.log(text_prefix, 'Simulation start request initiated');
-    in_progress = true;
+    //in_progress = true;
 }
 
 function suspend_simluation() {
-
+    /*
     if (in_progress) {
         console.log(text_prefix, "Suspending in progress simulation, renable to start");
     } else {
         console.log(text_prefix, "Simulation is completed, awaiting next restart");
     }
-
+    */
     //simulation_counter = 0;
+    //suspend_simulation_thread = true;
+    //in_progress = false;
 
-    in_progress = false;
+    console.log(text_prefix, "Suspending in progress simulation, renable to start");
     if (simulation_interval_object != null) {
         clearInterval(simulation_interval_object);
         simulation_interval_object = null;
@@ -525,10 +544,17 @@ feed.on('change', function (change) {
                     // control value
                 }
                 break;
+            case "restart":
+            {
+                console.log("Restarting simulation");
+                establish_simulation_start_position(0);
+                establish_simluation_start();
+                break;
+            }
             case "enabled":
                 {
                     console.log(text_prefix, "Control Mode", change.doc.mode);
-                    suspend_simulation_thread = false;
+                    
                     establish_simluation_start();
                     // control value
                 }
@@ -536,7 +562,7 @@ feed.on('change', function (change) {
             case "disabled":
                 {
                     console.log(text_prefix, "Control Mode", change.doc.mode);
-                    suspend_simulation_thread = true;
+                    
                     suspend_simluation();
                 }
                 break;

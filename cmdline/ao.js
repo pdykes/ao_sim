@@ -181,6 +181,13 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
 
+    if ((control == "telemetry_transitions") && (operation == "restart")) {
+        control_command = "restart";
+        control_event = {
+            _id: database_key
+        };
+    }
+
     if ((control == "telemetry_transitions") && (operation == "step_forward")) {
         control_command = "step_forward";
         control_event = {
@@ -1054,6 +1061,14 @@ if (so_service) {
                                 update_control(dbname, key, state);
                             }
                             break;
+                        case "restart_simulation": {
+                            var dbname = "telemetry_transitions";
+                                var key = "telemetry_control";
+                                var state = "restart";
+
+                                update_control(dbname, key, state);
+                            break;
+                        }
                         case "start_simulation":
                             {
                                 var dbname = "telemetry_transitions";

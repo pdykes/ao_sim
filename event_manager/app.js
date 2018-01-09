@@ -361,6 +361,13 @@ function obtain_asset_record(database, database_key, control, operation, callbac
         };
     }
 
+    if ((control == "telemetry_transitions") && (operation == "restart")) {
+        control_command = "restart";
+        control_event = {
+            _id: database_key
+        };
+    }
+
     if ((control == "telemetry_transitions") && (operation == "disable")) {
         control_command = "disabled";
         control_event = {
@@ -932,7 +939,7 @@ function follow_on_change(details, feed) {
                             {
                                 var dbname = "telemetry_transitions";
                                 var key = "telemetry_control";
-                                var state = "enable";
+                                var state = "restart";
                                 update_control(dbname, key, state);                                  
                                 console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
                             }
@@ -953,7 +960,7 @@ function follow_on_change(details, feed) {
                             {
                                 var dbname = "telemetry_transitions";
                                 var key = "telemetry_control";
-                                var state = "enable";
+                                var state = "restart";
                                 update_control(dbname, key, state);                               
                                 console.log(prefix_text, "Rule Processing - Event Manager Restarting Telemetry in Continuous Mode TBD");
                             }
