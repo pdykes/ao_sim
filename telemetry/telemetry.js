@@ -379,6 +379,7 @@ function simulation_next_events() {
 function establish_simluation_start( /* callback */ ) {
 
     if( simulation_interval_object != null ) {
+        console.log("establish_simulation_start -- Clearing Interval");
         clearInterval(simulation_interval_object);
         simulation_interval_object = null;
     }
@@ -424,6 +425,7 @@ function establish_simluation_start( /* callback */ ) {
 function establish_simulation_start_position( positionOffset ) {
     
     if( simulation_interval_object != null ) {
+        console.log("establish_simulation_start_position -- Clearing Interval");
         clearInterval(simulation_interval_object);
         simulation_interval_object = null;
     }
@@ -449,6 +451,7 @@ function establish_simulation_start_position( positionOffset ) {
 function establish_simulation_start_offset( step ) {
     
     if( simulation_interval_object != null ) {
+        console.log("establish_simulation_start_offset -- Clearing Interval");
         clearInterval(simulation_interval_object);
         simulation_interval_object = null;
     }
@@ -486,6 +489,7 @@ function suspend_simluation() {
 
     console.log(text_prefix, "Suspending in progress simulation, renable to start");
     if (simulation_interval_object != null) {
+        console.log("suspend_simluation -- Clearing Interval");
         clearInterval(simulation_interval_object);
         simulation_interval_object = null;
     }
