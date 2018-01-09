@@ -886,12 +886,12 @@ function follow_on_change(details, feed) {
                     case "telemetry_pause_stops":
                         {
                             if (details.change.doc.mode == "enabled") {
-                                operational_status.pause_at_stops = details.change.doc.mode;
+                                operational_status.pause_at_stops = true;//details.change.doc.mode;
                                 console.log(prefix_text, "Pause for stops - Simulation Enabled");
                             }
 
                             if (details.change.doc.mode == "disabled") {
-                                operational_status.pause_at_stops = details.change.doc.mode;
+                                operational_status.pause_at_stops = false;//details.change.doc.mode;
                                 console.log(prefix_text, "Pause for stops - Simulation Disabled");
                             }
                             debug(prefix_text, "Operational Status:", JSON.stringify(operational_status, null, 4));
