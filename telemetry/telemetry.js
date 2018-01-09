@@ -451,6 +451,8 @@ function suspend_simluation() {
         console.log(text_prefix, "Simulation is completed, awaiting next restart");
     }
 
+    simulation_counter = 0;
+
     in_progress = false;
     if (simulation_interval_object != null) {
         clearInterval(simulation_interval_object);
@@ -514,6 +516,7 @@ feed.on('change', function (change) {
             case "enabled":
                 {
                     console.log(text_prefix, "Control Mode", change.doc.mode);
+                    suspend_simulation_thread = false;
                     establish_simluation_start();
                     // control value
                 }
