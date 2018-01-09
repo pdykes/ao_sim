@@ -186,7 +186,7 @@ function loadEventRules()
             console.log(prefix_text, "Processing key", key);
             var index = simulation_event_rules[i][key].simulation_time;
             //simulation_by_offset_rules[index] = [];
-            if( typeof simulation_by_offset_rules !== 'object' ) {
+            if( typeof simulation_by_offset_rules[index] !== 'object' ) {
                 simulation_by_offset_rules[index] = [];
             }
 
@@ -206,7 +206,7 @@ function loadEventRules()
             console.log(prefix_text, "Processing key", key);
             var index = telemetry_event_rules[i][key].offset;
 
-            if( typeof telemetry_by_offset_rules !== 'object' ) {
+            if( typeof telemetry_by_offset_rules[index] !== 'object' ) {
                 telemetry_by_offset_rules[index] = [];
             }
 
