@@ -112,7 +112,7 @@ Mvp4 Changes
     },
 
 ```
-  - Note the example above allows the _vehcile attribute in the event
+  - Note the example above allows the _vehicle attribute in the event
     to override or be "replaced" in the audio text.  Useful for
     events that should be stated in each specific vehicle.
   
@@ -125,8 +125,8 @@ Mvp4 Changes
     event manager.  If you use the config (config/default.config)
     should not be much of an issue.
   - olli_audio_agent added
-    - Watson text to speach is now integrated
-    - configugration in box, normal spot in mvp4/
+    - Watson text to speech is now integrated
+    - configuration in box, normal spot in mvp4/
     - these events can be add in either the simulation
       or the telemetry rules (see config)
     - the tagging and local file support is pending,
@@ -214,7 +214,7 @@ Mvp4 Changes
         }
 
 ```
-   - event intiated from telemetry rules
+   - event initiated from telemetry rules
    
 ```
         {
@@ -240,11 +240,11 @@ Mvp4 Changes
 
      
   - ces_control_agent
-     - new agent that implements items specifcially for
+     - new agent that implements items specifically for
        CES (maybe others, but leverages ao_sim work)
      - this will be leveraged more in mvp4b
      
-  - fixed a bug I introduced into bestmile ;-) after overwirting something (yea, it was late)
+  - fixed a bug I introduced into bestmile ;-) after overwriting something (yea, it was late)
   - event manager is close to supporting
      - clearly state beginning and end of each iteration of simulation
      - continuous running mode enabled (mvp4c to engage fully, especially for long running test)
@@ -262,7 +262,7 @@ Mvp4 Changes
         - node ao.js
         - using browser, visit:  http://localhost:3007/
         - Only the simulation control section (option 1 is operational)
-        - Focus on Initiate Simulation to kick off telemetry, otherwize
+        - Focus on Initiate Simulation to kick off telemetry, otherwise
           the command line, will flush out web function in future drops
 
 
@@ -301,7 +301,7 @@ Mvp3 Changes
     real-time changes the simulation entities drive related to rules
     
   
-  - Setup directory added, easier to configure couchdb intially and for ongoing usage
+  - Setup directory added, easier to configure couchdb initially and for ongoing usage
 
       - install couchdb (couchdb.apache.org)
       - cd setup
@@ -314,7 +314,7 @@ Mvp3 Changes
       - For docs, access iva the web, use "npm couchshell" to link to docs, nice tool,
         once you start using, it will save a great deal of time
         
-      - mvp4 will autmoated the startup and operation of the demo suite, stay tuned
+      - mvp4 will automate the startup and operation of the demo suite, stay tuned
 
   - Bestmile integration
      cd bestmile
@@ -337,7 +337,7 @@ Key things to notice:
 
  - ../config/ now has rule files
 
-    - these rules alow the telemetry agent to issue events and fire to other agents
+    - these rules allow the telemetry agent to issue events and fire to other agents
       for processing
 
  - graphic agents now listen to the eventing (some coming soon), these agents will 
@@ -511,7 +511,7 @@ as the solution begins to grow.
 
 ## Simple test
 
-Utilzing local shells and cloudant (docker image of cloudant (below ok as well))
+Utilizing local shells and cloudant (docker image of cloudant (below ok as well))
 
 1. For local install, install Nodejs... visit nodejs.org, and install the current LTS for your system.
 
@@ -557,7 +557,7 @@ Other information
 1. node monitor.js -h : prints out help text (the monitor actually reads RFID tags and reports)
 2. The detailed output for the commands, enabling debugging and other items are in the detail below.
 
-## Setting up telemetry, agent_proxy, agents, persona_locataions, etc...
+## Setting up telemetry, agent_proxy, agents, persona_locations, etc...
 
 Configuration
 
@@ -706,7 +706,7 @@ Note to get a feel for the JSON messages, you can look at the various change rec
 Listener target: http://127.0.0.1:5984/persona_transitions
 ```
 
-6. Telemtry Service
+6. Telemetry Service
 
 ```
 > node telemetry.js
@@ -756,7 +756,7 @@ Start the Telemetry
 [#AO_cli] Successful operation set telemetry_control in database telemetry_transitions now set to enable state
 ```
 
-The telemetry monitorng will wake up:
+The telemetry monitoring will wake up:
 
 ```
 > node telemetry.js
@@ -793,7 +793,7 @@ The telemetry monitorng will wake up:
 [#AO_cli] Successful operation set telemetry_control in database telemetry_transitions now set to disable state
 ```
 
-Telementry Service Monitor will look something like this
+Telemetry Service Monitor will look something like this
 
 ```
 [Telemetry Agent] Receiving updated record from: http://127.0.0.1:5984/telemetry_transitions
@@ -875,7 +875,7 @@ Hermes Adapter:  Sending ECHO request from vehicle  olli_3
 This tool is like telemetry, event_manager, etc.. is will just continue until aborted
 
 Each the agent_proxy elements (see ../config/default.json for a list of agents working with agent proxy)
-can be unique, so please refer to the solution specfiic readme.
+can be unique, so please refer to the solution specific readme.
 
 13. Starting Olli Audio Agent
 
@@ -1223,7 +1223,7 @@ Your almost there... now switch back to the other bash/node command line contain
 the simulator
 
 Leave the replication window visible to see the data flow. As each database record in cloudant is updated, the perry-kiosk
-container will a) note a change occured, and b) client will issue an http request and pull the entire record.
+container will a) note a change occurred, and b) client will issue an http request and pull the entire record.
 
 As a reminder, in the node monitor container, issue this command and watch the replication shell window.
 
